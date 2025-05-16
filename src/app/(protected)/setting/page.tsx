@@ -12,64 +12,158 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
 import {
     SidebarInset,
     SidebarProvider,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { UserSettingsSchema } from "@/schemas";
-
-type FormValues = z.infer<typeof UserSettingsSchema>;
-
-const mockUser = {
-    name: "สมชาย ใจดี",
-    email: "somchai@example.com",
-    is_two_factor_enabled: true,
-};
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const SettingsPage = () => {
-    const form = useForm<FormValues>({
+    const { data: session } = useSession();
+    const userId = session?.user?.id;
+    const token = session?.user?.access_token
+
+    const [qrCodeURL, setQrCodeURL] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const form = useForm({
         resolver: zodResolver(UserSettingsSchema),
         defaultValues: {
-            name: mockUser.name,
-            is_two_factor_enabled: mockUser.is_two_factor_enabled,
+            name: '',
+            password: '',
+            is_two_factor_enabled: false,
         },
     });
 
-    const onSubmit = async (values: FormValues) => {
+    const is2FAEnabled = form.watch("is_two_factor_enabled");
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/auth/user?userId=${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    form.reset({
+                        name: data.name,
+                        is_two_factor_enabled: data.is_two_factor_enabled,
+                        password: '',
+                    });
+
+
+                } else {
+                    toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
+                }
+            } catch (error) {
+                toast.error("เกิดข้อผิดพลาดขณะโหลดข้อมูลผู้ใช้");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (userId && token) fetchUserData();
+    }, [userId, token]);
+
+
+
+    const onSubmit = async (values: any) => {
         try {
-            // ส่งข้อมูลไปยัง backend
+            // ส่งชื่อหรือรหัสผ่านใหม่ไปยัง backend
             toast.success("อัปเดตข้อมูลสำเร็จ");
         } catch (error) {
             toast.error("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
         }
     };
 
+    const handleEnable2FA = async (checked: boolean) => {
+        form.setValue("is_two_factor_enabled", checked);
+
+        try {
+            const res = await fetch("http://localhost:3000/auth/2fa/enable", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    userId,
+                    is_two_factor_enabled: checked,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || "ไม่สามารถอัปเดต 2FA ได้");
+                form.setValue("is_two_factor_enabled", !checked); // rollback
+                return;
+            }
+
+            toast.success(checked ? "เปิดใช้งาน 2FA แล้ว" : "ปิดใช้งาน 2FA แล้ว");
+
+            // ถ้าเปิด 2FA แล้ว ให้เซ็ต QR Code
+            // setQrCodeURL(checked ? data.qrCodeDataURL : null);
+        } catch (error) {
+            toast.error("เกิดข้อผิดพลาดในการอัปเดต 2FA");
+            form.setValue("is_two_factor_enabled", !checked); // rollback
+        }
+    };
+
+
+
+    const handleShowQRCode = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/auth/2fa/setup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // ต้องแน่ใจว่า session?.user?.token ถูกเซ็ต
+                },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || "ไม่สามารถดึง QR Code ได้");
+                return;
+            }
+
+            setQrCodeURL(data.qrCodeDataURL);
+            toast.success("แสดง QR Code สำเร็จ");
+        } catch (error) {
+            toast.error("เกิดข้อผิดพลาดในการโหลด QR Code");
+        }
+    };
+
+
     return (
         <SidebarProvider
-            style={
-                {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                } as React.CSSProperties
-            }
+            style={{
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties}
         >
             <AppSidebar variant="inset" />
             <SidebarInset>
-                <SiteHeader
-                    headerTopic='ตั้งค่าผู้ใช้' />
+                <SiteHeader headerTopic='ตั้งค่าผู้ใช้' />
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
                                 <Form {...form}>
                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                        {/* Name */}
                                         <FormField
                                             control={form.control}
                                             name="name"
@@ -84,13 +178,11 @@ const SettingsPage = () => {
                                             )}
                                         />
 
-                                        {/* Email (แสดงอย่างเดียว) */}
                                         <div>
                                             <label className="text-sm font-medium">อีเมล</label>
-                                            <p className="mt-1 text-gray-600">{mockUser.email}</p>
+                                            <p className="mt-1 text-gray-600">{session?.user?.email}</p>
                                         </div>
 
-                                        {/* Password (เปลี่ยนได้) */}
                                         <FormField
                                             control={form.control}
                                             name="password"
@@ -105,7 +197,6 @@ const SettingsPage = () => {
                                             )}
                                         />
 
-                                        {/* 2FA */}
                                         <FormField
                                             control={form.control}
                                             name="is_two_factor_enabled"
@@ -113,11 +204,40 @@ const SettingsPage = () => {
                                                 <FormItem className="flex items-center justify-between">
                                                     <FormLabel>เปิดใช้งาน Two-Factor</FormLabel>
                                                     <FormControl>
-                                                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                        <Switch
+                                                            checked={field.value}
+                                                            onCheckedChange={(checked) => handleEnable2FA(checked)}
+                                                        />
                                                     </FormControl>
                                                 </FormItem>
                                             )}
                                         />
+                                        {is2FAEnabled && (
+                                            <FormItem className="flex items-center justify-between">
+                                                <FormLabel>แสดง QR Code</FormLabel>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={!!qrCodeURL}
+                                                        onCheckedChange={(checked) => {
+                                                            if (checked) {
+                                                                handleShowQRCode();
+                                                            } else {
+                                                                setQrCodeURL(null);
+                                                            }
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+
+                                        )}
+
+
+                                        {qrCodeURL && (
+                                            <div className="mt-4 text-center">
+                                                <p className="mb-2 text-sm font-medium">สแกน QR ด้วยแอป Google Authenticator</p>
+                                                <img src={qrCodeURL} alt="2FA QR Code" className="mx-auto max-w-xs rounded shadow" />
+                                            </div>
+                                        )}
 
                                         <Button type="submit" className="w-full">
                                             บันทึกการเปลี่ยนแปลง

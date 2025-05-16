@@ -41,10 +41,6 @@ export const LoginForm = () => {
 
             try {
                 const errorObj = JSON.parse(responseForm.error);
-
-
-                console.log(errorObj);
-                
                 if (errorObj.twoFA) {
                     router.push(`/2fa?userId=${errorObj.user_id}&token=${errorObj.twoFA_token}`);
                 }
