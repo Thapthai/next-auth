@@ -5,21 +5,27 @@ import { useRouter } from "next/navigation";
 interface CardWrapperProps {
     children: React.ReactNode;
     headerLabel: string;
-    backButtonLabel: string;
-    backbuttonHref: string;
+    leftButtonLabel: string;
+    leftButtonHref: string;
     showSocial?: boolean;
+    rightButtonHref: string;
+    rightButtonLabel?: string;
 }
 
 export const CardWrapper = ({
     children,
     headerLabel,
-    backButtonLabel,
-    backbuttonHref,
-     
+    leftButtonLabel,
+    leftButtonHref,
+    rightButtonHref,
+    rightButtonLabel,
+
+
 }: CardWrapperProps) => {
     const router = useRouter();
 
-    const registerOnClick = () => router.push(backbuttonHref)
+    const leftOnClick = () => router.push(leftButtonHref)
+    const rightOnClick = () => router.push(rightButtonHref)
 
     return (
         <div className="bg-white rounded-lg overflow-hidden shadow-2xl">
@@ -28,11 +34,8 @@ export const CardWrapper = ({
             <div className="bg-white rounded-lg overflow-hidden shadow-2xl"></div>
             {children}
             <div className="flex justify-between p-8 text-sm border-t border-gray-200 bg-white">
-                <a href="#" onClick={registerOnClick} className="font-medium text-indigo-500">{backButtonLabel}</a>
-                <a href="#" className="text-gray-600">ลืมรหัสผ่าน ?</a>
-
-   
-
+                <a href="#" onClick={leftOnClick} className="font-medium text-indigo-500">{leftButtonLabel}</a>
+                <a href="#" onClick={rightOnClick} className="text-gray-600">{rightButtonLabel}</a>
             </div>
         </div>
     )

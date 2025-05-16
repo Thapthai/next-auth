@@ -12,11 +12,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { signOut } from "next-auth/react";
 import LogoutButton from "./auth/logout-button";
 
+type SiteHeaderProps = {
+  headerTopic: string;
+};
 
-export function SiteHeader() {
+export function SiteHeader({ headerTopic }: SiteHeaderProps) {
   const { data: session, status } = useSession();
 
   const isLoading = status === "loading";
@@ -32,7 +34,7 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">Documents</h1>
+        <h1 className="text-base font-medium">{headerTopic}</h1>
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -46,7 +48,7 @@ export function SiteHeader() {
               <DropdownMenuItem onClick={() => window.location.href = "/profile"}>
                 My Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.location.href = "/settings"}>
+              <DropdownMenuItem onClick={() => window.location.href = "/setting"}>
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />

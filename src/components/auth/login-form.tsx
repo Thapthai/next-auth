@@ -15,11 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { startTransition } from 'react';
-
 
 export const LoginForm = () => {
     const form = useForm<z.infer<typeof LoginSchema>>({
@@ -34,33 +31,48 @@ export const LoginForm = () => {
 
     // Current Version 
     const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-        try {
-            const responseForm = await signIn("credentials", {
-                ...values,
-                redirect: false,
-            });
 
-            if (responseForm?.error === "EMAIL_NOT_VERIFIED") {
-                router.push("/waiting-verify");
-            } else if (responseForm?.error === "EMAIL_DOES_NOT_EXIST") {
-                alert("Email or Password Incorrect !");
+        const responseForm = await signIn("credentials", {
+            ...values,
+            redirect: false,
+        });
 
-            } else if (responseForm?.ok) {
-                router.push("/dashboard");
-            } else {
-                alert("Login failed");
+        if (responseForm?.error) {
+
+            try {
+                const errorObj = JSON.parse(responseForm.error);
+
+
+                console.log(errorObj);
+                
+                if (errorObj.twoFA) {
+                    router.push(`/2fa?userId=${errorObj.user_id}&token=${errorObj.twoFA_token}`);
+                }
+
+                if (responseForm?.error === "EMAIL_NOT_VERIFIED") {
+                    router.push("/waiting-verify");
+                } else if (responseForm?.error === "EMAIL_DOES_NOT_EXIST") {
+                    alert("Email or Password Incorrect !");
+
+                }
+            } catch (e) {
+                alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
             }
-
-        } catch (e) {
-            console.error("Login error", e);
+        }
+        else if (responseForm?.ok) {
+            router.push("/dashboard");
+        } else {
+            alert("Login failed");
         }
     };
 
     return (
         <CardWrapper
             headerLabel='เข้าสู่ระบบ'
-            backButtonLabel='ลงทะเบียนบัญชีใหม่'
-            backbuttonHref='/register'
+            leftButtonLabel='ลงทะเบียนบัญชีใหม่'
+            leftButtonHref='/register'
+            rightButtonLabel='ลืมรหัสผ่าน ?'
+            rightButtonHref='/forget-password'
         >
             <div className="p-8">
                 <Form {...form}>

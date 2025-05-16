@@ -48,9 +48,11 @@ export const RegisterForm = () => {
 
     return (
         <CardWrapper
-            headerLabel='ลงทะเบียนใช้งาน'
-            backButtonLabel='เข้าสู่ระบบ'
-            backbuttonHref='/login'
+            headerLabel='ลงทะเบียนบัญชีใหม่'
+            leftButtonLabel='เข้าสู่ระบบ'
+            leftButtonHref='/login'
+            rightButtonHref=''
+            rightButtonLabel=''
         >
             <div className="p-8">
                 <Form {...form}>
