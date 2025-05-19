@@ -76,11 +76,8 @@ const SettingsPage = () => {
         if (userId && token) fetchUserData();
     }, [userId, token]);
 
-
-
     const onSubmit = async (values: any) => {
         try {
-            // ส่งชื่อหรือรหัสผ่านใหม่ไปยัง backend
             toast.success("อัปเดตข้อมูลสำเร็จ");
         } catch (error) {
             toast.error("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
@@ -110,6 +107,7 @@ const SettingsPage = () => {
                 form.setValue("is_two_factor_enabled", !checked); // rollback
                 return;
             }
+            setQrCodeURL(data.qrCodeDataURL);
 
             toast.success(checked ? "เปิดใช้งาน 2FA แล้ว" : "ปิดใช้งาน 2FA แล้ว");
 
@@ -121,12 +119,10 @@ const SettingsPage = () => {
         }
     };
 
-
-
     const handleShowQRCode = async () => {
         try {
-            const res = await fetch("http://localhost:3000/auth/2fa/setup", {
-                method: "POST",
+            const res = await fetch(`http://localhost:3000/auth/2fa/2FAqrcode?userId=${userId}`, {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`, // ต้องแน่ใจว่า session?.user?.token ถูกเซ็ต
@@ -228,9 +224,7 @@ const SettingsPage = () => {
                                                     />
                                                 </FormControl>
                                             </FormItem>
-
                                         )}
-
 
                                         {qrCodeURL && (
                                             <div className="mt-4 text-center">
