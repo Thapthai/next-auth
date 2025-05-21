@@ -145,105 +145,88 @@ const SettingsPage = () => {
 
 
     return (
-        <SidebarProvider
-            style={{
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
-            } as React.CSSProperties}
-        >
-            <AppSidebar variant="inset" />
-            <SidebarInset>
-                <SiteHeader headerTopic='ตั้งค่าผู้ใช้' />
-                <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
-                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                            <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-                                <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                        <FormField
-                                            control={form.control}
-                                            name="name"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>ชื่อผู้ใช้</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="ชื่อผู้ใช้" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
 
-                                        <div>
-                                            <label className="text-sm font-medium">อีเมล</label>
-                                            <p className="mt-1 text-gray-600">{session?.user?.email}</p>
-                                        </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>ชื่อผู้ใช้</FormLabel>
+                            <FormControl>
+                                <Input placeholder="ชื่อผู้ใช้" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
 
-                                        <FormField
-                                            control={form.control}
-                                            name="password"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="password" placeholder="********" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-
-                                        <FormField
-                                            control={form.control}
-                                            name="is_two_factor_enabled"
-                                            render={({ field }) => (
-                                                <FormItem className="flex items-center justify-between">
-                                                    <FormLabel>เปิดใช้งาน Two-Factor</FormLabel>
-                                                    <FormControl>
-                                                        <Switch
-                                                            checked={field.value}
-                                                            onCheckedChange={(checked) => handleEnable2FA(checked)}
-                                                        />
-                                                    </FormControl>
-                                                </FormItem>
-                                            )}
-                                        />
-                                        {is2FAEnabled && (
-                                            <FormItem className="flex items-center justify-between">
-                                                <FormLabel>แสดง QR Code</FormLabel>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={!!qrCodeURL}
-                                                        onCheckedChange={(checked) => {
-                                                            if (checked) {
-                                                                handleShowQRCode();
-                                                            } else {
-                                                                setQrCodeURL(null);
-                                                            }
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-
-                                        {qrCodeURL && (
-                                            <div className="mt-4 text-center">
-                                                <p className="mb-2 text-sm font-medium">สแกน QR ด้วยแอป Google Authenticator</p>
-                                                <img src={qrCodeURL} alt="2FA QR Code" className="mx-auto max-w-xs rounded shadow" />
-                                            </div>
-                                        )}
-
-                                        <Button type="submit" className="w-full">
-                                            บันทึกการเปลี่ยนแปลง
-                                        </Button>
-                                    </form>
-                                </Form>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <label className="text-sm font-medium">อีเมล</label>
+                    <p className="mt-1 text-gray-600">{session?.user?.email}</p>
                 </div>
-            </SidebarInset>
-        </SidebarProvider>
+
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</FormLabel>
+                            <FormControl>
+                                <Input type="password" placeholder="********" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="is_two_factor_enabled"
+                    render={({ field }) => (
+                        <FormItem className="flex items-center justify-between">
+                            <FormLabel>เปิดใช้งาน Two-Factor</FormLabel>
+                            <FormControl>
+                                <Switch
+                                    checked={field.value}
+                                    onCheckedChange={(checked) => handleEnable2FA(checked)}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                {is2FAEnabled && (
+                    <FormItem className="flex items-center justify-between">
+                        <FormLabel>แสดง QR Code</FormLabel>
+                        <FormControl>
+                            <Switch
+                                checked={!!qrCodeURL}
+                                onCheckedChange={(checked) => {
+                                    if (checked) {
+                                        handleShowQRCode();
+                                    } else {
+                                        setQrCodeURL(null);
+                                    }
+                                }}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}
+
+                {qrCodeURL && (
+                    <div className="mt-4 text-center">
+                        <p className="mb-2 text-sm font-medium">สแกน QR ด้วยแอป Google Authenticator</p>
+                        <img src={qrCodeURL} alt="2FA QR Code" className="mx-auto max-w-xs rounded shadow" />
+                    </div>
+                )}
+
+                <Button type="submit" className="w-full">
+                    บันทึกการเปลี่ยนแปลง
+                </Button>
+            </form>
+        </Form>
+
     );
 };
 

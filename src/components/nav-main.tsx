@@ -1,27 +1,42 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, IconMail } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+import { useState } from "react";
+import { Collapsible, CollapsibleContent } from "./ui/collapsible";
+import { ChevronDown } from "lucide-react";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
-}) {
+type Icon = React.ComponentType<{ className?: string }>
+
+interface NavItem {
+  title: string
+  url: string
+  icon?: Icon
+  sub?: NavItem[]
+}
+
+export function NavMain({ items }: { items: NavItem[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  const toggleDropdown = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index)
+  }
+
   return (
+
     <SidebarGroup>
+      <SidebarGroupLabel>Main เมนู</SidebarGroupLabel>
+
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
@@ -42,15 +57,57 @@ export function NavMain({
             </Button>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+
+        <SidebarMenu className="pl-3">
+          {items.map((item, idx) => {
+            const hasSub = !!item.sub?.length
+            return (
+              <Collapsible key={idx} open={openIndex === idx}>
+                <SidebarMenuItem className="flex justify-between items-center w-full py-1">
+                  <Link
+                    href={item.url}
+                    className="flex items-center gap-2 w-full"
+                  >
+                    {item.icon && <item.icon className="w-4 h-4" />}
+                    <span className="text-sm">{item.title}</span>
+                  </Link>
+
+                  {hasSub && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        toggleDropdown(idx)
+                      }}
+                      className="ml-auto p-1"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${openIndex === idx ? "rotate-180" : ""
+                          }`}
+                      />
+                    </button>
+                  )}
+                </SidebarMenuItem>
+                {hasSub && (
+                  <CollapsibleContent className="pl-6">
+                    <SidebarMenu>
+                      {item.sub?.map((subItem, subIdx) => (
+                        <SidebarMenuItem key={subIdx}>
+                          <Link
+                            href={subItem.url}
+                            className="flex items-center gap-2 py-1 text-sm text-gray-700"
+                          >
+                            {subItem.icon && <subItem.icon className="w-4 h-4" />}
+                            {subItem.title}
+                          </Link>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </CollapsibleContent>
+                )}
+              </Collapsible>
+            )
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

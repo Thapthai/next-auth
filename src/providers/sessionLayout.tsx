@@ -10,5 +10,3 @@ export default function SessionLayoutProvider({ children }: { children: React.Re
 
     );
 }
-
-

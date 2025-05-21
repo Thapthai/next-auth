@@ -1,5 +1,4 @@
 import LogingButton from "@/components/auth/login-button";
-import Image from "next/image";
 
 export const Home = () => {
   return (
@@ -7,9 +6,9 @@ export const Home = () => {
       Hello World
       สวัสดี
 
-      <LogingButton>
+      {/* <LogingButton>
         <button>Sign In</button>
-      </LogingButton>
+      </LogingButton> */}
     </div>
   );
 }

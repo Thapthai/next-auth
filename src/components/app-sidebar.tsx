@@ -37,17 +37,32 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
+      sub: [
+        {
+          title: "Dashboard sub 1 ",
+          url: "/dashboard",
+          icon: IconDashboard,
+        },
+        {
+          title: "Dashboard sub 2",
+          url: "/dashboard",
+          icon: IconDashboard,
+        },
+
+      ]
+
+
     },
     {
       title: "Lifecycle",
-      url: "#",
+      url: "/setting",
       icon: IconListDetails,
     },
     {
@@ -66,6 +81,9 @@ const data = {
       icon: IconUsers,
     },
   ],
+
+
+
   navClouds: [
     {
       title: "Capture",
@@ -160,10 +178,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
+
               <a href="#">
+                <img
+                  src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"
+                  alt="Logo"
+                  className="w-6 h-6 mr-2 inline-block rounded"
+                />
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Nlinen</span>
               </a>
+
+
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
