@@ -26,7 +26,7 @@ export default withAuth(
         return NextResponse.redirect(new URL('/login', nextUrl));
       }
     }
-    
+
     if (isAuthRoute) {
       if (isLoggedIn) {
         return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));

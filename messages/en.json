@@ -1,0 +1,26 @@
+{
+    "HomePage": {
+        "title": "Hello world!"
+    },
+    "LoginPage": {
+        "topic": "Login Page",
+        "email": "Email",
+        "password": "password",
+        "leftButtonLabel": "Register",
+        "rightButtonLabel": "Forget Password ?",
+        "button": "Log In"
+    },
+    "RegisterPage": {
+        "topic": "Register Page",
+        "name": "Name",
+        "email": "Email",
+        "password": "password",
+        "leftButtonLabel": "Login",
+        "button": "Register"
+    },
+    "SideMenu": {
+        "headerTopic": "Main Menu",
+        "dashboard": "Dashboard Page",
+        "general": "General"
+    }
+}

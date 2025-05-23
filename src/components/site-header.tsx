@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import LogoutButton from "./auth/logout-button";
+import Link from "next/link";
 
 type SiteHeaderProps = {
   headerTopic: string;
@@ -23,7 +24,7 @@ export function SiteHeader({ headerTopic }: SiteHeaderProps) {
 
   const isLoading = status === "loading";
   const name = session?.user?.name ?? "Guest";
- 
+
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -46,8 +47,10 @@ export function SiteHeader({ headerTopic }: SiteHeaderProps) {
               <DropdownMenuItem onClick={() => window.location.href = "/profile"}>
                 My Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.location.href = "/setting"}>
-                Settings
+              <DropdownMenuItem  >
+                <Link href="/setting">
+                  Settings
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <LogoutButton />

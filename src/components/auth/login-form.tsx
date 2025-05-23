@@ -17,8 +17,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '../LanguageSwitcher';
+
 
 export const LoginForm = () => {
+    const t = useTranslations('LoginPage');
+
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -64,22 +69,25 @@ export const LoginForm = () => {
 
     return (
         <CardWrapper
-            headerLabel='เข้าสู่ระบบ'
-            leftButtonLabel='ลงทะเบียนบัญชีใหม่'
+            headerLabel={t('topic')}
+            leftButtonLabel={t('leftButtonLabel')}
             leftButtonHref='/register'
-            rightButtonLabel='ลืมรหัสผ่าน ?'
+            rightButtonLabel={t('rightButtonLabel')}
             rightButtonHref='/forget-password'
         >
             <div className="p-8">
+
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
 
                         <div className="space-y-4">
+                            <LanguageSwitcher />
+
                             <FormField control={form.control}
                                 name='email'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>{t('email')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 type='email'
@@ -95,7 +103,7 @@ export const LoginForm = () => {
                                 name='password'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <FormLabel>{t('password')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 type='password'
@@ -110,7 +118,7 @@ export const LoginForm = () => {
 
                         <Button className='w-full mt-3 text-neutral-50 text-shadow-amber-50'
                             type='submit'>
-                            เข้าสู่ระบบ
+                            {t('button')}
                         </Button>
 
                     </form>

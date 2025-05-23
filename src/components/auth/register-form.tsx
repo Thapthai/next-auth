@@ -18,12 +18,17 @@ import { Button } from '@/components/ui/button';
 
 import { useState, useTransition } from 'react';
 import { register } from '@/actions/register';
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export const RegisterForm = () => {
 
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>('');
     const [success, setSuccess] = useState<string | undefined>('');
+
+    const t = useTranslations('RegisterPage');
+
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -47,16 +52,24 @@ export const RegisterForm = () => {
     };
 
     return (
+        // <CardWrapper
+        //     headerLabel='ลงทะเบียนบัญชีใหม่'
+        //     leftButtonLabel='เข้าสู่ระบบ'
+        //     leftButtonHref='/login'
+        //     rightButtonHref=''
+        //     rightButtonLabel=''
+        // >
         <CardWrapper
-            headerLabel='ลงทะเบียนบัญชีใหม่'
-            leftButtonLabel='เข้าสู่ระบบ'
+            headerLabel={t('topic')}
+            leftButtonLabel={t('leftButtonLabel')}
             leftButtonHref='/login'
-            rightButtonHref=''
             rightButtonLabel=''
+            rightButtonHref=''
         >
             <div className="p-8">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <LanguageSwitcher />
 
 
                         <div className="space-y-4">
@@ -64,7 +77,7 @@ export const RegisterForm = () => {
                                 name='name'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>ชื่อ</FormLabel>
+                                        <FormLabel>{t('name')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 disabled={isPending}
@@ -81,7 +94,7 @@ export const RegisterForm = () => {
                                 name='email'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>{t('email')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 disabled={isPending}
@@ -98,7 +111,7 @@ export const RegisterForm = () => {
                                 name='password'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <FormLabel>{t('password')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 disabled={isPending}
@@ -121,7 +134,7 @@ export const RegisterForm = () => {
                     </form>
                 </Form>
             </div>
-        </CardWrapper>
+        </CardWrapper >
 
     )
 }

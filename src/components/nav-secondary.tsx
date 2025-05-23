@@ -9,7 +9,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function NavSecondary({
   items,
@@ -22,6 +23,7 @@ export function NavSecondary({
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
+
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
@@ -35,7 +37,10 @@ export function NavSecondary({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          <LanguageSwitcher />
+
         </SidebarMenu>
+
       </SidebarGroupContent>
     </SidebarGroup>
   )

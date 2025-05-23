@@ -1,0 +1,26 @@
+{
+    "HomePage": {
+        "title": "สวัสดีชาวโลก!"
+    },
+    "LoginPage": {
+        "topic": "เข้าสู่ระบบ",
+        "email": "อีเมล์",
+        "password": "รหัสผ่าน",
+        "leftButtonLabel": "ลงทะเบียนบัญชีใหม่",
+        "rightButtonLabel": "ลืมรหัสผ่าน ?",
+        "button": "เข้าสู่ระบบ"
+    },
+    "RegisterPage": {
+        "topic": "สมัครสมาชิก",
+        "name": "ชื่อ",
+        "email": "อีเมล์",
+        "password": "รหัสผ่าน",
+        "leftButtonLabel": "เข้าสู่ระบบ",
+        "button": "สมัครสมาชิก"
+    },
+    "SideMenu": {
+        "headerTopic": "เมนูหลัก",
+        "dashboard": "หน้า Dashboard",
+        "general": "เมนูทั่วไป"
+    }
+}

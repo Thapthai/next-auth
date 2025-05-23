@@ -11,32 +11,41 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
+
 import Link from "next/link";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent } from "./ui/collapsible";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Icon = React.ComponentType<{ className?: string }>
 
-interface NavItem {
-  title: string
-  url: string
-  icon?: Icon
-  sub?: NavItem[]
+interface PropsNavItem {
+  navMenu: {
+    title: string,
+    url: string,
+    icon?: Icon,
+    sub?: {
+      title: string,
+      url: string,
+      icon?: Icon,
+    }[]
+  }[]
 }
 
-export function NavMain({ items }: { items: NavItem[] }) {
+export function NavMain({ navMenu }: PropsNavItem) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggleDropdown = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
+  const t = useTranslations('SideMenu');
 
   return (
 
     <SidebarGroup>
-      <SidebarGroupLabel>Main เมนู</SidebarGroupLabel>
-
+      <SidebarGroupLabel>{t('headerTopic')}</SidebarGroupLabel>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
@@ -59,7 +68,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
         </SidebarMenu>
 
         <SidebarMenu className="pl-3">
-          {items.map((item, idx) => {
+          {navMenu.map((item, idx) => {
             const hasSub = !!item.sub?.length
             return (
               <Collapsible key={idx} open={openIndex === idx}>
@@ -69,7 +78,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
                     className="flex items-center gap-2 w-full"
                   >
                     {item.icon && <item.icon className="w-4 h-4" />}
-                    <span className="text-sm">{item.title}</span>
+                    <span className="text-sm">{t(item.title)}</span>
                   </Link>
 
                   {hasSub && (
@@ -98,7 +107,8 @@ export function NavMain({ items }: { items: NavItem[] }) {
                             className="flex items-center gap-2 py-1 text-sm text-gray-700"
                           >
                             {subItem.icon && <subItem.icon className="w-4 h-4" />}
-                            {subItem.title}
+
+                            {t(subItem.title)}
                           </Link>
                         </SidebarMenuItem>
                       ))}
