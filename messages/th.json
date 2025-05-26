@@ -22,5 +22,11 @@
         "headerTopic": "เมนูหลัก",
         "dashboard": "หน้า Dashboard",
         "general": "เมนูทั่วไป"
+    },
+    "Unauthorized": {
+        "topic": "ไม่ได้รับอนุญาต",
+        "content": "คุณไม่ได้รับอนุญาตให้เข้าถึงหน้าดังกล่าว",
+        "backHome": "กลับไปหน้าหลัก",
+        "redirecting": "กำลังเปลี่ยนเส้นทางใน {seconds} วินาที..."
     }
 }

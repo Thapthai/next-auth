@@ -6,6 +6,7 @@ export const publicRoutes = [
     "/forget-password",
     "/reset-password",
     '/2fa',
+    "/unauthorized"
 ];
 
 export const authRoutes = [

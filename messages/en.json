@@ -22,5 +22,11 @@
         "headerTopic": "Main Menu",
         "dashboard": "Dashboard Page",
         "general": "General"
+    },
+    "Unauthorized": {
+        "topic": "unauthorized",
+        "content": "You are not Unauthorized!",
+        "backHome": "Back Home",
+        "redirecting": "Redirecting in {seconds} seconds..."
     }
 }

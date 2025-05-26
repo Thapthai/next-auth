@@ -1,7 +1,6 @@
-
-import { error } from "console";
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import { permission } from "process";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -11,6 +10,7 @@ export const authOptions: NextAuthOptions = {
                 password: { type: "password", label: "Password", placeholder: "*****" },
                 token: { type: "text" }, // เพิ่มสำหรับ 2FA
                 user: { type: "text" },  // เพิ่มสำหรับ 2FA
+                permission: { type: "number" },
             },
             authorize: async (credentials: any) => {
                 const { email, password, token, user } = credentials;
@@ -66,9 +66,12 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt"
     },
+
     callbacks: {
         async jwt({ token, user }) {
-            if (user) token.user = user;
+            if (user) {
+                token.user = user;
+            }
             return token;
         },
         async session({ session, token }) {

@@ -7,12 +7,28 @@ import {
   publicRoutes
 } from "@/route";
 
+import {
+  admin,
+  manager,
+  header,
+  user,
+  customer
+
+} from "@/premissionRoute";
+
+interface MyUser {
+  id: number;
+  email: string;
+  permission: number;
+  name?: string | null;
+  image?: string | null;
+}
+
 export default withAuth(
   function middleware(req) {
     const { nextUrl } = req;
     const token = req.nextauth.token;
     const isLoggedIn = !!token;
-
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
@@ -40,6 +56,36 @@ export default withAuth(
 
     if (isPublicRoute) {
       return NextResponse.next();
+    }
+
+    let userData: MyUser | undefined;
+
+    if (token?.user) {
+      userData = token.user as MyUser;
+    } else {
+      console.log("Not logged in or no user in token");
+    }
+
+
+    // ============== Premission Path ==============
+    const permission = userData?.permission;
+    const roleAccessMap: Record<number, string[]> = {
+      1: admin,
+      2: manager,
+      3: header,
+      4: user,
+      5: customer,
+    };
+
+    if (!permission || !roleAccessMap[permission]) {
+      return NextResponse.redirect(new URL("/unauthorized", nextUrl));
+    }
+
+    const allowedPaths = roleAccessMap[permission];
+    const isAllowed = allowedPaths.some((path) => nextUrl.pathname.startsWith(path));
+
+    if (!isAllowed) {
+      return NextResponse.redirect(new URL("/unauthorized", nextUrl));
     }
 
     return NextResponse.next();

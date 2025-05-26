@@ -52,13 +52,6 @@ export const RegisterForm = () => {
     };
 
     return (
-        // <CardWrapper
-        //     headerLabel='ลงทะเบียนบัญชีใหม่'
-        //     leftButtonLabel='เข้าสู่ระบบ'
-        //     leftButtonHref='/login'
-        //     rightButtonHref=''
-        //     rightButtonLabel=''
-        // >
         <CardWrapper
             headerLabel={t('topic')}
             leftButtonLabel={t('leftButtonLabel')}
