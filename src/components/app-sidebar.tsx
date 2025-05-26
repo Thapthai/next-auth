@@ -50,139 +50,139 @@ const data = {
           icon: IconDashboard,
         },
         {
-          title: "บันทึกผ้าใหม่ส่งซัก",
+          title: "newLaundry",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกรับผ้าสกปก",
+          title: "dirtyLinen",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกรับผ้าสะอาด",
+          title: "cleanLinen",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกรับเข้าสต๊อก",
+          title: "stockIn",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกส่งเครมโรงซัก(โรงซัก)",
+          title: "laundryClaim",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกผ้าชำรุด(โรงพยาบาล)",
+          title: "damagedHospital",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกส่งผ้าแก้ไข",
+          title: "sendForFix",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกส่งผ้ารับกลับ",
+          title: "returnLaundry",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "Shelf Count",
+          title: "shelfCount",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "บันทึกรับการคืนผ้า(โรงพยาบาล)",
+          title: "hospitalReturn",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "สติ๊กเกอร์",
+          title: "sticker",
           url: "/dashboard",
           icon: IconDashboard,
         }, {
-          title: "คิดเป็นเปอร์เซ็นต์",
+          title: "calculatePercentage",
           url: "/dashboard",
           icon: IconDashboard,
         }, {
-          title: "แบบฟอร์มการนับสต๊อก",
+          title: "stockCountForm",
           url: "/dashboard",
           icon: IconDashboard,
         }, {
-          title: "บันทึกเอกสารผ้าสะอาด โรงซัก",
+          title: "cleanDoc",
           url: "/dashboard",
           icon: IconDashboard,
         }, {
-          title: "บันทึกเอกสารผ้าสกปรก โรงซัก",
+          title: "dirtyDoc",
           url: "/dashboard",
           icon: IconDashboard,
         },
       ]
     },
     {
-      title: "Create Status",
+      title: "createStatus",
       url: "/setting",
       icon: IconListDetails,
       sub: [
         {
-          title: "Par Department",
+          title: "parDepartment",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "เรียกเก็บผ้าสกปก",
+          title: "dirtyRequest",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "ย้ายแผนก",
+          title: "departmentTransfer",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "การร้องขออื่น ๆ",
+          title: "otherRequest",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "Chartroom",
+          title: "chartroom",
           url: "/dashboard",
           icon: IconDashboard,
         },
       ]
     },
     {
-      title: "คู่สัญญา",
+      title: "contract",
       url: "#",
       icon: IconChartBar,
       sub: [
         {
-          title: "คู่สัญญาโรงซัก",
+          title: "laundryContract",
           url: "/dashboard",
           icon: IconDashboard,
         },
         {
-          title: "คู่สัญญาโรงพยาบาล",
+          title: "hospitalContract",
           url: "/dashboard",
           icon: IconDashboard,
         },
       ]
     },
     {
-      title: "รายงาน",
+      title: "report",
       url: "#",
       icon: IconFolder,
     },
     {
-      title: "ระบบ",
+      title: "system",
       url: "#",
       icon: IconUsers,
     },
     {
-      title: "Catalog",
+      title: "catalog",
       url: "#",
       icon: IconUsers,
     },
