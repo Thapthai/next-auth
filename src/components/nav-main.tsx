@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
 } from "@/components/ui/sidebar";
 
 
@@ -98,10 +99,10 @@ export function NavMain({ navMenu }: PropsNavItem) {
                   )}
                 </SidebarMenuItem>
                 {hasSub && (
-                  <CollapsibleContent className="pl-6">
+                  <CollapsibleContent className="">
                     <SidebarMenu>
                       {item.sub?.map((subItem, subIdx) => (
-                        <SidebarMenuItem key={subIdx}>
+                        <SidebarMenuSub key={subIdx}>
                           <Link
                             href={subItem.url}
                             className="flex items-center gap-2 py-1 text-sm text-gray-700"
@@ -110,7 +111,7 @@ export function NavMain({ navMenu }: PropsNavItem) {
 
                             {t(subItem.title)}
                           </Link>
-                        </SidebarMenuItem>
+                        </SidebarMenuSub>
                       ))}
                     </SidebarMenu>
                   </CollapsibleContent>
@@ -119,6 +120,7 @@ export function NavMain({ navMenu }: PropsNavItem) {
             )
           })}
         </SidebarMenu>
+        
       </SidebarGroupContent>
     </SidebarGroup>
   )

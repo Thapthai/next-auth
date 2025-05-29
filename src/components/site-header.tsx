@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import LogoutButton from "./auth/logout-button";
 import Link from "next/link";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type SiteHeaderProps = {
   headerTopic: string;
@@ -35,6 +36,7 @@ export function SiteHeader({ headerTopic }: SiteHeaderProps) {
         />
         <h1 className="text-base font-medium">{headerTopic}</h1>
         <div className="ml-auto flex items-center gap-2">
+          <LanguageSwitcher />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="hidden sm:flex">

@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { permission } from "process";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -10,7 +9,6 @@ export const authOptions: NextAuthOptions = {
                 password: { type: "password", label: "Password", placeholder: "*****" },
                 token: { type: "text" }, // เพิ่มสำหรับ 2FA
                 user: { type: "text" },  // เพิ่มสำหรับ 2FA
-                permission: { type: "number" },
             },
             authorize: async (credentials: any) => {
                 const { email, password, token, user } = credentials;
@@ -64,9 +62,9 @@ export const authOptions: NextAuthOptions = {
         verifyRequest: "/verify",
     },
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+        maxAge: 24 * 60 * 60  // = 86400 วินาที (1 วัน)
     },
-
     callbacks: {
         async jwt({ token, user }) {
             if (user) {

@@ -4,7 +4,11 @@ export const admin = [
     "/header",
     "/user",
     "/customer",
-    '/dashboard'
+    "/general",
+    "/dashboard",
+    "/newLaundry",
+    "/cleanLinen",
+    "/dirtyLinen",
 ];
 
 export const manager = [
@@ -12,20 +16,24 @@ export const manager = [
     "/header",
     "/customer",
     "/user",
-    '/dashboard'
+    "/dashboard",
+    "/newLaundry",
 ];
 
 export const header = [
     "/header",
     "/user",
-    "/customer"
+    "/customer",
+    "/newLaundry",
 ];
 
 export const user = [
     "/user",
-    "/customer"
+    "/customer",
+    "/newLaundry",
 ];
 
 export const customer = [
-    "/customer"
+    "/customer",
+    "/newLaundry",
 ]

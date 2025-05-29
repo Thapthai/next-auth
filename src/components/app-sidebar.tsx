@@ -35,8 +35,6 @@ import {
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
-
-
 const data = {
   navMain: [
     {
@@ -51,17 +49,17 @@ const data = {
         },
         {
           title: "newLaundry",
-          url: "/dashboard",
+          url: "/newLaundry",
           icon: IconDashboard,
         },
         {
           title: "dirtyLinen",
-          url: "/dashboard",
+          url: "/dirtyLinen",
           icon: IconDashboard,
         },
         {
           title: "cleanLinen",
-          url: "/dashboard",
+          url: "/cleanLinen",
           icon: IconDashboard,
         },
         {
@@ -275,11 +273,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 
   const { data: session, status } = useSession();
-  const name = session?.user?.name ?? "Guest";
+  const name = session?.user?.name ?? null;
   const isLoading = status === "loading";
 
   const user = {
-    name: session?.user?.name ?? 'Guest',
+    name: session?.user?.name ?? '',
     email: session?.user?.email ?? '',
     avatar: "",
   }

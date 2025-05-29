@@ -55,5 +55,48 @@
         "content": "คุณไม่ได้รับอนุญาตให้เข้าถึงหน้าดังกล่าว",
         "backHome": "กลับไปหน้าหลัก",
         "redirecting": "กำลังเปลี่ยนเส้นทางใน {seconds} วินาที..."
+    },
+    "NotFound": {
+        "topic": "ไม่พบหน้านี้ (404) ",
+        "content": "ขออภัย เราไม่สามารถแสดงหน้านี้ได้",
+        "backHome": "กลับไปหน้าหลัก",
+        "redirecting": "กำลังเปลี่ยนเส้นทางใน {seconds} วินาที..."
+    },
+    "DashboardPage": {
+        "headerTopic": "แดชบอร์ด",
+        "tab1": "เบิกผ้าด่วน",
+        "tab2": "Per Department",
+        "tab3": "เรียกเก็บผ้าสกปก",
+        "tab4": "ย้ายแผนก",
+        "tab5": "การร้องขออื่น ๆ",
+        "tab6": "chartroom"
+    },
+    "NewLaundry": {
+        "headerTopic": "บันทึกผ้าใหม่ส่งซัก",
+        "tab1": "รับผ้าสะอาด",
+        "tab2": "ค้นหา",
+        "contentsTab1": {
+            "hospital": "โรงพยาบาล",
+            "foctory": "โรงซัก",
+            "doc_date": "วันที่เอกสาร",
+            "doc_no": "วันที่เอกสาร",
+            "user_record": "ผู้บันทึก",
+            "time_record": "วันที่บันทึก",
+            "total_weight": "น้ำหนักรวม"
+        }
+    },
+    "CleanLinen": {
+        "headerTopic": "บันทึกรับผ้าสะอาด",
+        "tab1": "รับผ้าสะอาด",
+        "tab2": "ค้นหา",
+        "contentsTab1": {
+            "hospital": "โรงพยาบาล",
+            "foctory": "โรงซัก",
+            "doc_date": "วันที่เอกสาร",
+            "doc_no": "วันที่เอกสาร",
+            "user_record": "ผู้บันทึก",
+            "time_record": "วันที่บันทึก",
+            "total_weight": "น้ำหนักรวม"
+        }
     }
 }

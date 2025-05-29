@@ -51,9 +51,52 @@
         "catalog": "Catalog"
     },
     "Unauthorized": {
-        "topic": "unauthorized",
+        "topic": "File Not Found (404)",
         "content": "You are not Unauthorized!",
         "backHome": "Back Home",
         "redirecting": "Redirecting in {seconds} seconds..."
+    },
+    "NotFound": {
+        "topic": "unauthorized",
+        "content": "Sorry, We cannot display this page!",
+        "backHome": "Back Home",
+        "redirecting": "Redirecting in {seconds} seconds..."
+    },
+    "DashboardPage": {
+        "headerTopic": "Dashboard",
+        "tab1": "Urgent Linen Request",
+        "tab2": "Per Department",
+        "tab3": "Dirty Linen Collection",
+        "tab4": "Department Transfer",
+        "tab5": "Other Requests",
+        "tab6": "Chart Room"
+    },
+    "NewLaundry": {
+        "headerTopic": "Clean Linen Receipt",
+        "tab1": "Clean Linen Receipt",
+        "tab2": "Search",
+        "contentsTab1": {
+            "hospital": "Hospital",
+            "foctory": "Laundry Factory",
+            "doc_date": "Document Date",
+            "doc_no": "Document Number",
+            "user_record": "Recorded By",
+            "time_record": "Recorded Time",
+            "total_weight": "Total Weight"
+        }
+    },
+    "CleanLinen": {
+        "headerTopic": "Clean Linen Receipt",
+        "tab1": "Clean Linen Receipt",
+        "tab2": "Search",
+        "contentsTab1": {
+            "hospital": "Hospital",
+            "foctory": "Laundry Factory",
+            "doc_date": "Document Date",
+            "doc_no": "Document Number",
+            "user_record": "Recorded By",
+            "time_record": "Recorded Time",
+            "total_weight": "Total Weight"
+        }
     }
 }
