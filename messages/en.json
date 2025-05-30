@@ -62,6 +62,22 @@
         "backHome": "Back Home",
         "redirecting": "Redirecting in {seconds} seconds..."
     },
+    "SettingPage": {
+        "headerTopic": "Setting Profile",
+        "name": "Name",
+        "email": "Email",
+        "password": "New Password (if you want to change)",
+        "enable2fa": "Enable Two-Factor",
+        "showQrCode": "Show QR Code",
+        "scanDes": "Scan the QR code with the Google Authenticator app",
+        "Button": "Save Change"
+    },
+    "2fa": {
+        "title": "Enter 2FA Code",
+        "placeholder": "6 Digit Code",
+        "button": "Confirm",
+        "buttonChecking": "Checking..."
+    },
     "DashboardPage": {
         "headerTopic": "Dashboard",
         "tab1": "Urgent Linen Request",

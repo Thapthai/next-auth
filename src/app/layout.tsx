@@ -5,7 +5,6 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-// import { usePathname } from 'next/navigation';
 
 export default async function RootLayout({
   children

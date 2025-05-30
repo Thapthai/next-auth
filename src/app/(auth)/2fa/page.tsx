@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { signIn } from 'next-auth/react';
+import { useTranslations } from "next-intl";
 
 export default function TwoFAPage() {
     const router = useRouter();
@@ -15,6 +16,8 @@ export default function TwoFAPage() {
 
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const t = useTranslations('2fa');
+
 
     if (userId == null || twoFAToken == null) {
         router.push('login');
@@ -60,14 +63,14 @@ export default function TwoFAPage() {
 
     return (
         <div className="max-w-sm mx-auto mt-20 space-y-4">
-            <h1 className="text-xl font-bold">กรอกรหัส 2FA</h1>
+            <h1 className="text-xl font-bold">{t('title')}</h1>
             <Input
-                placeholder="รหัส 6 หลัก"
+                placeholder={t('placeholder')}
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
             />
             <Button onClick={handleVerify} disabled={loading}>
-                {loading ? "กำลังตรวจสอบ..." : "ยืนยัน"}
+                {loading ? `${t('buttonChecking')}` : `${t('button')}`}
             </Button>
         </div>
     );

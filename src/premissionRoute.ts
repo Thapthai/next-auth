@@ -1,4 +1,6 @@
 export const admin = [
+    "/setting",
+
     "/admin",
     "/manager",
     "/header",
@@ -12,6 +14,7 @@ export const admin = [
 ];
 
 export const manager = [
+    "/setting",
     "/manager",
     "/header",
     "/customer",
@@ -21,6 +24,8 @@ export const manager = [
 ];
 
 export const header = [
+    "/setting",
+
     "/header",
     "/user",
     "/customer",

@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
                             }));
                         }
 
-                        if (data.status === 'LOGIN_2FA_SUCCESSFUL' || data.status === 'LOGIN_NORMAL_SUCCESSFUL') {
+                        if (data.status === 'LOGIN_2FA_SUCCESSFUL' || data.status === 'LOGIN_NORMAL_SUCCESSFUL') {            
                             return data.user;
                         }
 

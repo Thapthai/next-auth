@@ -60,12 +60,12 @@ export const RegisterForm = () => {
             rightButtonHref=''
         >
             <div className="p-8">
+
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <LanguageSwitcher />
-
-
                         <div className="space-y-4">
+                            <LanguageSwitcher />
+
                             <FormField control={form.control}
                                 name='name'
                                 render={({ field }) => (

@@ -62,6 +62,22 @@
         "backHome": "กลับไปหน้าหลัก",
         "redirecting": "กำลังเปลี่ยนเส้นทางใน {seconds} วินาที..."
     },
+    "SettingPage": {
+        "headerTopic": "หน้าตั้งค่าโปรไฟล์",
+        "name": "ชื่อผู้ใช้",
+        "email": "อีเมล์",
+        "password": "รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)",
+        "enable2fa": "เปิดใช้งาน Two-Factor",
+        "showQrCode": "แสดง QR Code",
+        "scanDes": "สแกน QR ด้วยแอป Google Authenticator",
+        "Button": "บันทึกการเปลี่ยนแปลง"
+    },
+    "2fa": {
+        "title": "กรอกรหัส 2FA",
+        "placeholder": "รหัส 6 หลัก",
+        "button": "ยืนยัน",
+        "buttonChecking": "กำลังตรวจสอบ..."
+    },
     "DashboardPage": {
         "headerTopic": "แดชบอร์ด",
         "tab1": "เบิกผ้าด่วน",

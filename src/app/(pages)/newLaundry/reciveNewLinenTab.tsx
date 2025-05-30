@@ -42,16 +42,16 @@ export default function ReciveNewLinenTab() {
 
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                                <div className="p-1">
+                                <div className="p-0">
                                     <Label htmlFor="name">{t('contentsTab1.hospital')}</Label>
                                     <Popover open={open} onOpenChange={setOpen}>
                                         <PopoverTrigger asChild>
-                                            <Button variant="outline" role="combobox" className="w-full justify-between">
+                                            <Button variant="outline" role="combobox" className="w-full justify-between my-1">
                                                 {selected ? options.find(opt => opt.value === selected)?.label : "Select fruit"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="p-0">
+                                        <PopoverContent>
                                             <Command>
                                                 <CommandInput placeholder="Search fruits..." />
                                                 <CommandList>
