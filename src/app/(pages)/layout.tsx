@@ -31,8 +31,8 @@ export default async function PageLayout({
         >
           <AppSidebar variant="inset" />
           <SidebarInset>
-            <SocketAlert />
 
+            <SocketAlert /> 
             {children}
 
           </SidebarInset>
