@@ -7,7 +7,10 @@ export const publicRoutes = [
     "/forget-password",
     "/reset-password",
     '/2fa',
-    "/unauthorized"
+    "/unauthorized",
+    '/sounds/levelup.mp3',
+    "/sounds/flipdish-ringer.mp3"
+
 ];
 
 export const authRoutes = [

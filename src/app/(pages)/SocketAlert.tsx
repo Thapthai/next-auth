@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { PopcornIcon } from "lucide-react";
 import { initSocket } from "@/lib/socket";
@@ -13,16 +13,34 @@ export function SocketAlert() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
+  // ✅ เตรียม audio ref
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+   
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/levelup.mp3");
+
+    audioRef.current.addEventListener("loadeddata", () => {
+      console.log("🔊 เสียงโหลดสำเร็จ:", audioRef.current?.src);
+    });
+
+    audioRef.current.addEventListener("error", () => {
+      console.error("❌ โหลดเสียงไม่สำเร็จ");
+    });
+  }, []);
 
   useEffect(() => {
     // if (typeof userId !== "number") return;
     if (!userId) return;
 
-
     const socket = initSocket(userId.toString());
     socket.on('new-send-notification-user', (data) => {
       setMessage(data.message || 'คุณมีแจ้งเตือนใหม่');
       setProgress(100);
+      // ✅ เล่นเสียง
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(console.warn);
+      }
 
       const interval = setInterval(() => {
         setProgress((prev) => {
@@ -42,6 +60,7 @@ export function SocketAlert() {
   }, [userId]);
 
   if (!message) return null;
+
 
   return (
     <div className="fixed top-4 right-4 w-[300px] z-50">
