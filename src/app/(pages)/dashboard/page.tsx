@@ -36,6 +36,7 @@ export default function Select2LikeCombobox() {
   ];
 
   const [selectedTab, setSelectedTab] = useState(tabItems[0].value);
+  
   return (
     <div>
       <SiteHeader headerTopic={t('headerTopic')} />

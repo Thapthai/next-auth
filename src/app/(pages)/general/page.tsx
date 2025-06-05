@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTranslations } from "next-intl";
 
 
-export default function GeranalPage() {
+export default function Page() {
     const t = useTranslations('CleanLinen');
 
     return (

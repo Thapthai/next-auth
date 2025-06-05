@@ -1,6 +1,5 @@
 export const admin = [
     "/setting",
-
     "/admin",
     "/manager",
     "/header",
@@ -11,6 +10,10 @@ export const admin = [
     "/newLaundry",
     "/cleanLinen",
     "/dirtyLinen",
+    "/laundryFactory",
+    "/laundryFactory/laundrySetting",
+
+
 ];
 
 export const manager = [

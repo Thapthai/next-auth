@@ -48,7 +48,9 @@
         "hospitalContract": "Hospital Contracts",
         "report": "Reports",
         "system": "System",
-        "catalog": "Catalog"
+        "catalog": "Catalog",
+        "laundryFactory": "Laundry Factory",
+        "laundrySetting": "Laundry Setting"
     },
     "Unauthorized": {
         "topic": "File Not Found (404)",

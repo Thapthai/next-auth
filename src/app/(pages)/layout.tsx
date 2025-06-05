@@ -2,6 +2,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { getMessages, getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { SocketAlert } from "./SocketAlert";
 
 export default async function PageLayout({
   children
@@ -30,10 +31,12 @@ export default async function PageLayout({
         >
           <AppSidebar variant="inset" />
           <SidebarInset>
-            
+            <SocketAlert />
+
             {children}
 
           </SidebarInset>
+
         </SidebarProvider>
       </body>
 

@@ -48,7 +48,9 @@
         "hospitalContract": "คู่สัญญาโรงพยาบาล",
         "report": "รายงาน",
         "system": "ระบบ",
-        "catalog": "แคตตาล็อก"
+        "catalog": "แคตตาล็อก",
+        "laundryFactory": "การบริารโรงซัก",
+        "laundrySetting": "การตั้งค่าโรงซัก"
     },
     "Unauthorized": {
         "topic": "ไม่ได้รับอนุญาต",

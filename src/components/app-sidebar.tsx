@@ -174,6 +174,19 @@ const data = {
       url: "#",
       icon: IconFolder,
     },
+
+    {
+      title: "laundryFactory",
+      url: "/laundryFactory",
+      icon: IconChartBar,
+      sub: [
+        {
+          title: "laundrySetting",
+          url: "/laundryFactory/laundrySetting",
+          icon: IconDashboard,
+        }
+      ]
+    },
     {
       title: "system",
       url: "#",
