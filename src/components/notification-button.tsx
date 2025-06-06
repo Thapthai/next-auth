@@ -15,89 +15,102 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { initSocket } from "@/lib/socket";
 
-
 export function NotificationButton() {
+    const [notifications, setNotifications] = useState<any[]>([]);
     const [count, setCount] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [notifications, setNotifications] = useState<any[]>([]);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const take = 3;
+
     const { data: session } = useSession();
     const userId = session?.user?.id;
     const token = session?.user?.access_token;
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            if (!userId || !token) return;
-            setLoading(true);
+    const fetchNotifications = async (page = 0, append = false) => {
+        if (!userId || !token) return;
 
-            try {
-                const res = await fetch(
-                    `http://localhost:3000/notifications/user-notification/${userId}`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                if (res.ok) {
-                    const data = await res.json();
-                    setCount(data.count ?? 0);
-                    setNotifications(data.notifications ?? []);
+        setLoading(true);
+        try {
+            const res = await fetch(
+                `http://localhost:3000/notifications/user-notification/${userId}?skip=${page * take}&take=${take}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
-            } catch (err) {
-                console.error("Error fetching notifications", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+            );
 
+            if (res.ok) {
+                const data = await res.json();
+                if (append) {
+                    setNotifications((prev) => [...prev, ...data.notifications]);
+                } else {
+                    setNotifications(data.notifications);
+                }
+                // setCount(data.total ?? data.count ?? 0);
+                setCount(data.unreadCount ?? 0);
+                setHasMore((page + 1) * take < (data.total ?? 0));
+            }
+        } catch (err) {
+            console.error("Error fetching notifications", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSeeMore = () => {
+        const nextPage = page + 1;
+        fetchNotifications(nextPage, true);
+        setPage(nextPage);
+    };
+
+    const handleReadNotification = async (notiId: number) => {
+        if (!token) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/notifications/user-notification/${notiId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ is_read: true }),
+            });
+
+            if (res.ok) {
+                setNotifications((prev) =>
+                    prev.map((n) =>
+                        n.id === notiId ? { ...n, is_read: true } : n
+                    )
+                );
+                setCount((prev) => Math.max(0, prev - 1));
+            }
+        } catch (err) {
+            console.error("Failed to mark as read", err);
+        }
+    };
+
+
+    useEffect(() => {
         fetchNotifications();
     }, [userId, token]);
-
-
 
     useEffect(() => {
         if (!userId || !token) return;
 
         const socket = initSocket(userId.toString());
 
-        const fetchNotifications = async () => {
-            setLoading(true);
-            try {
-                const res = await fetch(
-                    `http://localhost:3000/notifications/user-notification/${userId}`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                if (res.ok) {
-                    const data = await res.json();
-                    setCount(data.count ?? 0);
-                    setNotifications(data.notifications ?? []);
-                }
-            } catch (err) {
-                console.error("Error fetching notifications", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        socket.on('new-send-notification-user', () => {
-            fetchNotifications();
+        socket.on("new-send-notification-user", () => {
+            setPage(0);
+            fetchNotifications(0, false); // โหลดใหม่จากหน้าแรก
         });
-
-        fetchNotifications();
 
         return () => {
             socket.disconnect();
         };
     }, [userId, token]);
-
 
     return (
         <DropdownMenu>
@@ -124,22 +137,46 @@ export function NotificationButton() {
                 </div>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-65" align="end">
+            <DropdownMenuContent className="w-65 max-h-[400px] overflow-y-auto" align="end">
                 <DropdownMenuLabel>แจ้งเตือนของคุณ</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {notifications.length === 0 ? (
                     <DropdownMenuItem disabled>ไม่มีแจ้งเตือน</DropdownMenuItem>
                 ) : (
-                    notifications.map((noti, index) => (
-                        <DropdownMenuItem key={index} className="whitespace-normal text-sm">
-                            <div>
-                                <div className="font-semibold">{noti.title}</div>
-                                <div className="text-muted-foreground">{noti.message}</div>
-                            </div>
-                        </DropdownMenuItem>
-                    ))
+                    <>
+
+                        {notifications.map((noti, index) => (
+                            <DropdownMenuItem
+                                key={index}
+                                className="whitespace-normal text-sm relative pr-4 cursor-pointer"
+                                onClick={() => handleReadNotification(noti.id)}
+                            >
+                                <div className={`${!noti.is_read ? "font-semibold" : ""}`}>
+                                    <div className="flex items-center gap-2">
+                                        {!noti.is_read && (
+                                            <span className="w-2 h-2 bg-red-500 rounded-full inline-block"></span>
+                                        )}
+                                        <span>{noti.title}</span>
+                                    </div>
+                                    <div className="text-muted-foreground text-xs">{noti.message}</div>
+                                </div>
+                            </DropdownMenuItem>
+                        ))}
+
+                        {hasMore && (
+                            <DropdownMenuItem
+                                onSelect={(e) => {
+                                    e.preventDefault(); // ป้องกัน Dropdown ปิด
+                                    handleSeeMore();
+                                }}
+                            >
+                                <div className="w-full text-left text-blue-500 text-sm">ดูเพิ่มเติม...</div>
+                            </DropdownMenuItem>
+                        )}
+                    </>
                 )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
 }
+

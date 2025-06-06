@@ -13,23 +13,13 @@ export function SocketAlert() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
-  // ✅ เตรียม audio ref
   const audioRef = useRef<HTMLAudioElement | null>(null);
-   
+
   useEffect(() => {
     audioRef.current = new Audio("/sounds/levelup.mp3");
-
-    audioRef.current.addEventListener("loadeddata", () => {
-      console.log("🔊 เสียงโหลดสำเร็จ:", audioRef.current?.src);
-    });
-
-    audioRef.current.addEventListener("error", () => {
-      console.error("❌ โหลดเสียงไม่สำเร็จ");
-    });
   }, []);
 
   useEffect(() => {
-    // if (typeof userId !== "number") return;
     if (!userId) return;
 
     const socket = initSocket(userId.toString());
