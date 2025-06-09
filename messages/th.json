@@ -8,7 +8,14 @@
         "password": "รหัสผ่าน",
         "leftButtonLabel": "ลงทะเบียนบัญชีใหม่",
         "rightButtonLabel": "ลืมรหัสผ่าน ?",
-        "button": "เข้าสู่ระบบ"
+        "button": "เข้าสู่ระบบ",
+        "enailNotVerify": "อีเมล์ยังไม่ได้ยืนยัน กรุณายืนยัน",
+        "emailPasswordIncorrect": "อีเมล์ หรือ รหัสผ่าน ไม่ถูกต้อง",
+        "loginFailed": "ไม่สามารถเข้าสู่ระบบได้",
+        "close": "ปิด",
+        "loggingIn": "กำลังเข้าสู่ระบบ...",
+        "loginSuccess": "เข้าสู่ระบบสำเร็จ",
+        "redirectingToDashboard": "กำลังพาไปยังแดชบอร์ด..."
     },
     "RegisterPage": {
         "topic": "สมัครสมาชิก",
@@ -16,7 +23,15 @@
         "email": "อีเมล์",
         "password": "รหัสผ่าน",
         "leftButtonLabel": "เข้าสู่ระบบ",
-        "button": "สมัครสมาชิก"
+        "button": "สมัครสมาชิก",
+        "sendingEmail": "กำลังส่ง Email ..."
+    },
+    "ForgetPasswordPage": {
+        "topic": "ลืมรหัสผ่าน",
+        "email": "อีเมล์",
+        "sendButton": "Send",
+        "login": "เข้าสู่ระบบ",
+        "register": "สมัครสมาชิก"
     },
     "SideMenu": {
         "headerTopic": "เมนูหลัก",
@@ -51,6 +66,11 @@
         "catalog": "แคตตาล็อก",
         "laundryFactory": "การบริารโรงซัก",
         "laundrySetting": "การตั้งค่าโรงซัก"
+    },
+    "SiteHeader": {
+        "myProfile": "โปรไฟล์",
+        "settings": "ตั้งค่า",
+        "logoutButton": "ออกจากระบบ"
     },
     "Unauthorized": {
         "topic": "ไม่ได้รับอนุญาต",

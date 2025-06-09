@@ -14,9 +14,18 @@ export function SocketAlert() {
   const userId = session?.user?.id;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [canPlaySound, setCanPlaySound] = useState(false);
 
   useEffect(() => {
-    audioRef.current = new Audio("/sounds/levelup.mp3");
+    const handleInteraction = () => {
+      audioRef.current = new Audio("/sounds/levelup.mp3");
+      setCanPlaySound(true);
+      window.removeEventListener('click', handleInteraction);
+    };
+
+    window.addEventListener('click', handleInteraction);
+
+    return () => window.removeEventListener('click', handleInteraction);
   }, []);
 
   useEffect(() => {
@@ -26,8 +35,9 @@ export function SocketAlert() {
     socket.on('new-send-notification-user', (data) => {
       setMessage(data.message || 'คุณมีแจ้งเตือนใหม่');
       setProgress(100);
+
       // ✅ เล่นเสียง
-      if (audioRef.current) {
+      if (canPlaySound && audioRef.current) {
         audioRef.current.currentTime = 0;
         audioRef.current.play().catch(console.warn);
       }

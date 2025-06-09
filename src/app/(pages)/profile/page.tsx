@@ -10,8 +10,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { SiteHeader } from "@/components/site-header";
-
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -20,6 +18,8 @@ import { UserSettingsSchema } from "@/schemas";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { SiteHeader } from "@/components/site-header";
+
 
 export default function SettingsPage() {
     const { data: session } = useSession();

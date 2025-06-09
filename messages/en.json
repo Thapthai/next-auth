@@ -8,7 +8,14 @@
         "password": "password",
         "leftButtonLabel": "Register",
         "rightButtonLabel": "Forget Password ?",
-        "button": "Log In"
+        "button": "Log In",
+        "enailNotVerify": "Email not Verified Please Verify",
+        "emailPasswordIncorrect": "Email or Password Incorrect",
+        "loginFailed": "login Failed",
+        "close": "close",
+        "loggingIn": "Logging in...",
+        "loginSuccess": "Login Success",
+        "redirectingToDashboard": "Redirecting To Dashboard..."
     },
     "RegisterPage": {
         "topic": "Register Page",
@@ -17,6 +24,14 @@
         "password": "password",
         "leftButtonLabel": "Login",
         "button": "Register"
+    },
+    "ForgetPasswordPage": {
+        "topic": "Forget Password",
+        "email": "Email",
+        "sendButton": "Send",
+        "login": "Login",
+        "register": "Register",
+        "sendingEmail": "Sending Email ..."
     },
     "SideMenu": {
         "headerTopic": "Main Menu",
@@ -51,6 +66,11 @@
         "catalog": "Catalog",
         "laundryFactory": "Laundry Factory",
         "laundrySetting": "Laundry Setting"
+    },
+    "SiteHeader": {
+        "myProfile": "My Profile",
+        "settings": "Settings",
+        "logoutButton": "Log out"
     },
     "Unauthorized": {
         "topic": "File Not Found (404)",

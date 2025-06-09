@@ -16,30 +16,22 @@ export default async function PageLayout({
   if (!messages) notFound();
 
   return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
 
-    <html lang={locale}>
+        <SocketAlert />
+        {children}
 
-      <body>
+      </SidebarInset>
 
-        <SidebarProvider
-          style={
-            {
-              "--sidebar-width": "calc(var(--spacing) * 72)",
-              "--header-height": "calc(var(--spacing) * 12)",
-            } as React.CSSProperties
-          }
-        >
-          <AppSidebar variant="inset" />
-          <SidebarInset>
-
-            <SocketAlert /> 
-            {children}
-
-          </SidebarInset>
-
-        </SidebarProvider>
-      </body>
-
-    </html>
+    </SidebarProvider>
   );
 }

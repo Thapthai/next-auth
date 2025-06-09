@@ -2,15 +2,17 @@ export const publicRoutes = [
     "/",
     "/login",
     "/register",
-    "email-verification",
+    "/email-verification",
+    "/auth/verify-email",
     "/waiting-verify",
+    "/profile",
     "/forget-password",
     "/reset-password",
     '/2fa',
     "/unauthorized",
     '/sounds/levelup.mp3',
-    "/sounds/flipdish-ringer.mp3"
-
+    "/sounds/flipdish-ringer.mp3",
+    "/verify-email-successful"
 ];
 
 export const authRoutes = [

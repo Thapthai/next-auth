@@ -19,8 +19,14 @@ import { toast } from 'sonner'; // เพิ่มตรงนี้ด้วย
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Toaster } from '../ui/sonner';
+import { LanguageSwitcher } from '../LanguageSwitcher';
+import { useTranslations } from 'next-intl';
+
+
 
 export const ForgetPasswordForm = () => {
+    const t = useTranslations('ForgetPasswordPage');
+
     const form = useForm<z.infer<typeof ForgetPasswordSchema>>({
         resolver: zodResolver(ForgetPasswordSchema),
         defaultValues: {
@@ -59,10 +65,10 @@ export const ForgetPasswordForm = () => {
     return (
 
         <CardWrapper
-            headerLabel='ลืมรหัสผ่าน'
-            leftButtonLabel='เข้าสู่ระบบ'
+            headerLabel={t('topic')}
+            leftButtonLabel={t('login')}
             leftButtonHref='/login'
-            rightButtonLabel='สมัครสมาชิก'
+            rightButtonLabel={t('register')}
             rightButtonHref='/register'
 
         >
@@ -71,11 +77,13 @@ export const ForgetPasswordForm = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)}>
 
                         <div className="space-y-4">
+                            <LanguageSwitcher />
+
                             <FormField control={form.control}
                                 name='email'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>{t('email')}</FormLabel>
                                         <FormControl>
                                             <Input {...field}
                                                 type='email'
@@ -90,15 +98,14 @@ export const ForgetPasswordForm = () => {
 
                         <Button className='w-full mt-3 text-neutral-50 text-shadow-amber-50'
                             type='submit' disabled={loading} >
-
-                            {loading ? 'กำลังส่ง Email ...' : 'ส่ง'}
+                            {loading ? t('sendingEmail') : t('sendButton')}
                         </Button>
                         <Toaster />
                     </form>
                 </Form>
             </div>
         </CardWrapper>
-        
+
 
     )
 }

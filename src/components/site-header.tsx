@@ -15,6 +15,7 @@ import {
 import LogoutButton from "./auth/logout-button";
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 type SiteHeaderProps = {
   headerTopic: string;
@@ -25,6 +26,8 @@ export function SiteHeader({ headerTopic }: SiteHeaderProps) {
 
   const isLoading = status === "loading";
   const name = session?.user?.name ?? "Guest";
+
+  const t = useTranslations("SiteHeader");
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -47,15 +50,15 @@ export function SiteHeader({ headerTopic }: SiteHeaderProps) {
               <DropdownMenuLabel className="font-medium">{name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => window.location.href = "/profile"}>
-                My Profile
+                {t('myProfile')}
               </DropdownMenuItem>
               <DropdownMenuItem  >
-                <Link href="/setting">
-                  Settings
+                <Link href="#">
+                  {t('settings')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <LogoutButton />
+              <LogoutButton  />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
