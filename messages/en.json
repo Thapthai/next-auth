@@ -136,5 +136,29 @@
             "time_record": "Recorded Time",
             "total_weight": "Total Weight"
         }
+    },
+    "DirtyLinen": {
+        "headerTopic": "Dirty Linen Receipt",
+        "tab1": "Search",
+        "tab2": "Dirty Linen Receipt",
+        "contentsTab1": {
+            "cardDescription": "Search and view dirty records.",
+            "Keyword": "Keyword",
+            "doc_date": "Document Date",
+            "doc_no": "Document Number",
+            "user_record": "Recorded By",
+            "time_record": "Recorded Time",
+            "total_weight": "Total Weight"
+        },
+        "contentsTab2": {
+            "title": "Create Document",
+            "cardDescription": "Create dirty records Document.",
+            "Keyword": "Keyword",
+            "doc_date": "Document Date",
+            "doc_no": "Document Number",
+            "user_record": "Recorded By",
+            "time_record": "Recorded Time",
+            "total_weight": "Total Weight"
+        }
     }
 }

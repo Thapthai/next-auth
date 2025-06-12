@@ -136,5 +136,29 @@
             "time_record": "วันที่บันทึก",
             "total_weight": "น้ำหนักรวม"
         }
+    },
+    "DirtyLinen": {
+        "headerTopic": "บันทึกรับผ้าสกปรก",
+        "tab1": "ค้นหา",
+        "tab2": "รับผ้าสกปรก",
+        "contentsTab1": {
+            "cardDescription": "ค้นหา และ ดูข้อมูลการบันทึกผ้าสกปรก",
+            "Keyword": "คำค้นหา",
+            "doc_date": "วันที่เอกสาร",
+            "doc_no": "วันที่เอกสาร",
+            "user_record": "ผู้บันทึก",
+            "time_record": "วันที่บันทึก",
+            "total_weight": "น้ำหนักรวม"
+        },
+        "contentsTab2": {
+            "title": "สร้างเอกสาร",
+            "cardDescription": "เพิ่มเอกสารบันทึกผ้าสกปรก",
+            "Keyword": "คำค้นหา",
+            "doc_date": "วันที่เอกสาร",
+            "doc_no": "วันที่เอกสาร",
+            "user_record": "ผู้บันทึก",
+            "time_record": "วันที่บันทึก",
+            "total_weight": "น้ำหนักรวม"
+        }
     }
 }
