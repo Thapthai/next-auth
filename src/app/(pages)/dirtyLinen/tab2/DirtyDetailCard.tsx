@@ -18,16 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 
-// export default function DirtyDetailCard({
-//     formData,
-//     onBack,
-//     onNext,
-// }: {
-//     formData: any;
-//     onBack?: (data?: any) => void;
-//     onNext: (detailData: any) => void;
-// }) {
-
 export default function DirtyDetailCard({
     formData,
     onBack,
@@ -42,7 +32,6 @@ export default function DirtyDetailCard({
     const [items, setItems] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [showNewItemModal, setShowNewItemModal] = useState(false);
     const [newItemName, setNewItemName] = useState("");
 
     useEffect(() => {
@@ -57,7 +46,7 @@ export default function DirtyDetailCard({
             setItems([]);
             return;
         }
-        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}`)
+        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}?with_out_id=2`)
             .then(res => res.json())
             .then(setItems)
             .catch(console.error);
@@ -69,24 +58,24 @@ export default function DirtyDetailCard({
             item.name_th?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-    const handleCreateNewItem = async () => {
-        const res = await fetch("http://localhost:3000/items", {
+    const handleCreateNewUnregisteredItem = async () => {
+        const res = await fetch("http://localhost:3000/unregistered-items", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name_th: newItemName,
-                department_id: parseInt(selectedDepartment),
-                material_id: 1,
-                saleoffice_id: 2,
-                item_category_id: 4,
-                stock_location_id: 5,
+                item_id: 2,
+                type_linen: "new_linen",
+                name: searchTerm,
+                type_linen_id: 0,
                 status: true,
             }),
         });
-        const newItem = await res.json();
-        setItems(prev => [...prev, newItem]);
-        setSelectedItem(newItem);
-        setShowNewItemModal(false);
+        const newUnregisteredItem = await res.json();
+        setItems(prev => [...prev, newUnregisteredItem]);
+        setSelectedItem({
+            id: newUnregisteredItem.item_id,
+            name_th: newUnregisteredItem.name
+        });
         setSearchTerm("");
     };
 
@@ -136,7 +125,7 @@ export default function DirtyDetailCard({
                             {filteredItems.length === 0 && (
                                 <div
                                     className="p-2 text-blue-600 cursor-pointer hover:underline"
-                                    onClick={() => setShowNewItemModal(true)}
+                                    onClick={handleCreateNewUnregisteredItem}
                                 >
                                     + เพิ่มสินค้าใหม่ "{searchTerm}"
                                 </div>
@@ -175,27 +164,6 @@ export default function DirtyDetailCard({
                     ถัดไป
                 </Button>
             </CardFooter>
-
-            {/* Modal เพิ่มสินค้าใหม่ */}
-            <Dialog open={showNewItemModal} onOpenChange={setShowNewItemModal}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>เพิ่มสินค้าใหม่</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2">
-                        <Label>ชื่อสินค้า</Label>
-                        <Input value={newItemName} onChange={(e) => setNewItemName(e.target.value)} />
-                    </div>
-                    <DialogFooter className="mt-4">
-                        <Button variant="outline" onClick={() => setShowNewItemModal(false)}>
-                            ยกเลิก
-                        </Button>
-                        <Button onClick={handleCreateNewItem} disabled={!newItemName}>
-                            เพิ่มสินค้า
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </Card>
     );
 }

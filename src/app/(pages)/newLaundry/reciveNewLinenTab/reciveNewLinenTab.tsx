@@ -28,8 +28,7 @@ export default function ReciveNewLinenTab() {
     const [items, setItems] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [showNewItemModal, setShowNewItemModal] = useState(false);
-    const [newItemName, setNewItemName] = useState("");
+
 
     useEffect(() => {
         fetch("http://localhost:3000/departments")
@@ -43,7 +42,7 @@ export default function ReciveNewLinenTab() {
             setItems([]);
             return;
         }
-        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}`)
+        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}?with_out_id=2`)
             .then(res => res.json())
             .then(setItems)
             .catch(console.error);
@@ -72,7 +71,29 @@ export default function ReciveNewLinenTab() {
         setEntries((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleCreateNewDirty = async () => {
+    const handleCreateNewUnregisteredItem = async () => {
+        const res = await fetch("http://localhost:3000/unregistered-items", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                item_id: 2,
+                type_linen: "new_linen",
+                name: searchTerm,
+                type_linen_id: 0,
+                status: true,
+            }),
+        });
+        const newUnregisteredItem = await res.json();
+        setItems(prev => [...prev, newUnregisteredItem]);
+        setSelectedItem({
+            id: newUnregisteredItem.item_id,
+            name_th: newUnregisteredItem.name
+        });
+        setSearchTerm("");
+    };
+
+
+    const handleCreateNewNewLinen = async () => {
         try {
             const newLinenRes = await fetch("http://localhost:3000/new-linens", {
                 method: "POST",
@@ -99,6 +120,7 @@ export default function ReciveNewLinenTab() {
                             qty: parseFloat(entry.qty),
                             receive_qty: parseFloat(entry.qty),
                             weight: parseFloat(entry.weight),
+                            description: selectedItem.name_th,
                             is_cancel: false,
                             status: true,
                         }),
@@ -193,7 +215,7 @@ export default function ReciveNewLinenTab() {
                                 {filteredItems.length === 0 && (
                                     <div
                                         className="p-2 text-blue-600 cursor-pointer hover:underline"
-                                        onClick={() => setShowNewItemModal(true)}
+                                        onClick={handleCreateNewUnregisteredItem}
                                     >
                                         + เพิ่มสินค้าใหม่ "{searchTerm}"
                                     </div>
@@ -265,7 +287,7 @@ export default function ReciveNewLinenTab() {
                 )}
 
                 <CardFooter className="flex justify-end">
-                    <Button onClick={handleCreateNewDirty}>บันทึกทั้งหมดลงฐานข้อมูล</Button>
+                    <Button onClick={handleCreateNewNewLinen}>บันทึกทั้งหมดลงฐานข้อมูล</Button>
                 </CardFooter>
             </Card >
 
