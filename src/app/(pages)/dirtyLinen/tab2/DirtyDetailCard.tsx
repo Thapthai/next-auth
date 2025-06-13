@@ -18,13 +18,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 
+// export default function DirtyDetailCard({
+//     formData,
+//     onBack,
+//     onNext,
+// }: {
+//     formData: any;
+//     onBack?: (data?: any) => void;
+//     onNext: (detailData: any) => void;
+// }) {
+
 export default function DirtyDetailCard({
     formData,
     onBack,
     onNext,
 }: {
     formData: any;
-    onBack: () => void;
+    onBack: (data: any) => void; // ไม่ใช่ optional แล้ว
     onNext: (detailData: any) => void;
 }) {
     const [departments, setDepartments] = useState([]);
@@ -141,12 +151,17 @@ export default function DirtyDetailCard({
                 )}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={onBack}>
+                <Button
+                    variant="outline"
+                    onClick={() => {
+                        onBack({
+                            factory_id: formData.factory_id,
+                            weighing_round: formData.weighing_round,
+                        });
+                    }}
+                >
                     ← กลับ
                 </Button>
-                {/* <Button onClick={handleCreateNewDirty} disabled={!selectedDepartment || !selectedItem}>
-                    บันทึก
-                </Button> */}
 
                 <Button
                     disabled={!selectedDepartment || !selectedItem}

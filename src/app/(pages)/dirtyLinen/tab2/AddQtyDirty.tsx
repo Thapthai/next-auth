@@ -61,7 +61,8 @@ export default function AddQtyDirty({ data }: { data: any }) {
 
             const detailResults = await Promise.all(dirtyDetailResponses.map((res) => res.json()));
             console.log("เพิ่มสำเร็จ", detailResults);
-            alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+            // alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+            window.location.reload(); // ✅ รีโหลดหน้าเว็บ
         } catch (err) {
             console.error("❌ เกิดข้อผิดพลาด:", err);
             alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -73,35 +74,43 @@ export default function AddQtyDirty({ data }: { data: any }) {
             <CardHeader>
                 <CardTitle>เพิ่มรายการน้ำหนักและจำนวน</CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4">
                 {entries.map((entry, index) => (
-                    <div key={index} className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end relative border p-4 rounded-lg">
-                        <div>
+                    <div
+                        key={index}
+                        className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end relative border p-4 rounded-lg"
+                    >
+                        <div className="md:col-span-2">
                             <Label>จำนวน</Label>
                             <Input
                                 type="number"
                                 value={entry.qty}
                                 onChange={(e) => handleChange(index, "qty", e.target.value)}
                                 placeholder="จำนวน"
+                                className="w-full"
                             />
                         </div>
-                        <div>
+                        <div className="md:col-span-2">
                             <Label>น้ำหนัก</Label>
                             <Input
                                 type="number"
                                 value={entry.weight}
                                 onChange={(e) => handleChange(index, "weight", e.target.value)}
                                 placeholder="น้ำหนัก"
+                                className="w-full"
                             />
                         </div>
+                        {index !== 0 && (
+                            <Button
+                                variant="ghost"
+                                className="absolute top-0 right-0 text-red-500 hover:text-red-700"
+                                onClick={() => handleRemoveEntry(index)}
+                            >
+                                ✕
+                            </Button>
+                        )}
 
-                        <Button
-                            variant="ghost"
-                            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                            onClick={() => handleRemoveEntry(index)}
-                        >
-                            ✕
-                        </Button>
                     </div>
                 ))}
 
@@ -109,7 +118,9 @@ export default function AddQtyDirty({ data }: { data: any }) {
                     + เพิ่มรายการ
                 </Button>
             </CardContent>
-            <CardFooter>
+
+
+            <CardFooter className="flex justify-end">
                 <Button onClick={handleCreateNewDirty}>บันทึกทั้งหมดลงฐานข้อมูล</Button>
             </CardFooter>
         </Card>

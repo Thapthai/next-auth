@@ -36,6 +36,8 @@ export default function CreateDirtyCard({
         <Card>
             <CardHeader>
                 <CardTitle>สร้างเอกสารใหม่</CardTitle>
+
+
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -68,11 +70,12 @@ export default function CreateDirtyCard({
                     </Select>
                 </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-end">
                 <Button onClick={handleSubmit} disabled={!selectedFactory || !selectedRound}>
                     ถัดไป
                 </Button>
             </CardFooter>
+
         </Card>
     );
 }

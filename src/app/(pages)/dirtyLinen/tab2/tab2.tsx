@@ -13,6 +13,7 @@ export default function Tab2() {
         <>
             {step === "create" && (
                 <CreateDirtyCard
+                    defaultFormData={formData} // ✅ ส่งกลับ default ค่าเดิมที่เคยเลือกไว้
                     onNext={(data) => {
                         setFormData(data);
                         setStep("detail");
@@ -20,16 +21,21 @@ export default function Tab2() {
                 />
             )}
 
+
             {step === "detail" && formData && (
                 <DirtyDetailCard
                     formData={formData}
-                    onBack={() => setStep("create")}
+                    onBack={(backData) => {
+                        setFormData({ ...formData, ...backData }); // รวมข้อมูลเดิม + ที่ส่งกลับมา
+                        setStep("create");
+                    }}
                     onNext={(detailData) => {
                         setFormData({ ...formData, ...detailData }); // รวมข้อมูลทั้งหมดไว้
                         setStep("qty");
                     }}
                 />
             )}
+
 
             {step === "qty" && formData && <AddQtyDirty data={formData} />}
         </>
