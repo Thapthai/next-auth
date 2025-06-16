@@ -18,12 +18,12 @@ export default async function RootLayout({
   if (!messages) notFound();
 
   return (
-
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <SessionLayoutProvider>
+
           <body>
-            {children}
+              {children}
           </body>
         </SessionLayoutProvider>
       </NextIntlClientProvider>

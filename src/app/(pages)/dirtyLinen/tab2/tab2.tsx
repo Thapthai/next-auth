@@ -13,31 +13,39 @@ export default function Tab2() {
         <>
             {step === "create" && (
                 <CreateDirtyCard
-                    defaultFormData={formData} // ✅ ส่งกลับ default ค่าเดิมที่เคยเลือกไว้
-                    onNext={(data) => {
-                        setFormData(data);
+                    defaultFormData={formData}
+                    onNextDetail={(createData) => {
+                        setFormData(createData);
                         setStep("detail");
                     }}
                 />
             )}
 
-
             {step === "detail" && formData && (
+
                 <DirtyDetailCard
                     formData={formData}
-                    onBack={(backData) => {
-                        setFormData({ ...formData, ...backData }); // รวมข้อมูลเดิม + ที่ส่งกลับมา
+                    onBackCreate={(createData) => {
+                        setFormData({ ...formData, ...createData }); // รวมค่าเดิม + ค่าเลือกแผนก/สินค้า
                         setStep("create");
                     }}
-                    onNext={(detailData) => {
-                        setFormData({ ...formData, ...detailData }); // รวมข้อมูลทั้งหมดไว้
+                    onNextAddQty={(detailData) => {
+                        setFormData({ ...formData, ...detailData }); // รวมค่าเลือกปัจจุบัน
                         setStep("qty");
                     }}
                 />
+
             )}
 
-
-            {step === "qty" && formData && <AddQtyDirty data={formData} />}
+            {step === "qty" && formData && (
+                <AddQtyDirty
+                    data={formData}
+                    onBackDetail={(detailData) => {
+                        setFormData({ ...formData, ...detailData });
+                        setStep("detail");
+                    }}
+                />
+            )}
         </>
     );
 }

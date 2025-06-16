@@ -7,32 +7,24 @@ import {
     CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 
 export default function DirtyDetailCard({
     formData,
-    onBack,
-    onNext,
+    onBackCreate,
+    onNextAddQty,
 }: {
     formData: any;
-    onBack: (data: any) => void; // ไม่ใช่ optional แล้ว
-    onNext: (detailData: any) => void;
+    onBackCreate: (data: any) => void;
+    onNextAddQty: (detailData: any) => void;
 }) {
     const [departments, setDepartments] = useState([]);
-    const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [selectedDepartment, setSelectedDepartment] = useState(formData?.selectedDepartment || "");
     const [items, setItems] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [newItemName, setNewItemName] = useState("");
+    const [selectedItem, setSelectedItem] = useState<any>(formData?.selectedItem || null);
 
     useEffect(() => {
         fetch("http://localhost:3000/departments")
@@ -105,7 +97,7 @@ export default function DirtyDetailCard({
                 {/* Combobox สินค้า */}
                 {selectedDepartment && (
                     <div>
-                        <Label>เลือกสินค้า</Label>
+                        <Label>เลือกรายการ</Label>
                         <Input
                             placeholder="ค้นหาสินค้า..."
                             value={searchTerm}
@@ -143,19 +135,22 @@ export default function DirtyDetailCard({
                 <Button
                     variant="outline"
                     onClick={() => {
-                        onBack({
+                        onBackCreate({
                             factory_id: formData.factory_id,
                             weighing_round: formData.weighing_round,
+                            selectedDepartment,
+                            selectedItem,
                         });
                     }}
                 >
                     ← กลับ
                 </Button>
 
+
                 <Button
                     disabled={!selectedDepartment || !selectedItem}
                     onClick={() =>
-                        onNext({
+                        onNextAddQty({
                             selectedDepartment,
                             selectedItem,
                         })

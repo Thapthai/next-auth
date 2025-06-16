@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 const weighingRounds = ["5.00", "11.00", "00.00", "03.00", "12.00"];
 
 export default function CreateDirtyCard({
-    onNext,
+    onNextDetail,
     defaultFormData,
 }: {
-    onNext: (formData: any) => void;
+    onNextDetail: (formData: any) => void;
     defaultFormData?: any;
 }) {
     const [selectedFactory, setSelectedFactory] = useState(defaultFormData?.factory_id?.toString() || "");
@@ -29,15 +29,13 @@ export default function CreateDirtyCard({
             factory_id: parseInt(selectedFactory),
             weighing_round: selectedRound,
         };
-        onNext(formData);
+        onNextDetail(formData);
     };
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle>สร้างเอกสารใหม่</CardTitle>
-
-
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -47,9 +45,9 @@ export default function CreateDirtyCard({
                             <SelectValue placeholder="เลือกโรงงาน" />
                         </SelectTrigger>
                         <SelectContent>
-                            {factories.map((f: any) => (
-                                <SelectItem key={f.id} value={f.id.toString()}>
-                                    {f.name_th} / {f.name_en}
+                            {factories.map((factory: any) => (
+                                <SelectItem key={factory.id} value={factory.id.toString()}>
+                                    {factory.name_th} / {factory.name_en}
                                 </SelectItem>
                             ))}
                         </SelectContent>

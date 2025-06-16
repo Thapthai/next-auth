@@ -6,9 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-
-
-export default function AddQtyDirty({ data }: { data: any }) {
+export default function AddQtyDirty({
+    data,
+    onBackDetail,
+}: {
+    data: any;
+    onBackDetail: (detailData: any) => void;
+}) {
     const [entries, setEntries] = useState([{ qty: "", weight: "" }]);
 
     const handleChange = (index: number, field: "qty" | "weight", value: string) => {
@@ -61,8 +65,7 @@ export default function AddQtyDirty({ data }: { data: any }) {
 
             const detailResults = await Promise.all(dirtyDetailResponses.map((res) => res.json()));
             console.log("เพิ่มสำเร็จ", detailResults);
-            // alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
-            window.location.reload(); // ✅ รีโหลดหน้าเว็บ
+            window.location.reload();
         } catch (err) {
             console.error("❌ เกิดข้อผิดพลาด:", err);
             alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -110,7 +113,6 @@ export default function AddQtyDirty({ data }: { data: any }) {
                                 ✕
                             </Button>
                         )}
-
                     </div>
                 ))}
 
@@ -119,9 +121,19 @@ export default function AddQtyDirty({ data }: { data: any }) {
                 </Button>
             </CardContent>
 
+            <CardFooter className="flex justify-between">
+                <Button
+                    variant="outline"
+                    onClick={() => {
+                        onBackDetail({});
+                    }}
+                >
+                    ⬅️ ย้อนกลับ
+                </Button>
 
-            <CardFooter className="flex justify-end">
-                <Button onClick={handleCreateNewDirty}>บันทึกทั้งหมดลงฐานข้อมูล</Button>
+                <Button onClick={handleCreateNewDirty}>
+                    บันทึกทั้งหมดลงฐานข้อมูล
+                </Button>
             </CardFooter>
         </Card>
     );
