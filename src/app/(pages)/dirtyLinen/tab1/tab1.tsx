@@ -88,8 +88,8 @@ export default function Tab1() {
                                 <TableHead>ID</TableHead>
                                 <TableHead>Document No</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Created At</TableHead>
-                                <TableHead>Actions</TableHead> {/* เพิ่มคอลัมน์ Action */}
+                                <TableHead>Created</TableHead>
+                                <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

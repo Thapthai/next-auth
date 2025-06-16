@@ -8,6 +8,7 @@ import AddQtyDirty from "./AddQtyDirty";
 export default function Tab2() {
     const [step, setStep] = useState<"create" | "detail" | "qty">("create");
     const [formData, setFormData] = useState<any>(null);
+    const [addedItems, setAddedItems] = useState<any[]>([]);
 
     return (
         <>
@@ -21,31 +22,45 @@ export default function Tab2() {
                 />
             )}
 
-            {step === "detail" && formData && (
 
+            {step === "detail" && formData && (
                 <DirtyDetailCard
                     formData={formData}
+                    addedItems={addedItems}
                     onBackCreate={(createData) => {
-                        setFormData({ ...formData, ...createData }); // รวมค่าเดิม + ค่าเลือกแผนก/สินค้า
+                        setFormData({ ...formData, ...createData });
                         setStep("create");
                     }}
                     onNextAddQty={(detailData) => {
-                        setFormData({ ...formData, ...detailData }); // รวมค่าเลือกปัจจุบัน
+                        setFormData({ ...formData, ...detailData });;
                         setStep("qty");
                     }}
                 />
-
             )}
 
             {step === "qty" && formData && (
                 <AddQtyDirty
                     data={formData}
+                    onSubmitDetail={(detailData) => {
+                        setAddedItems((prev) => [
+                            ...prev,
+                            {
+                                factory_id: formData.factory_id,
+                                weighing_round: formData.weighing_round,
+                                department_id: formData.selectedDepartment,
+                                item: formData.selectedItem,
+                                entries: detailData.entries,
+                            },
+                        ]);
+                        setStep("detail");
+                    }}
                     onBackDetail={(detailData) => {
                         setFormData({ ...formData, ...detailData });
                         setStep("detail");
                     }}
                 />
             )}
+
         </>
     );
 }

@@ -1,3 +1,4 @@
+"use client";
 
 import {
     Card,
@@ -10,13 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
+import ShowDirty from "./showDirty";
 
 export default function DirtyDetailCard({
     formData,
+    addedItems,
     onBackCreate,
     onNextAddQty,
 }: {
     formData: any;
+    addedItems: any[];
     onBackCreate: (data: any) => void;
     onNextAddQty: (detailData: any) => void;
 }) {
@@ -70,6 +74,7 @@ export default function DirtyDetailCard({
         });
         setSearchTerm("");
     };
+
 
     return (
         <Card>
@@ -138,27 +143,32 @@ export default function DirtyDetailCard({
                         onBackCreate({
                             factory_id: formData.factory_id,
                             weighing_round: formData.weighing_round,
-                            selectedDepartment,
-                            selectedItem,
                         });
                     }}
                 >
                     ← กลับ
                 </Button>
 
-
                 <Button
                     disabled={!selectedDepartment || !selectedItem}
-                    onClick={() =>
+                    onClick={() => {
                         onNextAddQty({
                             selectedDepartment,
+                            factory_id: formData.factory_id,
+                            weighing_round: formData.weighing_round,
                             selectedItem,
-                        })
-                    }
+                        });
+                    }}
                 >
-                    ถัดไป
+                    เพิ่มรายการ
                 </Button>
             </CardFooter>
+
+
+            {addedItems && addedItems.length > 0 && (
+                <ShowDirty entries={addedItems} />
+            )}
+
         </Card>
     );
 }

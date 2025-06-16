@@ -56,7 +56,7 @@ export default function ShowDirtyDetail({ dirtyId }: ShowDirtyDetailProps) {
                 <TableHeader>
                     <TableRow>
                         <TableHead>ID</TableHead>
-                        <TableHead>Item ID</TableHead>
+                        <TableHead>ItemID</TableHead>
                         <TableHead>Qty</TableHead>
                         <TableHead>Weight</TableHead>
                         <TableHead>Status</TableHead>

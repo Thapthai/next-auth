@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,10 +8,14 @@ import { Button } from "@/components/ui/button";
 
 export default function AddQtyDirty({
     data,
+    onSubmitDetail,
     onBackDetail,
+
 }: {
     data: any;
+    onSubmitDetail: (detailData: any) => void;
     onBackDetail: (detailData: any) => void;
+
 }) {
     const [entries, setEntries] = useState([{ qty: "", weight: "" }]);
 
@@ -29,48 +33,22 @@ export default function AddQtyDirty({
         setEntries((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleCreateNewDirty = async () => {
-        try {
-            const dirtyRes = await fetch("http://localhost:3000/dirties", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    factory_id: data.factory_id,
-                    weighing_round: data.weighing_round,
-                }),
-            });
+    const handleShowNewDirty = async () => {
+        const result = entries.map((e) => ({
+            qty: parseFloat(e.qty),
+            weight: parseFloat(e.weight),
+            receive_qty: parseFloat(e.qty),
+        }));
 
-            const dirty = await dirtyRes.json();
-
-            const dirtyDetailResponses = await Promise.all(
-                entries.map((entry) =>
-                    fetch("http://localhost:3000/dirty-details", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            dirty_id: dirty.id,
-                            department_id: parseInt(data.selectedDepartment),
-                            item_id: data.selectedItem.id,
-                            unit_id: 3,
-                            user_id: 7,
-                            qty: parseFloat(entry.qty),
-                            receive_qty: parseFloat(entry.qty),
-                            weight: parseFloat(entry.weight),
-                            is_cancel: false,
-                            status: true,
-                        }),
-                    })
-                )
-            );
-
-            const detailResults = await Promise.all(dirtyDetailResponses.map((res) => res.json()));
-            console.log("เพิ่มสำเร็จ", detailResults);
-            window.location.reload();
-        } catch (err) {
-            console.error("❌ เกิดข้อผิดพลาด:", err);
-            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-        }
+        onSubmitDetail({
+            factory_id: data.factory_id,
+            weighing_round: data.weighing_round,
+            department_id: data.selectedDepartment,
+            item: data.selectedItem,
+            entries: result,
+        });
     };
+
 
     return (
         <Card>
@@ -131,10 +109,13 @@ export default function AddQtyDirty({
                     ⬅️ ย้อนกลับ
                 </Button>
 
-                <Button onClick={handleCreateNewDirty}>
-                    บันทึกทั้งหมดลงฐานข้อมูล
+                <Button onClick={handleShowNewDirty}>
+                    เพิ่มรายการ
                 </Button>
             </CardFooter>
         </Card>
     );
 }
+
+
+
