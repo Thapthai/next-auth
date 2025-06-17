@@ -9,6 +9,8 @@ import { signIn } from 'next-auth/react';
 import { useTranslations } from "next-intl";
 
 export default function TwoFAPage() {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
@@ -26,7 +28,7 @@ export default function TwoFAPage() {
     const handleVerify = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:3000/auth/2fa/login", {
+            const res = await fetch(`${baseUrl}/auth/2fa/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

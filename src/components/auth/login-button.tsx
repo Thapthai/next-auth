@@ -29,7 +29,7 @@ export const LogingButton = ({
     }
 
     return (
-        <span onClick={onClick} className="rounded-sm cursor-pointer bg-amber-200 p-3">
+        <span onClick={onClick} >
             {children}
         </span>
     )

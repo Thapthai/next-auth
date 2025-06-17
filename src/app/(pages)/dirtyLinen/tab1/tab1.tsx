@@ -22,20 +22,20 @@ import {
 } from "@/components/ui/table";
 import ShowDirtyDetail from "./show-dirty-detail";
 
-
 export default function Tab1() {
     const t = useTranslations("DirtyLinen");
-
     const [keyword, setKeyword] = useState("");
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [selectedDirtyId, setSelectedDirtyId] = useState<number | null>(null);
+    const [selectedDirty, setSelectedDirty] = useState<any | null>(null);
+
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const fetchData = async (searchKeyword = "") => {
         setLoading(true);
         try {
             const res = await fetch(
-                `http://localhost:3000/dirties?page=1&limit=20&keyword=${searchKeyword}`
+                `${baseUrl}/dirties?page=1&limit=20&keyword=${searchKeyword}`
             );
             const result = await res.json();
             setData(result.data); // ดึง array จาก { data: [], total, ... }
@@ -54,9 +54,10 @@ export default function Tab1() {
         fetchData(keyword);
     };
 
-    const handleViewDetails = (id: number) => {
-        setSelectedDirtyId(id);
+    const handleViewDetails = (item: any) => {
+        setSelectedDirty(item);
     };
+
 
     return (
         <Card>
@@ -107,9 +108,15 @@ export default function Tab1() {
                                         <TableCell>{item.status ? "✅ Active" : "❌ Inactive"}</TableCell>
                                         <TableCell>{new Date(item.create_at).toLocaleString()}</TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={() => handleViewDetails(item.id)}>
+                                            <Button
+                                                size="sm"
+                                                className={selectedDirty?.id === item.id ? "bg-green-600 text-white" : ""}
+                                                onClick={() => handleViewDetails(item)}
+                                            >
                                                 View Details
                                             </Button>
+
+
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -125,7 +132,8 @@ export default function Tab1() {
                 </div>
 
 
-                {selectedDirtyId && <ShowDirtyDetail dirtyId={selectedDirtyId} />}
+                {selectedDirty && <ShowDirtyDetail dirty={selectedDirty} />}
+
             </CardContent>
         </Card>
     );

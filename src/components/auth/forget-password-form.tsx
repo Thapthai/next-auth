@@ -26,6 +26,7 @@ import { useTranslations } from 'next-intl';
 
 export const ForgetPasswordForm = () => {
     const t = useTranslations('ForgetPasswordPage');
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const form = useForm<z.infer<typeof ForgetPasswordSchema>>({
         resolver: zodResolver(ForgetPasswordSchema),
@@ -40,7 +41,7 @@ export const ForgetPasswordForm = () => {
     const onSubmit = async (values: z.infer<typeof ForgetPasswordSchema>) => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3000/auth/forget-password', {
+            const res = await fetch(`${baseUrl}/auth/forget-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

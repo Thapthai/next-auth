@@ -29,12 +29,14 @@ export default function SearchTab() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedNewLinenId, setSelectedNewLinenId] = useState<number | null>(null);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
     const fetchData = async (searchKeyword = "") => {
         setLoading(true);
         try {
             const res = await fetch(
-                `http://localhost:3000/new-linens?page=1&limit=20&keyword=${searchKeyword}`
+                `${baseUrl}/new-linens?page=1&limit=20&keyword=${searchKeyword}`
             );
             const result = await res.json();
             setData(result.data); // ดึง array จาก { data: [], total, ... }

@@ -18,8 +18,10 @@ export default function CreateDirtyCard({
     const [selectedRound, setSelectedRound] = useState(defaultFormData?.weighing_round || "");
     const [factories, setFactories] = useState([]);
 
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
     useEffect(() => {
-        fetch("http://localhost:3000/factories")
+        fetch(`${baseUrl}/factories`)
             .then(res => res.json())
             .then(setFactories)
             .catch(console.error);

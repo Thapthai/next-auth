@@ -23,7 +23,7 @@ export default async function RootLayout({
         <SessionLayoutProvider>
 
           <body>
-              {children}
+            {children}
           </body>
         </SessionLayoutProvider>
       </NextIntlClientProvider>

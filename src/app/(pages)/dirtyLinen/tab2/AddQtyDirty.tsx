@@ -41,10 +41,6 @@ export default function AddQtyDirty({
         }));
 
         onSubmitDetail({
-            factory_id: data.factory_id,
-            weighing_round: data.weighing_round,
-            department_id: data.selectedDepartment,
-            item: data.selectedItem,
             entries: result,
         });
     };

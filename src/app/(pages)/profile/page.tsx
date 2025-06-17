@@ -26,6 +26,7 @@ export default function SettingsPage() {
     const userId = session?.user?.id;
     const token = session?.user?.access_token
     const t = useTranslations('SettingPage');
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
     const [qrCodeURL, setQrCodeURL] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export default function SettingsPage() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/auth/user?userId=${userId}`, {
+                const res = await fetch(`${baseUrl}/auth/user?userId=${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -85,7 +86,7 @@ export default function SettingsPage() {
         form.setValue("is_two_factor_enabled", checked);
 
         try {
-            const res = await fetch("http://localhost:3000/auth/2fa/enable", {
+            const res = await fetch(`${baseUrl}/auth/2fa/enable`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -118,7 +119,7 @@ export default function SettingsPage() {
 
     const handleShowQRCode = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/auth/2fa/2FAqrcode?userId=${userId}`, {
+            const res = await fetch(`${baseUrl}/auth/2fa/2FAqrcode?userId=${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

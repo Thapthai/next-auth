@@ -48,7 +48,7 @@ export default function Tab2() {
                                 factory_id: formData.factory_id,
                                 weighing_round: formData.weighing_round,
                                 department_id: formData.selectedDepartment,
-                                item: formData.selectedItem,
+                                items: formData.selectedItem,
                                 entries: detailData.entries,
                             },
                         ]);

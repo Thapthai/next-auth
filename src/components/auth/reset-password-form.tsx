@@ -25,6 +25,7 @@ type ResetPasswordFormProps = {
 };
 
 const ResetPasswordForm = ({ email, token }: ResetPasswordFormProps) => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const form = useForm<z.infer<typeof ResetPasswordSchema>>({
         resolver: zodResolver(ResetPasswordSchema),
@@ -50,7 +51,7 @@ const ResetPasswordForm = ({ email, token }: ResetPasswordFormProps) => {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3000/auth/reset-password', {
+            const res = await fetch(`${baseUrl}/auth/reset-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, token, newPassword: password }),

@@ -22,6 +22,7 @@ export function NotificationButton() {
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const take = 3;
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const { data: session } = useSession();
     const userId = session?.user?.id;
@@ -33,7 +34,7 @@ export function NotificationButton() {
         setLoading(true);
         try {
             const res = await fetch(
-                `http://localhost:3000/notifications/user-notification/${userId}?skip=${page * take}&take=${take}`,
+                `${baseUrl}/notifications/user-notification/${userId}?skip=${page * take}&take=${take}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -70,7 +71,7 @@ export function NotificationButton() {
         if (!token) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/notifications/user-notification/${notiId}`, {
+            const res = await fetch(`${baseUrl}/notifications/user-notification/${notiId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

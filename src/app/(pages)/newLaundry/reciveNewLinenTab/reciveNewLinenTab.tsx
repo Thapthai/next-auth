@@ -15,9 +15,10 @@ export default function ReciveNewLinenTab() {
     const [selectedFactory, setSelectedFactory] = useState("");
     const [selectedRound, setSelectedRound] = useState("");
     const [factories, setFactories] = useState([]);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     useEffect(() => {
-        fetch("http://localhost:3000/factories")
+        fetch(`${baseUrl}/factories`)
             .then(res => res.json())
             .then(setFactories)
             .catch(console.error);
@@ -31,7 +32,7 @@ export default function ReciveNewLinenTab() {
 
 
     useEffect(() => {
-        fetch("http://localhost:3000/departments")
+        fetch(`${baseUrl}/departments`)
             .then(res => res.json())
             .then(setDepartments)
             .catch(console.error);
@@ -42,7 +43,7 @@ export default function ReciveNewLinenTab() {
             setItems([]);
             return;
         }
-        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}?with_out_id=2`)
+        fetch(`${baseUrl}/items?department_id=${selectedDepartment}?with_out_id=2`)
             .then(res => res.json())
             .then(setItems)
             .catch(console.error);
@@ -72,7 +73,7 @@ export default function ReciveNewLinenTab() {
     };
 
     const handleCreateNewUnregisteredItem = async () => {
-        const res = await fetch("http://localhost:3000/unregistered-items", {
+        const res = await fetch(`${baseUrl}/unregistered-items`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -95,7 +96,7 @@ export default function ReciveNewLinenTab() {
 
     const handleCreateNewNewLinen = async () => {
         try {
-            const newLinenRes = await fetch("http://localhost:3000/new-linens", {
+            const newLinenRes = await fetch(`${baseUrl}/new-linens`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -109,7 +110,7 @@ export default function ReciveNewLinenTab() {
 
             const newLinenDetailResponses = await Promise.all(
                 entries.map((entry) =>
-                    fetch("http://localhost:3000/new-linen-details?", {
+                    fetch(`${baseUrl}/new-linen-details?`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

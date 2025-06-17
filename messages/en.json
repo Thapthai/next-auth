@@ -1,6 +1,8 @@
 {
     "HomePage": {
-        "title": "Hello world!"
+        "title": "Welcome to Nlinen",
+        "subtitle": "Your perfect companion for managing linen effortlessly.",
+        "signIn": "Sign In"
     },
     "LoginPage": {
         "topic": "Login Page",

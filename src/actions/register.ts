@@ -11,8 +11,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     if (!validatedFields.success) return { error: "Invalid fields! " };
 
     const { name, email, password } = validatedFields.data;
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    const res = await fetch("http://localhost:3000/auth/register", {
+    const res = await fetch(`${baseUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })

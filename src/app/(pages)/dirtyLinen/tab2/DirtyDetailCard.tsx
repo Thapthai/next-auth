@@ -29,9 +29,11 @@ export default function DirtyDetailCard({
     const [items, setItems] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItem, setSelectedItem] = useState<any>(formData?.selectedItem || null);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
     useEffect(() => {
-        fetch("http://localhost:3000/departments")
+        fetch(`${baseUrl}/departments`)
             .then(res => res.json())
             .then(setDepartments)
             .catch(console.error);
@@ -42,7 +44,7 @@ export default function DirtyDetailCard({
             setItems([]);
             return;
         }
-        fetch(`http://localhost:3000/items?department_id=${selectedDepartment}?with_out_id=2`)
+        fetch(`${baseUrl}/items?department_id=${selectedDepartment}?with_out_id=2`)
             .then(res => res.json())
             .then(setItems)
             .catch(console.error);
@@ -55,7 +57,7 @@ export default function DirtyDetailCard({
         );
 
     const handleCreateNewUnregisteredItem = async () => {
-        const res = await fetch("http://localhost:3000/unregistered-items", {
+        const res = await fetch(`${baseUrl}/unregistered-items`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -70,11 +72,11 @@ export default function DirtyDetailCard({
         setItems(prev => [...prev, newUnregisteredItem]);
         setSelectedItem({
             id: newUnregisteredItem.item_id,
+            unregistered_item_id: newUnregisteredItem.id,
             name_th: newUnregisteredItem.name
         });
         setSearchTerm("");
     };
-
 
     return (
         <Card>

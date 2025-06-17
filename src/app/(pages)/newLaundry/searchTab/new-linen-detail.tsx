@@ -17,6 +17,7 @@ interface ShowNewLinenDetailProps {
 export default function ShowNewlinenDetail({ newLinenId }: ShowNewLinenDetailProps) {
     const [details, setDetails] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     useEffect(() => {
         if (!newLinenId) {
@@ -28,7 +29,7 @@ export default function ShowNewlinenDetail({ newLinenId }: ShowNewLinenDetailPro
             setLoading(true);
             try {
                 const res = await fetch(
-                    `http://localhost:3000/new-linen-details?new_linen_id=${newLinenId}`
+                    `${baseUrl}/new-linen-details?new_linen_id=${newLinenId}`
                 );
                 const data = await res.json();
                 setDetails(data);
