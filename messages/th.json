@@ -64,10 +64,12 @@
         "laundryContract": "คู่สัญญาโรงซัก",
         "hospitalContract": "คู่สัญญาโรงพยาบาล",
         "report": "รายงาน",
-        "system": "ระบบ",
+        "management": "การจัดการ",
         "catalog": "แคตตาล็อก",
         "laundryFactory": "การบริารโรงซัก",
-        "laundrySetting": "การตั้งค่าโรงซัก"
+        "laundrySetting": "การตั้งค่าโรงซัก",
+        "userMnagement": "ตั้งค่า ผู้ใช้งาน",
+        "permissionManagement": "ตั้งค่า สิทธการใช้งาน"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",
@@ -162,5 +164,8 @@
             "time_record": "วันที่บันทึก",
             "total_weight": "น้ำหนักรวม"
         }
+    },
+    "userManagement": {
+        "headerTopic": "จัดการผู้ใช้งาน"
     }
 }

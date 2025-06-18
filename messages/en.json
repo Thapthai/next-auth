@@ -64,10 +64,12 @@
         "laundryContract": "Laundry Contracts",
         "hospitalContract": "Hospital Contracts",
         "report": "Reports",
-        "system": "System",
+        "management": "Management",
         "catalog": "Catalog",
         "laundryFactory": "Laundry Factory",
-        "laundrySetting": "Laundry Setting"
+        "laundrySetting": "Laundry Setting",
+        "userMnagement": "User Mnagement",
+        "permissionManagement": "Permission Management"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
@@ -162,5 +164,8 @@
             "time_record": "Recorded Time",
             "total_weight": "Total Weight"
         }
+    },
+    "userManagement": {
+        "headerTopic": "User Management"
     }
 }

@@ -188,9 +188,21 @@ const data = {
       ]
     },
     {
-      title: "system",
+      title: "management",
       url: "#",
-      icon: IconUsers,
+      icon: IconSettings,
+      sub: [
+        {
+          title: "userMnagement",
+          url: "/management/user",
+          icon: IconDashboard,
+        },
+        {
+          title: "permissionManagement",
+          url: "/management/permission",
+          icon: IconDashboard,
+        }
+      ]
     },
     {
       title: "catalog",
@@ -280,6 +292,8 @@ const data = {
       icon: IconFileWord,
     },
   ],
+
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
