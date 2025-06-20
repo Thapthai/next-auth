@@ -115,16 +115,12 @@ export default function Tab1() {
                                             >
                                                 View Details
                                             </Button>
-
-
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center text-muted-foreground">
-                                        No data found.
-                                    </TableCell>
+                                    <TableCell colSpan={5} className="text-center text-muted-foreground"> No data found.</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>

@@ -14,6 +14,7 @@ export const admin = [
     "/laundryFactory/laundrySetting",
     "/management/user",
     "/management/permission",
+    "/management/saleoffice",
 
 
 ];

@@ -11,25 +11,9 @@ import {
 } from "@/components/ui/table";
 import { SiteHeader } from "@/components/site-header";
 import { useTranslations } from "next-intl";
-
-type SaleOffice = {
-    id: number;
-    site_code: string;
-    site_office_name_th: string;
-    site_office_name_en: string;
-    status: boolean;
-};
-
-type UserSaleOffice = {
-    sale_office_id: number;
-    sale_office: SaleOffice;
-};
-
-type User = {
-    name: string;
-    email: string;
-    user_sale_office: UserSaleOffice[];
-};
+import { SaleOffice } from "@/types/saleOffice";
+import { UserSaleOffice } from "@/types/userSaleOffice";
+import { User } from "@/types/users";
 
 export default function UserManagement() {
     const t = useTranslations("userManagement");

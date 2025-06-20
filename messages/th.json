@@ -69,7 +69,8 @@
         "laundryFactory": "การบริารโรงซัก",
         "laundrySetting": "การตั้งค่าโรงซัก",
         "userMnagement": "ตั้งค่า ผู้ใช้งาน",
-        "permissionManagement": "ตั้งค่า สิทธการใช้งาน"
+        "permissionManagement": "ตั้งค่า สิทธการใช้งาน",
+        "saleOffice": "โรงพยาบาล"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",
@@ -167,5 +168,8 @@
     },
     "userManagement": {
         "headerTopic": "จัดการผู้ใช้งาน"
+    },
+    "SaleOfficeManage": {
+        "headerTopic": "จัดการ โรงพยาบาล"
     }
 }

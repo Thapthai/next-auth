@@ -193,6 +193,11 @@ const data = {
       icon: IconSettings,
       sub: [
         {
+          title: "saleOffice",
+          url: "/management/saleoffice",
+          icon: IconDashboard,
+        },
+        {
           title: "userMnagement",
           url: "/management/user",
           icon: IconDashboard,

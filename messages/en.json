@@ -69,7 +69,8 @@
         "laundryFactory": "Laundry Factory",
         "laundrySetting": "Laundry Setting",
         "userMnagement": "User Mnagement",
-        "permissionManagement": "Permission Management"
+        "permissionManagement": "Permission Management",
+        "saleOffice": "Sale Offices"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
@@ -167,5 +168,8 @@
     },
     "userManagement": {
         "headerTopic": "User Management"
+    },
+    "SaleOfficeManage": {
+        "headerTopic": "Sale Office Management"
     }
 }
