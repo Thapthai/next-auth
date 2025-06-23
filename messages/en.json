@@ -68,8 +68,8 @@
         "catalog": "Catalog",
         "laundryFactory": "Laundry Factory",
         "laundrySetting": "Laundry Setting",
-        "userMnagement": "User Mnagement",
-        "permissionManagement": "Permission Management",
+        "userMnagement": "User",
+        "permissionManagement": "Permission",
         "saleOffice": "Sale Offices"
     },
     "SiteHeader": {

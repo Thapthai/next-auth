@@ -2,17 +2,28 @@
 
 import { useEffect, useState } from "react";
 import {
-    Table, TableBody, TableCell, TableHead,
-    TableHeader, TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import DepartmentModal from "./DepartmentModal";
 import { Department } from "@/types/department";
 import EditDepartmentModal from "./EditDepartmentModal";
-import { IconEye, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+    IconCaretDownFilled,
+    IconCaretRightFilled,
+    IconEdit,
+    IconEye,
+    IconPlus,
+    IconTrash
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import SaleOfficeModal from "./SaleOfficeModal";
 
 type SaleOffice = {
     id: number;
@@ -32,6 +43,9 @@ export default function SaleOfficePage() {
     const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<number | null>(null);
     const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
+
+    const [editingSaleOffice, setEditingSaleOffice] = useState<SaleOffice | null>(null);
+    const [saleOfficeDialogOpen, setSaleOfficeDialogOpen] = useState(false);
 
 
     useEffect(() => {
@@ -91,14 +105,11 @@ export default function SaleOfficePage() {
 
     return (
         <>
-            {/* <SiteHeader headerTopic={t('headerTopic')} /> */}
             <SiteHeader headerTopic="รายการสาขา (Sale Offices)" />
-
-
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-            
+
 
                         {error && <p className="text-red-500">{error}</p>}
 
@@ -120,18 +131,31 @@ export default function SaleOfficePage() {
                                             <TableCell>{office.site_code}</TableCell>
                                             <TableCell>{office.site_office_name_th}</TableCell>
                                             <TableCell>{office.site_office_name_en}</TableCell>
+
                                             <TableCell className="w-10">
+
+                                                <Button
+                                                    variant="secondary"
+                                                    className="mx-2"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        setEditingSaleOffice(office);
+                                                        setSaleOfficeDialogOpen(true);
+                                                    }}
+                                                >
+                                                    <IconEdit />
+                                                </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => toggleExpand(office.id)}
                                                 >
-                                                    {expandedIds.includes(office.id) ? <ChevronDown /> : <ChevronRight />}
+                                                    {expandedIds.includes(office.id) ? <IconCaretDownFilled /> : <IconCaretRightFilled />}
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
 
-                                        {/* ✅ Department Row (ถ้าขยาย) */}
+
                                         {expandedIds.includes(office.id) && (
                                             <TableRow className="bg-muted">
                                                 <TableCell colSpan={4}>
@@ -180,7 +204,7 @@ export default function SaleOfficePage() {
                                                                                     setSelectedSaleOfficeId(office.id);
                                                                                 }}
                                                                             >
-                                                                                <IconPencil />
+                                                                                <IconEdit />
                                                                             </Button>
                                                                             <Button
                                                                                 variant="destructive"
@@ -194,8 +218,6 @@ export default function SaleOfficePage() {
                                                                 ))}
                                                             </TableBody>
                                                         </Table>
-
-
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -205,6 +227,12 @@ export default function SaleOfficePage() {
                             </TableBody>
                         </Table>
 
+                        <SaleOfficeModal
+                            open={saleOfficeDialogOpen}
+                            setOpen={setSaleOfficeDialogOpen}
+                            saleOffice={editingSaleOffice}
+                            refresh={fetchData}
+                        />
 
                         <DepartmentModal
                             open={departmentDialogOpen}
