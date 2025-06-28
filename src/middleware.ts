@@ -13,7 +13,6 @@ import {
   header,
   user,
   customer
-
 } from "@/premissionRoute";
 
 interface MyUser {
@@ -23,6 +22,9 @@ interface MyUser {
   name?: string | null;
   image?: string | null;
 }
+
+// Define role types for better type safety
+type UserRole = 1 | 2 | 3 | 4 | 5;
 
 export default withAuth(
   function middleware(req) {
@@ -66,10 +68,9 @@ export default withAuth(
       console.log("Not logged in or no user in token");
     }
 
-
-    // ============== Premission Path ==============
-    const permission = userData?.permission;
-    const roleAccessMap: Record<number, string[]> = {
+    // ============== Permission Path ==============
+    const permission = userData?.permission as UserRole;
+    const roleAccessMap: Record<UserRole, string[]> = {
       1: admin,
       2: manager,
       3: header,

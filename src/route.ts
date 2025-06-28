@@ -12,7 +12,8 @@ export const publicRoutes = [
     "/unauthorized",
     '/sounds/levelup.mp3',
     "/sounds/flipdish-ringer.mp3",
-    "/verify-email-successful"
+    "/verify-email-successful",
+    "/dashboard"
 ];
 
 export const authRoutes = [

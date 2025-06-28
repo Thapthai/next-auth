@@ -20,6 +20,7 @@ export function NavSecondary({
     title: string
     url: string
     icon: Icon
+    permission?: number[]
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (

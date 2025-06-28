@@ -11,12 +11,7 @@ export const admin = [
     "/cleanLinen",
     "/dirtyLinen",
     "/laundryFactory",
-    "/laundryFactory/laundrySetting",
-    "/management/user",
-    "/management/permission",
-    "/management/saleoffice",
-
-
+    "/management",
 ];
 
 export const manager = [
@@ -27,6 +22,8 @@ export const manager = [
     "/user",
     "/dashboard",
     "/newLaundry",
+    "/management/user",
+    "/management/saleoffice",
 ];
 
 export const header = [
