@@ -12,7 +12,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SaleOffice } from "@/types/saleOffice";
 import { v4 as uuidv4 } from 'uuid';
 import SaleOfficeDetail from "./SaleOfficeDetail";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function SaleOfficePage() {
     const [saleOffices, setSaleOffices] = useState<SaleOffice[]>([]);
@@ -21,6 +22,15 @@ export default function SaleOfficePage() {
     const [keyword, setKeyword] = useState("");
     const [input, setInput] = useState("");
     const [loadingId, setLoadingId] = useState<number | null>(null);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Reset loading state when pathname changes (navigation completes)
+    useEffect(() => {
+        if (loadingId) {
+            setLoadingId(null);
+        }
+    }, [pathname]);
 
     const loadSaleOffices = async (keyword = "") => {
         try {
@@ -50,7 +60,6 @@ export default function SaleOfficePage() {
         loadSaleOffices();
     };
 
-    const router = useRouter();
     const handleGoToDepartment = (id: number) => {
         setLoadingId(id);
         router.push(`/management/saleoffice/${id}/departments`);
@@ -91,34 +100,48 @@ export default function SaleOfficePage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {saleOffices.map((office) => (
-                                    <TableRow key={uuidv4()}>
-                                        <TableCell className="w-10">
-                                            <label className="flex items-center space-x-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="selectedOffice"
-                                                    value={office.id}
-                                                    checked={selectedOffice?.id === office.id}
-                                                    onChange={() => setSelectedOffice(office)}
-                                                />
-                                            </label>
-                                        </TableCell>
-                                        <TableCell>{office.site_code}</TableCell>
-                                        <TableCell>{office.site_office_name_th}</TableCell>
-                                        <TableCell>{office.site_office_name_en}</TableCell>
-                                        <TableCell className="w-10">
-
-                                            <Button
-                                                variant="ghost"
-                                                disabled={loadingId === office.id}
-                                                onClick={() => handleGoToDepartment(office.id)}
-                                            >
-                                                {loadingId === office.id ? "กำลังโหลด..." : <IconCaretRightFilled />}
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {saleOffices.map((office) => {
+                                    const isItemLoading = loadingId === office.id;
+                                    
+                                    return (
+                                        <TableRow key={uuidv4()}>
+                                            <TableCell className="w-10">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="selectedOffice"
+                                                        value={office.id}
+                                                        checked={selectedOffice?.id === office.id}
+                                                        onChange={() => setSelectedOffice(office)}
+                                                        disabled={isItemLoading}
+                                                    />
+                                                </label>
+                                            </TableCell>
+                                            <TableCell>{office.site_code}</TableCell>
+                                            <TableCell>{office.site_office_name_th}</TableCell>
+                                            <TableCell>{office.site_office_name_en}</TableCell>
+                                            <TableCell className="w-10">
+                                                <Button
+                                                    variant="ghost"
+                                                    disabled={isItemLoading}
+                                                    onClick={() => handleGoToDepartment(office.id)}
+                                                    className={`transition-all duration-200 ${
+                                                        isItemLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    {isItemLoading ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                            <span className="text-xs">กำลังโหลด...</span>
+                                                        </div>
+                                                    ) : (
+                                                        <IconCaretRightFilled />
+                                                    )}
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
                             </TableBody>
                         </Table>
 

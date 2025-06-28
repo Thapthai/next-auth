@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { SaleOffice } from "@/types/saleOffice";
 import { IconCaretRightFilled, IconReload, IconSearch } from "@tabler/icons-react";
 import { Department } from "@/types/department";
 import DepartmentDetailForm from "./DepartmentDetail";
+import { Loader2 } from "lucide-react";
 
 export default function DepartmentBySaleOfficeId() {
     const params = useParams();
@@ -22,9 +23,17 @@ export default function DepartmentBySaleOfficeId() {
     const [pageSize] = useState(10);
     const [total, setTotal] = useState(0);
     const [input, setInput] = useState("");
-
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+    const [loadingId, setLoadingId] = useState<number | null>(null);
+    const router = useRouter();
+    const pathname = usePathname();
 
+    // Reset loading state when pathname changes (navigation completes)
+    useEffect(() => {
+        if (loadingId) {
+            setLoadingId(null);
+        }
+    }, [pathname]);
 
     const handleSearch = () => {
         setKeyword(input);
@@ -55,9 +64,6 @@ export default function DepartmentBySaleOfficeId() {
 
     const totalPages = Math.ceil(total / pageSize);
 
-    const [loadingId, setLoadingId] = useState<number | null>(null); // สถานะโหลดเฉพาะปุ่ม
-
-    const router = useRouter();
     const handleGoToDepartmentDetail = (saleId: number, depId: number) => {
         setLoadingId(depId); // ✅ ใช้ depId
         router.push(`/management/saleoffice/${saleId}/departments/${depId}`);
@@ -74,7 +80,6 @@ export default function DepartmentBySaleOfficeId() {
     useEffect(() => {
         loadDepartments();
     }, [saleOfficeId, keyword, page, pageSize]);
-
 
     return (
         <>
@@ -121,49 +126,63 @@ export default function DepartmentBySaleOfficeId() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead></TableHead>
                                     <TableHead>รหัส</TableHead>
                                     <TableHead>ชื่อไทย</TableHead>
                                     <TableHead>ชื่ออังกฤษ</TableHead>
                                     <TableHead>คำอธิบาย</TableHead>
+                                    <TableHead></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {departments.length > 0 ? (
-                                    departments.map((dept) => (
-                                        <TableRow key={dept.id}>
-
-                                            <TableCell className="w-10">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input
-                                                        type="radio"
-                                                        name="selectedDepartment"
-                                                        value={dept.id}
-                                                        checked={selectedDepartment?.id === dept.id}
-                                                        onChange={() => setSelectedDepartment(dept)}
-                                                    />
-                                                    <span className="sr-only">เลือก</span>
-                                                </label>
-                                            </TableCell>
-
-                                            <TableCell>{dept.department_code}</TableCell>
-                                            <TableCell>{dept.name_th}</TableCell>
-                                            <TableCell>{dept.name_en}</TableCell>
-                                            <TableCell>{dept.description}</TableCell>
-                                            <TableCell className="w-10">
-                                                <Button
-                                                    variant="ghost"
-                                                    disabled={loadingId === dept.id}
-                                                    onClick={() => handleGoToDepartmentDetail(Number(saleOfficeId), dept.id)}
-                                                >
-                                                    {loadingId === dept.id ? "กำลังโหลด..." : <IconCaretRightFilled />}
-                                                </Button>
-                                            </TableCell>
-
-                                        </TableRow>
-                                    ))
+                                    departments.map((dept) => {
+                                        const isItemLoading = loadingId === dept.id;
+                                        
+                                        return (
+                                            <TableRow key={dept.id}>
+                                                <TableCell className="w-10">
+                                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="selectedDepartment"
+                                                            value={dept.id}
+                                                            checked={selectedDepartment?.id === dept.id}
+                                                            onChange={() => setSelectedDepartment(dept)}
+                                                            disabled={isItemLoading}
+                                                        />
+                                                        <span className="sr-only">เลือก</span>
+                                                    </label>
+                                                </TableCell>
+                                                <TableCell>{dept.department_code}</TableCell>
+                                                <TableCell>{dept.name_th}</TableCell>
+                                                <TableCell>{dept.name_en}</TableCell>
+                                                <TableCell>{dept.description}</TableCell>
+                                                <TableCell className="w-10">
+                                                    <Button
+                                                        variant="ghost"
+                                                        disabled={isItemLoading}
+                                                        onClick={() => handleGoToDepartmentDetail(Number(saleOfficeId), dept.id)}
+                                                        className={`transition-all duration-200 ${
+                                                            isItemLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
+                                                        }`}
+                                                    >
+                                                        {isItemLoading ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                                <span className="text-xs">กำลังโหลด...</span>
+                                                            </div>
+                                                        ) : (
+                                                            <IconCaretRightFilled />
+                                                        )}
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                                        <TableCell colSpan={6} className="text-center py-4 text-gray-500">
                                             ไม่พบข้อมูล
                                         </TableCell>
                                     </TableRow>
@@ -192,7 +211,6 @@ export default function DepartmentBySaleOfficeId() {
                         )}
 
                         <DepartmentDetailForm department={selectedDepartment} refresh={loadDepartments} />
-
 
                     </div>
                 </div>

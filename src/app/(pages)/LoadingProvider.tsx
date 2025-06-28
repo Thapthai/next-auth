@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-
 
 export default function LoadingProvider({
     children,
@@ -14,6 +13,7 @@ export default function LoadingProvider({
     const pathname = usePathname();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
     function Spinner({ className = "" }: { className?: string }) {
         return (
@@ -21,7 +21,14 @@ export default function LoadingProvider({
         );
     }
 
-    useEffect(() => {
+    // Ensure client-side rendering
+    useLayoutEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!isClient) return;
+
         const handleStart = () => setIsLoading(true);
         const handleComplete = () => setIsLoading(false);
 
@@ -34,7 +41,13 @@ export default function LoadingProvider({
         }, 300); // กันกรณี redirect หรือโหลดเร็วเกินไป
 
         return () => clearTimeout(timeout);
-    }, [pathname]);
+    }, [pathname, isClient]);
+
+    // Don't render loading state during SSR
+    if (!isClient) {
+        return <>{children}</>;
+    }
+
     return (
         <div className="relative w-full h-full">
             {isLoading && (
