@@ -1,7 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
+const baseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const authOptions: NextAuthOptions = {
 
@@ -19,6 +18,11 @@ export const authOptions: NextAuthOptions = {
                 try {
 
                     if (email && password && !token) {
+
+
+           
+                        
+
                         const res = await fetch(`${baseUrl}/auth/login`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },

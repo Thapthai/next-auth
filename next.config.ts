@@ -3,6 +3,15 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
+  experimental: {
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

@@ -32,14 +32,23 @@ export default function SaleOfficePage() {
         }
     }, [pathname]);
 
+    // Load sale offices on component mount
+    useEffect(() => {
+        loadSaleOffices();
+    }, []);
+
     const loadSaleOffices = async (keyword = "") => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?keyword=${keyword}`);
+            const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?keyword=${keyword}`;
+            console.log('Fetching URL:', url);
+            const res = await fetch(url);
+            console.log('Response status:', res.status);
             if (!res.ok) throw new Error("Failed to fetch sale offices");
             const data = await res.json();
+            console.log('Response data:', data);
             setSaleOffices(data.items || data); // กรณีมี pagination
         } catch (err) {
-            console.error(err);
+            console.error('Fetch error:', err);
             setError("ไม่สามารถโหลดข้อมูลได้");
         }
     };

@@ -35,7 +35,7 @@ export default function UserManagement() {
             setUsers(data);
         } catch (error) {
             console.error(error);
-            setError("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+            setError("เกิดข้อผิดพลาดในการโหลดข้อมูล " + error);
         }
     };
 

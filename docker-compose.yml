@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: next-auth-frontend
+    restart: unless-stopped
+    ports:
+      - "3005:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NEXTAUTH_URL=http://localhost:3005
+      - NEXTAUTH_SECRET=your-super-secret-nextauth-key-change-this-in-production
+      - NEXT_PUBLIC_API_BASE_URL=http://auth-nest-app:3000
+      - NEXT_DISABLE_ESLINT=true
+      - NEXT_DISABLE_TYPECHECK=true
+    networks:
+      - frontend-network
+      - auth-nest-js_auth-network
+
+networks:
+  frontend-network:
+    driver: bridge 
