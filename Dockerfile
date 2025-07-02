@@ -9,7 +9,8 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm cache clean --force
+# Install all dependencies (including devDependencies) for build
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -24,6 +25,8 @@ COPY . .
 # Build the application (disable typecheck/lint)
 ENV NEXT_DISABLE_ESLINT=true
 ENV NEXT_DISABLE_TYPECHECK=true
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 RUN npm run build
 
 # Production image
@@ -54,4 +57,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3005/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
 
 # Start the app (server.js = auto-generated)
-CMD ["node", "server.js"]
+CMD ["node", "server.js"] 

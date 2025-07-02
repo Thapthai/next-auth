@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=http://10.11.9.43:3000
     container_name: next-auth-frontend
     restart: unless-stopped
     ports:
@@ -15,7 +17,6 @@ services:
       - NODE_ENV=production
       - NEXTAUTH_URL=http://localhost:3005
       - NEXTAUTH_SECRET=your-super-secret-nextauth-key-change-this-in-production
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
       - API_BASE_URL=http://auth-nest-app:3000
       - NEXT_DISABLE_ESLINT=true
       - NEXT_DISABLE_TYPECHECK=true
