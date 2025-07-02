@@ -15,7 +15,8 @@ services:
       - NODE_ENV=production
       - NEXTAUTH_URL=http://localhost:3005
       - NEXTAUTH_SECRET=your-super-secret-nextauth-key-change-this-in-production
-      - NEXT_PUBLIC_API_BASE_URL=http://auth-nest-app:3000
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+      - API_BASE_URL=http://auth-nest-app:3000
       - NEXT_DISABLE_ESLINT=true
       - NEXT_DISABLE_TYPECHECK=true
     networks:
@@ -24,4 +25,6 @@ services:
 
 networks:
   frontend-network:
-    driver: bridge 
+    driver: bridge
+  auth-nest-js_auth-network:
+    external: true 
