@@ -101,16 +101,29 @@ export function NotificationButton() {
     useEffect(() => {
         if (!userId || !token) return;
 
-        const socket = initSocket(userId.toString());
+        try {
+            const socket = initSocket(userId.toString());
 
-        socket.on("new-send-notification-user", () => {
-            setPage(0);
-            fetchNotifications(0, false); // โหลดใหม่จากหน้าแรก
-        });
+            socket.on("new-send-notification-user", () => {
+                setPage(0);
+                fetchNotifications(0, false); // โหลดใหม่จากหน้าแรก
+            });
 
-        return () => {
-            socket.disconnect();
-        };
+            // Add error handling for socket connection
+            socket.on('connect_error', (error) => {
+                console.error('Socket connection error in notification button:', error);
+            });
+
+            return () => {
+                if (socket) {
+                    socket.off("new-send-notification-user");
+                    socket.off('connect_error');
+                    socket.disconnect();
+                }
+            };
+        } catch (error) {
+            console.error('Failed to initialize socket:', error);
+        }
     }, [userId, token]);
 
     return (

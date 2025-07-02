@@ -52,9 +52,5 @@ USER nextjs
 
 EXPOSE 3005
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3005/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
-
 # Start the app (server.js = auto-generated)
 CMD ["node", "server.js"] 

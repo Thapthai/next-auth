@@ -36,6 +36,8 @@ export function SocketAlert() {
       setMessage(data.message || 'คุณมีแจ้งเตือนใหม่');
       setProgress(100);
 
+      console.log('data', data);
+
       // ✅ เล่นเสียง
       if (canPlaySound && audioRef.current) {
         audioRef.current.currentTime = 0;
