@@ -1,5 +1,5 @@
 # Use Node.js 18 as base image
-FROM node:18 AS base
+FROM docker.io/library/node:18 AS base
 
 # Install dependencies only when needed
 FROM base AS deps

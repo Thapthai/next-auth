@@ -8,7 +8,7 @@ services:
     container_name: next-auth-frontend
     restart: unless-stopped
     ports:
-      - "3005:3000"
+      - "3005:3005"
     env_file:
       - .env
     environment:
