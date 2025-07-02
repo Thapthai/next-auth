@@ -1,5 +1,5 @@
 # Use Node.js 18 as base image
-FROM docker.io/library/node:18 AS base
+FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -27,8 +27,8 @@ WORKDIR /app
 ENV NODE_ENV production
 
 # Create a non-root user
-RUN groupadd --system --gid 1001 nodejs
-RUN useradd --system --uid 1001 nextjs
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
 
 # Copy the built application
 COPY --from=builder /app/.next/standalone ./
@@ -42,7 +42,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT 3005
 ENV HOSTNAME "0.0.0.0"
 
 # Start the application
