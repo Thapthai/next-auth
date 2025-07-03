@@ -19,10 +19,6 @@ export const authOptions: NextAuthOptions = {
 
                     if (email && password && !token) {
 
-
-           
-                        
-
                         const res = await fetch(`${baseUrl}/auth/login`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
