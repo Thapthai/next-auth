@@ -62,10 +62,10 @@ export default function SettingsPage() {
 
 
                 } else {
-                    toast.error("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
+                    toast.error(t('fetchUserError'));
                 }
             } catch (error) {
-                toast.error("เกิดข้อผิดพลาดขณะโหลดข้อมูลผู้ใช้");
+                toast.error(t('fetchUserFailed'));
             } finally {
                 setLoading(false);
             }
@@ -76,9 +76,9 @@ export default function SettingsPage() {
 
     const onSubmit = async (values: any) => {
         try {
-            toast.success("อัปเดตข้อมูลสำเร็จ");
+            toast.success(t('updateSuccess'));
         } catch (error) {
-            toast.error("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+            toast.error(t('updateError'));
         }
     };
 
@@ -101,18 +101,18 @@ export default function SettingsPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message || "ไม่สามารถอัปเดต 2FA ได้");
+                toast.error(data.message || t('update2FAError'));
                 form.setValue("is_two_factor_enabled", !checked); // rollback
                 return;
             }
             setQrCodeURL(data.qrCodeDataURL);
 
-            toast.success(checked ? "เปิดใช้งาน 2FA แล้ว" : "ปิดใช้งาน 2FA แล้ว");
+            toast.success(checked ? t('enable2FASuccess') : t('disable2FASuccess'));
 
             // ถ้าเปิด 2FA แล้ว ให้เซ็ต QR Code
             // setQrCodeURL(checked ? data.qrCodeDataURL : null);
         } catch (error) {
-            toast.error("เกิดข้อผิดพลาดในการอัปเดต 2FA");
+            toast.error(t('update2FAFailed'));
             form.setValue("is_two_factor_enabled", !checked); // rollback
         }
     };
@@ -130,14 +130,14 @@ export default function SettingsPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message || "ไม่สามารถดึง QR Code ได้");
+                toast.error(data.message || t('fetchQRCodeError'));
                 return;
             }
 
             setQrCodeURL(data.qrCodeDataURL);
-            toast.success("แสดง QR Code สำเร็จ");
+            toast.success(t('showQRCodeSuccess'));
         } catch (error) {
-            toast.error("เกิดข้อผิดพลาดในการโหลด QR Code");
+            toast.error(t('fetchQRCodeFailed'));
         }
     };
 
@@ -160,7 +160,7 @@ export default function SettingsPage() {
                                         <FormItem>
                                             <FormLabel>{t('name')}</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="ชื่อผู้ใช้" {...field} />
+                                                <Input placeholder={t('namePlaceholder')} {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -179,7 +179,7 @@ export default function SettingsPage() {
                                         <FormItem>
                                             <FormLabel>{t('password')}</FormLabel>
                                             <FormControl>
-                                                <Input type="password" placeholder="********" {...field} />
+                                                <Input type="password" placeholder={t('passwordPlaceholder')} {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { User } from "@/types/users";
 import { SaleOffice } from "@/types/saleOffice";
+import { useTranslations } from "next-intl";
 
 type Props = {
     open: boolean;
@@ -19,6 +20,8 @@ type Option = {
 };
 
 export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
+    const t = useTranslations("userManagement");
+    
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -73,7 +76,7 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                     permission_id: form.permission_id,
                 }),
             });
-            if (!resUser.ok) throw new Error("อัปเดตผู้ใช้ไม่สำเร็จ");
+            if (!resUser.ok) throw new Error(t("updateUserError"));
 
             // PATCH user_sale_offices (API แยก)
             const resOffices = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-sale-offices/user/${user.id}/sale-offices`, {
@@ -84,13 +87,13 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                     sale_office_ids: form.sale_office_ids,
                 }),
             });
-            if (!resOffices.ok) throw new Error("อัปเดตสาขาไม่สำเร็จ");
+            if (!resOffices.ok) throw new Error(t("updateOfficeError"));
 
             setOpen(false);
             refresh();
 
         } catch (err) {
-            alert("เกิดข้อผิดพลาดในการแก้ไข");
+            alert(t("editFailed"));
         }
     };
 
@@ -99,7 +102,7 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>แก้ไขข้อมูลผู้ใช้ {form.name} | {form.email}</DialogTitle>
+                    <DialogTitle>{t("editUserTitle")} {form.name} | {form.email}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-2">
                     <select
@@ -107,7 +110,7 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                         value={form.permission_id}
                         onChange={(e) => setForm({ ...form, permission_id: Number(e.target.value) })}
                     >
-                        <option value="">เลือกสิทธิ์</option>
+                        <option value="">{t("selectPermission")}</option>
                         {permissions.map(p => (
                             <option key={p.id} value={p.id}>
                                 {p.name_th}
@@ -129,7 +132,7 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                     </select> */}
 
                     <div className="space-y-1">
-                        <label className="font-medium">สาขาที่สังกัด</label>
+                        <label className="font-medium">{t("assignedOffices")}</label>
                         {saleOffices.map(office => (
                             <div key={office.id} className="flex items-center space-x-2">
                                 <input
@@ -150,8 +153,8 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                 </div>
 
                 <DialogFooter className="mt-4">
-                    <Button variant="secondary" onClick={() => setOpen(false)}>ยกเลิก</Button>
-                    <Button onClick={handleSubmit}>บันทึก</Button>
+                    <Button variant="secondary" onClick={() => setOpen(false)}>{t("cancel")}</Button>
+                    <Button onClick={handleSubmit}>{t("save")}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

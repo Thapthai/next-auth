@@ -97,7 +97,24 @@
         "enable2fa": "เปิดใช้งาน Two-Factor",
         "showQrCode": "แสดง QR Code",
         "scanDes": "สแกน QR ด้วยแอป Google Authenticator",
-        "Button": "บันทึกการเปลี่ยนแปลง"
+        "Button": "บันทึกการเปลี่ยนแปลง",
+        "namePlaceholder": "ชื่อผู้ใช้",
+        "passwordPlaceholder": "********",
+        "fetchUserError": "ไม่สามารถโหลดข้อมูลผู้ใช้ได้",
+        "fetchUserFailed": "เกิดข้อผิดพลาดขณะโหลดข้อมูลผู้ใช้",
+        "updateSuccess": "อัปเดตข้อมูลสำเร็จ",
+        "updateError": "เกิดข้อผิดพลาดในการอัปเดตข้อมูล",
+        "update2FAError": "ไม่สามารถอัปเดต 2FA ได้",
+        "enable2FASuccess": "เปิดใช้งาน 2FA แล้ว",
+        "disable2FASuccess": "ปิดใช้งาน 2FA แล้ว",
+        "update2FAFailed": "เกิดข้อผิดพลาดในการอัปเดต 2FA",
+        "fetchQRCodeError": "ไม่สามารถดึง QR Code ได้",
+        "showQRCodeSuccess": "แสดง QR Code สำเร็จ",
+        "fetchQRCodeFailed": "เกิดข้อผิดพลาดในการโหลด QR Code"
+    },
+    "socketAlert": {
+        "title": "แจ้งเตือน",
+        "defaultMessage": "คุณมีแจ้งเตือนใหม่"
     },
     "2fa": {
         "title": "กรอกรหัส 2FA",
@@ -126,6 +143,57 @@
             "user_record": "ผู้บันทึก",
             "time_record": "วันที่บันทึก",
             "total_weight": "น้ำหนักรวม"
+        }
+    },
+    "newLaundry": {
+        "tab2": "ค้นหา",
+        "searchTab": {
+            "cardDescription": "ค้นหาและดูข้อมูลการบันทึกผ้าใหม่",
+            "keyword": "คำค้นหา",
+            "keywordPlaceholder": "ป้อนเลขที่เอกสารหรือคำค้นหา...",
+            "search": "ค้นหา",
+            "id": "รหัส",
+            "documentNo": "เลขที่เอกสาร",
+            "status": "สถานะ",
+            "createdAt": "วันที่สร้าง",
+            "actions": "การจัดการ",
+            "loading": "กำลังโหลด...",
+            "active": "✅ ใช้งาน",
+            "inactive": "❌ ไม่ใช้งาน",
+            "viewDetails": "ดูรายละเอียด",
+            "noData": "ไม่พบข้อมูล"
+        },
+        "detail": {
+            "title": "รายละเอียดสำหรับรหัสผ้าใหม่",
+            "id": "รหัส",
+            "itemId": "รหัสสินค้า",
+            "qty": "จำนวน",
+            "weight": "น้ำหนัก",
+            "status": "สถานะ",
+            "loading": "กำลังโหลด...",
+            "noData": "ไม่มีข้อมูลรายละเอียด"
+        },
+        "receiveTab": {
+            "createNewDocument": "สร้างเอกสารใหม่",
+            "factory": "โรงงาน",
+            "selectFactory": "เลือกโรงงาน",
+            "round": "รอบชั่งผ้า",
+            "selectRound": "เลือกรอบ",
+            "selectDepartment": "เลือกแผนก",
+            "selectDepartmentPlaceholder": "-- เลือกแผนก --",
+            "selectItem": "เลือกสินค้า",
+            "searchItemPlaceholder": "ค้นหาสินค้า...",
+            "itemId": "รหัสสินค้า",
+            "addNewItem": "เพิ่มสินค้าใหม่",
+            "selected": "เลือกแล้ว",
+            "quantity": "จำนวน",
+            "weight": "น้ำหนัก",
+            "removeItem": "ลบรายการ",
+            "addEntry": "เพิ่มรายการ",
+            "totalQuantity": "ผลรวมจำนวน",
+            "saveAll": "บันทึกทั้งหมดลงฐานข้อมูล",
+            "saveSuccess": "✅ บันทึกข้อมูลเรียบร้อยแล้ว",
+            "saveError": "เกิดข้อผิดพลาดในการบันทึกข้อมูล"
         }
     },
     "CleanLinen": {
@@ -167,9 +235,71 @@
         }
     },
     "userManagement": {
-        "headerTopic": "จัดการผู้ใช้งาน"
+        "headerTopic": "จัดการผู้ใช้งาน",
+        "userList": "รายชื่อผู้ใช้งาน",
+        "name": "ชื่อ",
+        "email": "อีเมล",
+        "permission": "สิทธิ์การใช้งาน",
+        "saleOfficeThai": "สาขา (ไทย)",
+        "actions": "การจัดการ",
+        "noData": "ไม่มีข้อมูลผู้ใช้",
+        "fetchError": "เกิดข้อผิดพลาดในการโหลดข้อมูล",
+        "editUserTitle": "แก้ไขข้อมูลผู้ใช้",
+        "selectPermission": "เลือกสิทธิ์",
+        "assignedOffices": "สาขาที่สังกัด",
+        "updateUserError": "อัปเดตผู้ใช้ไม่สำเร็จ",
+        "updateOfficeError": "อัปเดตสาขาไม่สำเร็จ",
+        "editFailed": "เกิดข้อผิดพลาดในการแก้ไข",
+        "cancel": "ยกเลิก",
+        "save": "บันทึก"
     },
     "SaleOfficeManage": {
         "headerTopic": "จัดการ โรงพยาบาล"
+    },
+    "saleOffice": {
+        "createTitle": "สร้างสาขาใหม่",
+        "siteCode": "Site Code",
+        "siteCodePlaceholder": "เช่น: BKK001",
+        "phone": "เบอร์โทรศัพท์",
+        "phonePlaceholder": "เช่น: 02-123-4567",
+        "nameThaiLabel": "ชื่อสาขา (ภาษาไทย)",
+        "nameThaiPlaceholder": "เช่น: สาขาสีลม",
+        "nameEnglishLabel": "ชื่อสาขา (ภาษาอังกฤษ)",
+        "nameEnglishPlaceholder": "เช่น: Silom Branch",
+        "email": "อีเมล",
+        "emailPlaceholder": "เช่น: silom@company.com",
+        "address": "ที่อยู่",
+        "addressPlaceholder": "ที่อยู่ของสาขา",
+        "cancel": "ยกเลิก",
+        "creating": "กำลังสร้าง...",
+        "createButton": "สร้างสาขา",
+        "createError": "เกิดข้อผิดพลาดในการสร้างสาขา",
+        "createNewOffice": "สร้างสาขาใหม่",
+        "editTitle": "แก้ไขสาขา",
+        "save": "บันทึก",
+        "saveSuccess": "บันทึกสำเร็จ",
+        "saveError": "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        "status": "สถานะใช้งาน",
+        "search": "ค้นหา",
+        "loading": "กำลังโหลด..."
+    },
+    "permission": {
+        "headerTopic": "จัดการสิทธิ์การใช้งาน",
+        "permissionList": "รายการสิทธิ์การใช้งาน",
+        "nameThai": "ชื่อสิทธิ์ ไทย",
+        "nameEnglish": "ชื่อสิทธิ์ อังกฤษ",
+        "description": "คำอธิบาย",
+        "actions": "การจัดการ",
+        "loading": "กำลังโหลดข้อมูล...",
+        "fetchError": "ไม่สามารถโหลดข้อมูลสิทธิ์ได้",
+        "deleteConfirm": "คุณแน่ใจหรือไม่ว่าต้องการลบ?",
+        "deleteError": "ลบไม่สำเร็จ",
+        "deleteFailed": "เกิดข้อผิดพลาดขณะลบสิทธิ์",
+        "editTitle": "แก้ไขสิทธิ์",
+        "editDescription": "กรอกข้อมูลใหม่แล้วกดบันทึก",
+        "editError": "แก้ไขไม่สำเร็จ",
+        "editFailed": "เกิดข้อผิดพลาดในการแก้ไข",
+        "cancel": "ยกเลิก",
+        "save": "บันทึก"
     }
 }

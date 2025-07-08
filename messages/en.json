@@ -97,7 +97,24 @@
         "enable2fa": "Enable Two-Factor",
         "showQrCode": "Show QR Code",
         "scanDes": "Scan the QR code with the Google Authenticator app",
-        "Button": "Save Change"
+        "Button": "Save Change",
+        "namePlaceholder": "Username",
+        "passwordPlaceholder": "********",
+        "fetchUserError": "Unable to load user data",
+        "fetchUserFailed": "Error occurred while loading user data",
+        "updateSuccess": "Data updated successfully",
+        "updateError": "Error occurred while updating data",
+        "update2FAError": "Unable to update 2FA",
+        "enable2FASuccess": "2FA enabled successfully",
+        "disable2FASuccess": "2FA disabled successfully",
+        "update2FAFailed": "Error occurred while updating 2FA",
+        "fetchQRCodeError": "Unable to fetch QR Code",
+        "showQRCodeSuccess": "QR Code displayed successfully",
+        "fetchQRCodeFailed": "Error occurred while loading QR Code"
+    },
+    "socketAlert": {
+        "title": "Notification",
+        "defaultMessage": "You have a new notification"
     },
     "2fa": {
         "title": "Enter 2FA Code",
@@ -126,6 +143,57 @@
             "user_record": "Recorded By",
             "time_record": "Recorded Time",
             "total_weight": "Total Weight"
+        }
+    },
+    "newLaundry": {
+        "tab2": "Search",
+        "searchTab": {
+            "cardDescription": "Search and view new laundry records",
+            "keyword": "Keyword",
+            "keywordPlaceholder": "Enter document number or keyword...",
+            "search": "Search",
+            "id": "ID",
+            "documentNo": "Document No",
+            "status": "Status",
+            "createdAt": "Created At",
+            "actions": "Actions",
+            "loading": "Loading...",
+            "active": "✅ Active",
+            "inactive": "❌ Inactive",
+            "viewDetails": "View Details",
+            "noData": "No data found."
+        },
+        "detail": {
+            "title": "Details for New Linen ID",
+            "id": "ID",
+            "itemId": "Item ID",
+            "qty": "Qty",
+            "weight": "Weight",
+            "status": "Status",
+            "loading": "Loading...",
+            "noData": "No detail data."
+        },
+        "receiveTab": {
+            "createNewDocument": "Create New Document",
+            "factory": "Factory",
+            "selectFactory": "Select Factory",
+            "round": "Weighing Round",
+            "selectRound": "Select Round",
+            "selectDepartment": "Select Department",
+            "selectDepartmentPlaceholder": "-- Select Department --",
+            "selectItem": "Select Item",
+            "searchItemPlaceholder": "Search items...",
+            "itemId": "Item ID",
+            "addNewItem": "Add New Item",
+            "selected": "Selected",
+            "quantity": "Quantity",
+            "weight": "Weight",
+            "removeItem": "Remove Item",
+            "addEntry": "Add Entry",
+            "totalQuantity": "Total Quantity",
+            "saveAll": "Save All to Database",
+            "saveSuccess": "✅ Data saved successfully",
+            "saveError": "Error occurred while saving data"
         }
     },
     "CleanLinen": {
@@ -167,9 +235,71 @@
         }
     },
     "userManagement": {
-        "headerTopic": "User Management"
+        "headerTopic": "User Management",
+        "userList": "User List",
+        "name": "Name",
+        "email": "Email",
+        "permission": "Permission",
+        "saleOfficeThai": "Sale Office (Thai)",
+        "actions": "Actions",
+        "noData": "No user data",
+        "fetchError": "Error loading data",
+        "editUserTitle": "Edit User",
+        "selectPermission": "Select Permission",
+        "assignedOffices": "Assigned Offices",
+        "updateUserError": "Failed to update user",
+        "updateOfficeError": "Failed to update office",
+        "editFailed": "Error occurred while editing",
+        "cancel": "Cancel",
+        "save": "Save"
     },
     "SaleOfficeManage": {
         "headerTopic": "Sale Office Management"
+    },
+    "saleOffice": {
+        "createTitle": "Create New Sale Office",
+        "siteCode": "Site Code",
+        "siteCodePlaceholder": "e.g., BKK001",
+        "phone": "Phone Number",
+        "phonePlaceholder": "e.g., 02-123-4567",
+        "nameThaiLabel": "Office Name (Thai)",
+        "nameThaiPlaceholder": "e.g., สาขาสีลม",
+        "nameEnglishLabel": "Office Name (English)",
+        "nameEnglishPlaceholder": "e.g., Silom Branch",
+        "email": "Email",
+        "emailPlaceholder": "e.g., silom@company.com",
+        "address": "Address",
+        "addressPlaceholder": "Office address",
+        "cancel": "Cancel",
+        "creating": "Creating...",
+        "createButton": "Create Office",
+        "createError": "Error creating sale office",
+        "createNewOffice": "Create New Office",
+        "editTitle": "Edit Sale Office",
+        "save": "Save",
+        "saveSuccess": "Saved successfully",
+        "saveError": "Error saving data",
+        "status": "Active status",
+        "search": "Search",
+        "loading": "Loading..."
+    },
+    "permission": {
+        "headerTopic": "Permission Management",
+        "permissionList": "Permission List",
+        "nameThai": "Permission Name (Thai)",
+        "nameEnglish": "Permission Name (English)",
+        "description": "Description",
+        "actions": "Actions",
+        "loading": "Loading data...",
+        "fetchError": "Failed to load permissions",
+        "deleteConfirm": "Are you sure you want to delete?",
+        "deleteError": "Delete failed",
+        "deleteFailed": "Error occurred while deleting permission",
+        "editTitle": "Edit Permission",
+        "editDescription": "Enter new information and click save",
+        "editError": "Edit failed",
+        "editFailed": "Error occurred while editing",
+        "cancel": "Cancel",
+        "save": "Save"
     }
 }

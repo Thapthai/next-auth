@@ -12,21 +12,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import EditModal from "./editModal";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { Permission } from "@/types/permission";
 
 
 export default function PermissionMangementPage() {
-    const t = useTranslations("DirtyLinen");
+    const t = useTranslations("permission");
 
     const [permissions, setPermissions] = useState<Permission[]>([]);
     const [loading, setLoading] = useState(true);
@@ -43,7 +35,7 @@ export default function PermissionMangementPage() {
             setPermissions(data);
         } catch (err) {
             console.error(err);
-            setError("ไม่สามารถโหลดข้อมูลสิทธิ์ได้");
+            setError(t("fetchError"));
         } finally {
             setLoading(false);
         }
@@ -54,15 +46,15 @@ export default function PermissionMangementPage() {
     }, []);
 
     const handleDelete = async (id: number) => {
-        if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ?")) return;
+        if (!confirm(t("deleteConfirm"))) return;
         try {
             const res = await fetch(`http://localhost:3000/permission/${id}`, {
                 method: "DELETE",
             });
-            if (!res.ok) throw new Error("ลบไม่สำเร็จ");
+            if (!res.ok) throw new Error(t("deleteError"));
             setPermissions(prev => prev.filter(p => p.id !== id));
         } catch (error) {
-            alert("เกิดข้อผิดพลาดขณะลบสิทธิ์");
+            alert(t("deleteFailed"));
         }
     };
 
@@ -75,10 +67,10 @@ export default function PermissionMangementPage() {
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
 
-                        <h2 className="text-xl font-semibold mb-4">Permission List</h2>
+                        <h2 className="text-xl font-semibold mb-4">{t("permissionList")}</h2>
 
                         {loading ? (
-                            <p>กำลังโหลดข้อมูล...</p>
+                            <p>{t("loading")}</p>
                         ) : error ? (
                             <p className="text-red-500">{error}</p>
                         ) : (
@@ -86,10 +78,10 @@ export default function PermissionMangementPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>#</TableHead>
-                                        <TableHead>ชื่อสิทธิ์ ไทย</TableHead>
-                                        <TableHead>ชื่อสิทธิ์ อังกฏษ</TableHead>
-                                        <TableHead>คำอธิบาย</TableHead>
-                                        <TableHead className="text-right">การจัดการ</TableHead>
+                                        <TableHead>{t("nameThai")}</TableHead>
+                                        <TableHead>{t("nameEnglish")}</TableHead>
+                                        <TableHead>{t("description")}</TableHead>
+                                        <TableHead className="text-right">{t("actions")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>

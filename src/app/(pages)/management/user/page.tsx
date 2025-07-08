@@ -35,7 +35,7 @@ export default function UserManagement() {
             setUsers(data);
         } catch (error) {
             console.error(error);
-            setError("เกิดข้อผิดพลาดในการโหลดข้อมูล " + error);
+            setError(t("fetchError") + " " + error);
         }
     };
 
@@ -52,23 +52,24 @@ export default function UserManagement() {
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         <h2 className="text-2xl font-bold text-gray-900 border-b pb-2 mb-4">
-                            รายชื่อผู้ใช้งาน
+                            {t("userList")}
                         </h2>
 
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>ชื่อ</TableHead>
-                                    <TableHead>อีเมล</TableHead>
-                                    <TableHead>permission</TableHead>
-                                    <TableHead>สาขา (ไทย)</TableHead>
+                                    <TableHead>{t("name")}</TableHead>
+                                    <TableHead>{t("email")}</TableHead>
+                                    <TableHead>{t("permission")}</TableHead>
+                                    <TableHead>{t("saleOfficeThai")}</TableHead>
+                                    <TableHead className="text-right">{t("actions")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {users.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={3} className="text-center p-4 text-gray-500">
-                                            ไม่มีข้อมูลผู้ใช้
+                                        <TableCell colSpan={5} className="text-center p-4 text-gray-500">
+                                            {t("noData")}
                                         </TableCell>
                                     </TableRow>
                                 ) : (

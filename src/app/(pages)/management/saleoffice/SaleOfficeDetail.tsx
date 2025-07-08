@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { SaleOffice } from "@/types/saleOffice";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 type Props = {
     saleOffice: SaleOffice | null;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
+    const t = useTranslations('saleOffice');
     const [form, setForm] = useState({
         site_code: "",
         site_office_name_th: "",
@@ -38,12 +40,12 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
                 body: JSON.stringify(form),
             });
 
-            if (!res.ok) throw new Error("ไม่สามารถบันทึกข้อมูลได้");
+            if (!res.ok) throw new Error(t('saveError'));
 
-            alert("บันทึกสำเร็จ");
+            alert(t('saveSuccess'));
             refresh(); // โหลดใหม่
         } catch (err) {
-            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+            alert(t('saveError'));
         }
     };
 
@@ -51,35 +53,38 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
 
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
-            <h2 className="text-lg font-bold text-gray-800">แก้ไขสาขา</h2>
+            <h2 className="text-lg font-bold text-gray-800">{t('editTitle')}</h2>
 
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">Site Code</label>
+                    <label className="text-sm text-gray-600">{t('siteCode')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.site_code}
                         onChange={(e) => setForm({ ...form, site_code: e.target.value })}
+                        placeholder={t('siteCodePlaceholder')}
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่อไทย</label>
+                    <label className="text-sm text-gray-600">{t('nameThaiLabel')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.site_office_name_th}
                         onChange={(e) => setForm({ ...form, site_office_name_th: e.target.value })}
+                        placeholder={t('nameThaiPlaceholder')}
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่ออังกฤษ</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglishLabel')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.site_office_name_en}
                         onChange={(e) => setForm({ ...form, site_office_name_en: e.target.value })}
+                        placeholder={t('nameEnglishPlaceholder')}
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <label className="text-sm text-gray-600">สถานะใช้งาน</label>
+                    <label className="text-sm text-gray-600">{t('status')}</label>
                     <input
                         type="checkbox"
                         checked={form.status}
@@ -90,7 +95,7 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="default" onClick={handleSubmit}>
-                    💾 บันทึก
+                    💾 {t('save')}
                 </Button>
             </div>
         </div>

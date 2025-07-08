@@ -23,7 +23,7 @@ import {
 import ShowNewlinenDetail from "./new-linen-detail";
 
 export default function SearchTab() {
-    const t = useTranslations("DirtyLinen");
+    const t = useTranslations("newLaundry");
 
     const [keyword, setKeyword] = useState("");
     const [data, setData] = useState([]);
@@ -62,23 +62,23 @@ export default function SearchTab() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{t("tab1")}</CardTitle>
-                <CardDescription>{t('contentsTab1.cardDescription')}</CardDescription>
+                <CardTitle>{t("tab2")}</CardTitle>
+                <CardDescription>{t('searchTab.cardDescription')}</CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4">
                 {/* Search Form */}
                 <div className="flex items-end gap-4">
                     <div className="flex-1">
-                        <Label htmlFor="keyword" className="my-1">{t('contentsTab1.Keyword')}</Label>
+                        <Label htmlFor="keyword" className="my-1">{t('searchTab.keyword')}</Label>
                         <Input
                             id="keyword"
-                            placeholder="Enter doc no or keyword..."
+                            placeholder={t('searchTab.keywordPlaceholder')}
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <Button onClick={handleSearch}>Search</Button>
+                    <Button onClick={handleSearch}>{t('searchTab.search')}</Button>
                 </div>
 
                 {/* Data Table */}
@@ -86,18 +86,18 @@ export default function SearchTab() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>ID</TableHead>
-                                <TableHead>Document No</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Created At</TableHead>
-                                <TableHead>Actions</TableHead> {/* เพิ่มคอลัมน์ Action */}
+                                <TableHead>{t('searchTab.id')}</TableHead>
+                                <TableHead>{t('searchTab.documentNo')}</TableHead>
+                                <TableHead>{t('searchTab.status')}</TableHead>
+                                <TableHead>{t('searchTab.createdAt')}</TableHead>
+                                <TableHead>{t('searchTab.actions')}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center">
-                                        Loading...
+                                        {t('searchTab.loading')}
                                     </TableCell>
                                 </TableRow>
                             ) : data.length > 0 ? (
@@ -105,11 +105,11 @@ export default function SearchTab() {
                                     <TableRow key={item.id}>
                                         <TableCell>{item.id}</TableCell>
                                         <TableCell>{item.dirty_doc_no}</TableCell>
-                                        <TableCell>{item.status ? "✅ Active" : "❌ Inactive"}</TableCell>
+                                        <TableCell>{item.status ? t('searchTab.active') : t('searchTab.inactive')}</TableCell>
                                         <TableCell>{new Date(item.create_at).toLocaleString()}</TableCell>
                                         <TableCell>
                                             <Button size="sm" onClick={() => handleViewDetails(item.id)}>
-                                                View Details
+                                                {t('searchTab.viewDetails')}
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -117,7 +117,7 @@ export default function SearchTab() {
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center text-muted-foreground">
-                                        No data found.
+                                        {t('searchTab.noData')}
                                     </TableCell>
                                 </TableRow>
                             )}

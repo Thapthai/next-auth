@@ -11,6 +11,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Permission } from "@/types/permission";
+import { useTranslations } from "next-intl";
 
 type EditModalProps = {
     open: boolean;
@@ -26,6 +27,8 @@ export default function EditModal({
     selectedPermission,
     fetchPermissions,
 }: EditModalProps) {
+    const t = useTranslations("permission");
+    
     const [editForm, setEditForm] = useState({
         name_th: "",
         name_en: "",
@@ -52,7 +55,7 @@ export default function EditModal({
                 body: JSON.stringify(editForm),
             });
 
-            if (!res.ok) throw new Error("แก้ไขไม่สำเร็จ");
+            if (!res.ok) throw new Error(t("editError"));
 
             setOpen(false);
 
@@ -60,7 +63,7 @@ export default function EditModal({
             fetchPermissions();
 
         } catch (err) {
-            alert("เกิดข้อผิดพลาดในการแก้ไข");
+            alert(t("editFailed"));
         }
     };
 
@@ -69,13 +72,13 @@ export default function EditModal({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>แก้ไขสิทธิ์</DialogTitle>
-                    <DialogDescription>กรอกข้อมูลใหม่แล้วกดบันทึก</DialogDescription>
+                    <DialogTitle>{t("editTitle")}</DialogTitle>
+                    <DialogDescription>{t("editDescription")}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-3">
                     <div>
-                        <label className="text-sm font-medium">ชื่อ (TH)</label>
+                        <label className="text-sm font-medium">{t("nameThai")}</label>
                         <input
                             className="w-full border px-2 py-1 rounded"
                             value={editForm.name_th}
@@ -83,7 +86,7 @@ export default function EditModal({
                         />
                     </div>
                     <div>
-                        <label className="text-sm font-medium">ชื่อ (EN)</label>
+                        <label className="text-sm font-medium">{t("nameEnglish")}</label>
                         <input
                             className="w-full border px-2 py-1 rounded"
                             value={editForm.name_en}
@@ -91,7 +94,7 @@ export default function EditModal({
                         />
                     </div>
                     <div>
-                        <label className="text-sm font-medium">คำอธิบาย</label>
+                        <label className="text-sm font-medium">{t("description")}</label>
                         <textarea
                             className="w-full border px-2 py-1 rounded"
                             value={editForm.description}
@@ -101,8 +104,8 @@ export default function EditModal({
                 </div>
 
                 <DialogFooter className="mt-4">
-                    <Button variant="secondary" onClick={() => setOpen(false)}>ยกเลิก</Button>
-                    <Button onClick={handleSubmitEdit}>บันทึก</Button>
+                    <Button variant="secondary" onClick={() => setOpen(false)}>{t("cancel")}</Button>
+                    <Button onClick={handleSubmitEdit}>{t("save")}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
     Table,
     TableHeader,
@@ -15,6 +16,7 @@ interface ShowNewLinenDetailProps {
 }
 
 export default function ShowNewlinenDetail({ newLinenId }: ShowNewLinenDetailProps) {
+    const t = useTranslations("newLaundry");
     const [details, setDetails] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -51,23 +53,23 @@ export default function ShowNewlinenDetail({ newLinenId }: ShowNewLinenDetailPro
     return (
         <div className="border rounded-lg mt-6">
             <h3 className="text-lg font-semibold px-4 py-2">
-                Details for Dirty ID: {newLinenId}
+                {t('detail.title')}: {newLinenId}
             </h3>
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Item ID</TableHead>
-                        <TableHead>Qty</TableHead>
-                        <TableHead>Weight</TableHead>
-                        <TableHead>Status</TableHead>
+                        <TableHead>{t('detail.id')}</TableHead>
+                        <TableHead>{t('detail.itemId')}</TableHead>
+                        <TableHead>{t('detail.qty')}</TableHead>
+                        <TableHead>{t('detail.weight')}</TableHead>
+                        <TableHead>{t('detail.status')}</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {loading ? (
                         <TableRow>
                             <TableCell colSpan={5} className="text-center">
-                                Loading...
+                                {t('detail.loading')}
                             </TableCell>
                         </TableRow>
                     ) : details.length > 0 ? (
@@ -83,7 +85,7 @@ export default function ShowNewlinenDetail({ newLinenId }: ShowNewLinenDetailPro
                     ) : (
                         <TableRow>
                             <TableCell colSpan={5} className="text-center text-muted-foreground">
-                                No detail data.
+                                {t('detail.noData')}
                             </TableCell>
                         </TableRow>
                     )}

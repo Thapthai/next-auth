@@ -7,7 +7,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconCaretRightFilled, IconReload, IconSearch, IconPlus } from "@tabler/icons-react";
-import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SaleOffice } from "@/types/saleOffice";
 import { v4 as uuidv4 } from 'uuid';
@@ -15,6 +14,7 @@ import SaleOfficeDetail from "./SaleOfficeDetail";
 import CreateSaleOfficeForm from "./CreateSaleOfficeForm";
 import { useRouter, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function SaleOfficePage() {
     const [saleOffices, setSaleOffices] = useState<SaleOffice[]>([]);
@@ -24,8 +24,10 @@ export default function SaleOfficePage() {
     const [input, setInput] = useState("");
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('saleOffice');
 
     // Reset loading state when pathname changes (navigation completes)
     useEffect(() => {
@@ -81,7 +83,16 @@ export default function SaleOfficePage() {
     };
 
     const handleCreateSuccess = () => {
+        setIsCreating(false);
         loadSaleOffices(keyword);
+    };
+
+    const handleCreateStart = () => {
+        setIsCreating(true);
+    };
+
+    const handleCreateError = () => {
+        setIsCreating(false);
     };
 
     return (
@@ -104,24 +115,30 @@ export default function SaleOfficePage() {
                             </Button>
                             <Button type="submit">
                                 <IconSearch />
+                                {t('search')}
                             </Button>
                             <Button 
                                 onClick={handleCreateSaleOffice}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title="สร้างสาขาใหม่"
+                                title={t("createNewOffice")}
+                                disabled={isCreating}
                             >
-                                <IconPlus className="w-4 h-4" />
+                                {isCreating ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <IconPlus className="w-4 h-4" />
+                                )}
                             </Button>
                         </form>
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead></TableHead>
-                                    <TableHead>Site Code</TableHead>
-                                    <TableHead>ชื่อไทย</TableHead>
-                                    <TableHead>ชื่ออังกฤษ</TableHead>
+                                    <TableHead>{t('siteCode')}</TableHead>
+                                    <TableHead>{t('nameThaiLabel')}</TableHead>
+                                    <TableHead>{t('nameEnglishLabel')}</TableHead>
                                     <TableHead></TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -157,7 +174,7 @@ export default function SaleOfficePage() {
                                                     {isItemLoading ? (
                                                         <div className="flex items-center gap-2">
                                                             <Loader2 className="w-4 h-4 animate-spin" />
-                                                            <span className="text-xs">กำลังโหลด...</span>
+                                                            <span className="text-xs">{t('loading')}</span>
                                                         </div>
                                                     ) : (
                                                         <IconCaretRightFilled />
@@ -169,7 +186,6 @@ export default function SaleOfficePage() {
                                 })}
                             </TableBody>
                         </Table>
-
                         <SaleOfficeDetail saleOffice={selectedOffice} refresh={() => loadSaleOffices(keyword)} />
                     </div>
                 </div>
@@ -179,6 +195,8 @@ export default function SaleOfficePage() {
                 isVisible={isCreateFormVisible}
                 onClose={() => setIsCreateFormVisible(false)}
                 onSuccess={handleCreateSuccess}
+                onStart={handleCreateStart}
+                onError={handleCreateError}
             />
         </>
     );

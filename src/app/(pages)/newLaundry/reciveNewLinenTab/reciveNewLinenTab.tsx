@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 
 
 export default function ReciveNewLinenTab() {
-    const t = useTranslations('NewLaundry');
+    const t = useTranslations('newLaundry');
     const [selectedFactory, setSelectedFactory] = useState("");
     const [selectedRound, setSelectedRound] = useState("");
     const [factories, setFactories] = useState([]);
@@ -131,11 +131,11 @@ export default function ReciveNewLinenTab() {
 
             const detailResults = await Promise.all(newLinenDetailResponses.map((res) => res.json()));
             console.log("เพิ่มสำเร็จ", detailResults);
-            alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+            alert(t('receiveTab.saveSuccess'));
             window.location.reload(); // ✅ รีโหลดหน้าเว็บ
         } catch (err) {
             console.error("❌ เกิดข้อผิดพลาด:", err);
-            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+            alert(t('receiveTab.saveError'));
         }
     };
 
@@ -143,14 +143,14 @@ export default function ReciveNewLinenTab() {
         <>
             <Card>
                 <CardHeader>
-                    <CardTitle>สร้างเอกสารใหม่</CardTitle>
+                    <CardTitle>{t('receiveTab.createNewDocument')}</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <Label>Factory</Label>
+                        <Label>{t('receiveTab.factory')}</Label>
                         <Select value={selectedFactory} onValueChange={setSelectedFactory}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="เลือกโรงงาน" />
+                                <SelectValue placeholder={t('receiveTab.selectFactory')} />
                             </SelectTrigger>
                             <SelectContent>
                                 {factories.map((f: any) => (
@@ -163,10 +163,10 @@ export default function ReciveNewLinenTab() {
                     </div>
 
                     <div>
-                        <Label>รอบชั่งผ้า</Label>
+                        <Label>{t('receiveTab.round')}</Label>
                         <Select value={selectedRound} onValueChange={setSelectedRound}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="เลือกรอบ" />
+                                <SelectValue placeholder={t('receiveTab.selectRound')} />
                             </SelectTrigger>
                             <SelectContent>
                                 {["5.00", "11.00", "00.00", "03.00", "12.00"].map((r) => (
@@ -180,13 +180,13 @@ export default function ReciveNewLinenTab() {
 
                     {/* แผนก */}
                     <div>
-                        <Label>เลือกแผนก</Label>
+                        <Label>{t('receiveTab.selectDepartment')}</Label>
                         <select
                             className="w-full border rounded p-2"
                             value={selectedDepartment}
                             onChange={(e) => setSelectedDepartment(e.target.value)}
                         >
-                            <option value="">-- เลือกแผนก --</option>
+                            <option value="">{t('receiveTab.selectDepartmentPlaceholder')}</option>
                             {departments.map((d: any) => (
                                 <option key={d.id} value={d.id}>{d.name_th}</option>
                             ))}
@@ -196,9 +196,9 @@ export default function ReciveNewLinenTab() {
                     {/* Combobox สินค้า */}
                     {selectedDepartment && (
                         <div>
-                            <Label>เลือกสินค้า</Label>
+                            <Label>{t('receiveTab.selectItem')}</Label>
                             <Input
-                                placeholder="ค้นหาสินค้า..."
+                                placeholder={t('receiveTab.searchItemPlaceholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="mb-2"
@@ -210,7 +210,7 @@ export default function ReciveNewLinenTab() {
                                         className={`p-2 hover:bg-gray-100 cursor-pointer ${selectedItem?.id === item.id ? "bg-blue-100" : ""}`}
                                         onClick={() => setSelectedItem(item)}
                                     >
-                                        {item.name_th || `Item ID: ${item.id}`}
+                                        {item.name_th || `${t('receiveTab.itemId')}: ${item.id}`}
                                     </div>
                                 ))}
                                 {filteredItems.length === 0 && (
@@ -218,13 +218,13 @@ export default function ReciveNewLinenTab() {
                                         className="p-2 text-blue-600 cursor-pointer hover:underline"
                                         onClick={handleCreateNewUnregisteredItem}
                                     >
-                                        + เพิ่มสินค้าใหม่ "{searchTerm}"
+                                        + {t('receiveTab.addNewItem')} "{searchTerm}"
                                     </div>
                                 )}
                             </div>
                             {selectedItem && (
                                 <div className="mt-2 text-sm text-green-600">
-                                    เลือกแล้ว: {selectedItem.name_th}
+                                    {t('receiveTab.selected')}: {selectedItem.name_th}
                                 </div>
                             )}
                         </div>
@@ -238,24 +238,24 @@ export default function ReciveNewLinenTab() {
                                 className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg relative bg-muted/40"
                             >
                                 <div className="md:col-span-2">
-                                    <Label htmlFor={`qty-${index}`}>จำนวน</Label>
+                                    <Label htmlFor={`qty-${index}`}>{t('receiveTab.quantity')}</Label>
                                     <Input
                                         id={`qty-${index}`}
                                         type="number"
                                         value={entry.qty}
                                         onChange={(e) => handleChange(index, "qty", e.target.value)}
-                                        placeholder="จำนวน"
+                                        placeholder={t('receiveTab.quantity')}
                                         className="w-full"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <Label htmlFor={`weight-${index}`}>น้ำหนัก</Label>
+                                    <Label htmlFor={`weight-${index}`}>{t('receiveTab.weight')}</Label>
                                     <Input
                                         id={`weight-${index}`}
                                         type="number"
                                         value={entry.weight}
                                         onChange={(e) => handleChange(index, "weight", e.target.value)}
-                                        placeholder="น้ำหนัก"
+                                        placeholder={t('receiveTab.weight')}
                                         className="w-full"
                                     />
                                 </div>
@@ -267,7 +267,7 @@ export default function ReciveNewLinenTab() {
                                         size="icon"
                                         className="absolute top-0 right-0 text-red-500 hover:text-red-700"
                                         onClick={() => handleRemoveEntry(index)}
-                                        title="ลบรายการ"
+                                        title={t('receiveTab.removeItem')}
                                     >
                                         ✕
                                     </Button>
@@ -276,19 +276,19 @@ export default function ReciveNewLinenTab() {
                         ))}
 
                         <Button type="button" variant="secondary" onClick={addEntry} className="w-full md:w-auto">
-                            + เพิ่มรายการ
+                            + {t('receiveTab.addEntry')}
                         </Button>
 
                         {/* ผลรวมจำนวน qty */}
                         <div className="text-right font-semibold">
-                            ผลรวมจำนวน:{" "}
+                            {t('receiveTab.totalQuantity')}:{" "}
                             {entries.reduce((sum, entry) => sum + Number(entry.qty || 0), 0)}
                         </div>
                     </CardContent>
                 )}
 
                 <CardFooter className="flex justify-end">
-                    <Button onClick={handleCreateNewNewLinen}>บันทึกทั้งหมดลงฐานข้อมูล</Button>
+                    <Button onClick={handleCreateNewNewLinen}>{t('receiveTab.saveAll')}</Button>
                 </CardFooter>
             </Card >
 
