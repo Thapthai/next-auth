@@ -25,10 +25,10 @@ services:
       - /app/.next
     networks:
       - frontend-network
-      - auth-nest-js_auth-network
+      - auth-nest-js_auth-network-dev
 
 networks:
   frontend-network:
     driver: bridge
-  auth-nest-js_auth-network:
+  auth-nest-js_auth-network-dev:
     external: true 

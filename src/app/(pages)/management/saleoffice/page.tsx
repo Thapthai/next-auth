@@ -6,12 +6,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconCaretRightFilled, IconReload, IconSearch } from "@tabler/icons-react";
+import { IconCaretRightFilled, IconReload, IconSearch, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SaleOffice } from "@/types/saleOffice";
 import { v4 as uuidv4 } from 'uuid';
 import SaleOfficeDetail from "./SaleOfficeDetail";
+import CreateSaleOfficeForm from "./CreateSaleOfficeForm";
 import { useRouter, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -22,6 +23,7 @@ export default function SaleOfficePage() {
     const [keyword, setKeyword] = useState("");
     const [input, setInput] = useState("");
     const [loadingId, setLoadingId] = useState<number | null>(null);
+    const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -74,6 +76,14 @@ export default function SaleOfficePage() {
         router.push(`/management/saleoffice/${id}/departments`);
     };
 
+    const handleCreateSaleOffice = () => {
+        setIsCreateFormVisible(true);
+    };
+
+    const handleCreateSuccess = () => {
+        loadSaleOffices(keyword);
+    };
+
     return (
         <>
             <SiteHeader headerTopic="รายการสาขา (Sale Offices)" />
@@ -95,9 +105,16 @@ export default function SaleOfficePage() {
                             <Button type="submit">
                                 <IconSearch />
                             </Button>
-
+                            <Button 
+                                onClick={handleCreateSaleOffice}
+                                variant="outline"
+                                size="icon"
+                                className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                                title="สร้างสาขาใหม่"
+                            >
+                                <IconPlus className="w-4 h-4" />
+                            </Button>
                         </form>
-
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -111,7 +128,7 @@ export default function SaleOfficePage() {
                             <TableBody>
                                 {saleOffices.map((office) => {
                                     const isItemLoading = loadingId === office.id;
-                                    
+
                                     return (
                                         <TableRow key={uuidv4()}>
                                             <TableCell className="w-10">
@@ -134,9 +151,8 @@ export default function SaleOfficePage() {
                                                     variant="ghost"
                                                     disabled={isItemLoading}
                                                     onClick={() => handleGoToDepartment(office.id)}
-                                                    className={`transition-all duration-200 ${
-                                                        isItemLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-                                                    }`}
+                                                    className={`transition-all duration-200 ${isItemLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
+                                                        }`}
                                                 >
                                                     {isItemLoading ? (
                                                         <div className="flex items-center gap-2">
@@ -158,6 +174,12 @@ export default function SaleOfficePage() {
                     </div>
                 </div>
             </div>
+
+            <CreateSaleOfficeForm
+                isVisible={isCreateFormVisible}
+                onClose={() => setIsCreateFormVisible(false)}
+                onSuccess={handleCreateSuccess}
+            />
         </>
     );
 }
