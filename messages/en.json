@@ -301,5 +301,41 @@
         "editFailed": "Error occurred while editing",
         "cancel": "Cancel",
         "save": "Save"
+    },
+    "CalculatePercentage": {
+        "headerTopic": "Calculate Percentage"
+    },
+    "CleanDoc": {
+        "headerTopic": "Clean Doc"
+    },
+    "DamagedHospital": {
+        "headerTopic": "Damaged Hospital"
+    },
+    "HospitalReturn": {
+        "headerTopic": "Hospital Return"
+    },
+    "LaundryClaim": {
+        "headerTopic": "Laundry Claim"
+    },
+    "ReturnLaundry": {
+        "headerTopic": "Return Laundry"
+    },
+    "SendForFix": {
+        "headerTopic": "Send For Fix"
+    },
+    "ShelfCount": {
+        "headerTopic": "Shelf Count"
+    },
+    "Sticker": {
+        "headerTopic": "Sticker"
+    },
+    "StockCountForm": {
+        "headerTopic": "Stock Count Form"
+    },
+    "StockIn": {
+        "headerTopic": "Stock In"
+    },
+    "DirtyDoc": {
+        "headerTopic": "Dirty Doc"
     }
 }

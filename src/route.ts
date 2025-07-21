@@ -13,7 +13,20 @@ export const publicRoutes = [
     '/sounds/levelup.mp3',
     "/sounds/flipdish-ringer.mp3",
     "/verify-email-successful",
-    "/dashboard"
+    "/dashboard",
+    "/stockIn",
+    "/laundryClaim",
+    "/damagedHospital",
+    "/sendForFix",
+    "/returnLaundry",
+    "/shelfCount",  
+    "/hospitalReturn",
+    "/sticker",
+    "/calculatePercentage",
+    "/stockCountForm",
+    "/cleanDoc",
+    "/dirtyDoc",
+    "/stockInRecord",
 ];
 
 export const authRoutes = [

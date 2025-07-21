@@ -29,7 +29,7 @@ export default function PermissionMangementPage() {
 
     const fetchPermissions = async () => {
         try {
-            const res = await fetch("http://localhost:3000/permission");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/permission`);
             if (!res.ok) throw new Error("Failed to fetch permissions");
             const data = await res.json();
             setPermissions(data);
@@ -48,7 +48,7 @@ export default function PermissionMangementPage() {
     const handleDelete = async (id: number) => {
         if (!confirm(t("deleteConfirm"))) return;
         try {
-            const res = await fetch(`http://localhost:3000/permission/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/permission/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error(t("deleteError"));

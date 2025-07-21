@@ -301,5 +301,41 @@
         "editFailed": "เกิดข้อผิดพลาดในการแก้ไข",
         "cancel": "ยกเลิก",
         "save": "บันทึก"
+    },
+    "CalculatePercentage": {
+        "headerTopic": "คิดเป็นเปอร์เซ็นต์"
+    },
+    "CleanDoc": {
+        "headerTopic": "บันทึกเอกสารผ้าสะอาด โรงซัก"
+    },
+    "DamagedHospital": {
+        "headerTopic": "บันทึกผ้าชำรุด(โรงพยาบาล)"
+    },
+    "HospitalReturn": {
+        "headerTopic": "บันทึกรับการคืนผ้า(โรงพยาบาล)"
+    },
+    "LaundryClaim": {
+        "headerTopic": "บันทึกส่งเครมโรงซัก(โรงซัก)"
+    },
+    "ReturnLaundry": {
+        "headerTopic": "บันทึกส่งผ้ารับกลับ"
+    },
+    "SendForFix": {
+        "headerTopic": "บันทึกส่งผ้าแก้ไข"
+    },
+    "ShelfCount": {
+        "headerTopic": "นับสต๊อก"
+    },
+    "Sticker": {
+        "headerTopic": "สติ๊กเกอร์"
+    },
+    "StockCountForm": {
+        "headerTopic": "แบบฟอร์มการนับสต๊อก"
+    },
+    "StockIn": {
+        "headerTopic": "บันทึกรับเข้าสต๊อก"
+    },
+    "DirtyDoc": {
+        "headerTopic": "บันทึกเอกสารผ้าสกปรก โรงซัก"
     }
 }

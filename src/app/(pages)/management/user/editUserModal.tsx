@@ -118,19 +118,6 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
                         ))}
                     </select>
 
-                    {/* <select
-                        className="w-full border rounded px-2 py-1"
-                        value={form.department_id}
-                        onChange={(e) => setForm({ ...form, department_id: Number(e.target.value) })}
-                    >
-                        <option value="">เลือกแผนก</option>
-                        {departments.map(d => (
-                            <option key={d.id} value={d.id}>
-                                {d.name_th}
-                            </option>
-                        ))}
-                    </select> */}
-
                     <div className="space-y-1">
                         <label className="font-medium">{t("assignedOffices")}</label>
                         {saleOffices.map(office => (
