@@ -210,6 +210,12 @@ export const data = {
             url: "/management/permission",
             icon: IconDashboard,
             permission: [1, 2],
+          },
+          {
+            title: "factories",
+            url: "/management/factories",
+            icon: IconDashboard,
+            permission: [1, 2],
           }
         ]
       },

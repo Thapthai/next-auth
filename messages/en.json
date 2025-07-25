@@ -70,13 +70,14 @@
         "laundrySetting": "Laundry Setting",
         "userMnagement": "User",
         "permissionManagement": "Permission",
-        "saleOffice": "Sale Offices"
+        "saleOffice": "Sale Offices",
+        "factories": "Factories Setting"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
         "settings": "Settings",
         "logoutButton": "Log out"
-    },
+    },  
     "Unauthorized": {
         "topic": "File Not Found (404)",
         "content": "You are not Unauthorized!",
@@ -84,7 +85,7 @@
         "redirecting": "Redirecting in {seconds} seconds..."
     },
     "NotFound": {
-        "topic": "unauthorized",
+        "topic": "File Not Found (404)",
         "content": "Sorry, We cannot display this page!",
         "backHome": "Back Home",
         "redirecting": "Redirecting in {seconds} seconds..."
@@ -337,5 +338,58 @@
     },
     "DirtyDoc": {
         "headerTopic": "Dirty Doc"
+    },
+    "Factories": {
+        "headerTopic": "Factories",
+        "factoriesList": "Factories List",
+        "nameThai": "Factory Name (Thai)",
+        "nameEnglish": "Factory Name (English)",
+        "address": "Address",
+        "actions": "Actions",
+        "loading": "Loading data...",
+        "fetchError": "Failed to load factories",
+        "deleteConfirm": "Are you sure you want to delete?",
+        "deleteError": "Delete failed",
+        "deleteFailed": "Error occurred while deleting factory",
+        "editTitle": "Edit Factory",
+        "editDescription": "Enter new information and click save",
+        "editError": "Edit failed",
+        "editFailed": "Error occurred while editing",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving...",
+        "createTitle": "Create New Factory",
+        "createButton": "Create Factory",
+        "creating": "Creating...",
+        "createError": "Failed to create factory",
+        "nameThaiLabel": "Factory Name (Thai)",
+        "nameThaiPlaceholder": "Enter factory name in Thai",
+        "nameEnglishLabel": "Factory Name (English)", 
+        "nameEnglishPlaceholder": "Enter factory name in English",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Enter factory address",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "Enter phone number",
+        "priceLabel": "Price",
+        "pricePlaceholder": "Enter price",
+        "postLabel": "Post Code",
+        "postPlaceholder": "Enter post code",
+        "taxIdLabel": "Tax ID",
+        "taxIdPlaceholder": "Enter tax ID",
+        "searchPlaceholder": "Search by factory name...",
+        "searchButton": "Search",
+        "clearSearch": "Clear",
+        "addFactory": "Add New Factory",
+        "noResults": "No factories found",
+        "showingResults": "Showing {start} to {end} of {total} results",
+        "itemsPerPage": "Items per page:",
+        "page": "Page",
+        "of": "of",
+        "previous": "Previous",
+        "next": "Next",
+        "first": "First",
+        "last": "Last",
+        "search": "Search",
+        "createNewFactory": "Create New Factory"
     }
 }

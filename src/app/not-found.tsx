@@ -56,7 +56,7 @@ export default function NotFound() {
                     href="/dashboard"
                     className="inline-block px-6 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition"
                 >
-                    {t("backHome") || "กลับหน้าแรก"}
+                    {t("backHome")}
                 </Link>
             </div>
         </div>

@@ -9,6 +9,11 @@ import { Select } from "@radix-ui/react-select";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
+interface ItemEntry {
+    item: any;
+    qty: string;
+    weight: string;
+}
 
 export default function ReciveNewLinenTab() {
     const t = useTranslations('newLaundry');
@@ -30,6 +35,10 @@ export default function ReciveNewLinenTab() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
+    // เปลี่ยนจาก entries เป็น itemEntries ที่เก็บทั้ง item, qty, weight
+    const [itemEntries, setItemEntries] = useState<ItemEntry[]>([]);
+    const [currentQty, setCurrentQty] = useState("");
+    const [currentWeight, setCurrentWeight] = useState("");
 
     useEffect(() => {
         fetch(`${baseUrl}/departments`)
@@ -55,21 +64,29 @@ export default function ReciveNewLinenTab() {
             item.name_th?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+    const addItemEntry = () => {
+        if (!selectedItem || !currentQty || !currentWeight) {
+            alert("กรุณาเลือก item และกรอกจำนวน น้ำหนักให้ครบ");
+            return;
+        }
 
-    const [entries, setEntries] = useState([{ qty: "", weight: "" }]);
+        const newEntry: ItemEntry = {
+            item: selectedItem,
+            qty: currentQty,
+            weight: currentWeight
+        };
 
-    const handleChange = (index: number, field: "qty" | "weight", value: string) => {
-        const updated = [...entries];
-        updated[index][field] = value;
-        setEntries(updated);
+        setItemEntries([...itemEntries, newEntry]);
+        
+        // รีเซ็ตฟอร์ม
+        setSelectedItem(null);
+        setCurrentQty("");
+        setCurrentWeight("");
+        setSearchTerm("");
     };
 
-    const addEntry = () => {
-        setEntries([...entries, { qty: "", weight: "" }]);
-    };
-
-    const handleRemoveEntry = (index: number) => {
-        setEntries((prev) => prev.filter((_, i) => i !== index));
+    const handleRemoveItemEntry = (index: number) => {
+        setItemEntries((prev) => prev.filter((_, i) => i !== index));
     };
 
     const handleCreateNewUnregisteredItem = async () => {
@@ -93,8 +110,12 @@ export default function ReciveNewLinenTab() {
         setSearchTerm("");
     };
 
-
     const handleCreateNewNewLinen = async () => {
+        if (itemEntries.length === 0) {
+            alert("กรุณาเพิ่มรายการสินค้าอย่างน้อย 1 รายการ");
+            return;
+        }
+
         try {
             const newLinenRes = await fetch(`${baseUrl}/new-linens`, {
                 method: "POST",
@@ -102,26 +123,26 @@ export default function ReciveNewLinenTab() {
                 body: JSON.stringify({
                     factory_id: parseInt(selectedFactory),
                     department_id: parseInt(selectedDepartment),
-                    total: entries.reduce((sum, entry) => sum + Number(entry.qty || 0), 0),
+                    total: itemEntries.reduce((sum, entry) => sum + Number(entry.qty || 0), 0),
                 }),
             });
 
             const newLinen = await newLinenRes.json();
 
             const newLinenDetailResponses = await Promise.all(
-                entries.map((entry) =>
+                itemEntries.map((entry) =>
                     fetch(`${baseUrl}/new-linen-details?`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             new_linen_id: parseInt(newLinen.id),
                             department_id: parseInt(selectedDepartment),
-                            item_id: parseInt(selectedItem.id),
+                            item_id: parseInt(entry.item.id),
                             unit_id: 3,
                             qty: parseFloat(entry.qty),
                             receive_qty: parseFloat(entry.qty),
                             weight: parseFloat(entry.weight),
-                            description: selectedItem.name_th,
+                            description: entry.item.name_th,
                             is_cancel: false,
                             status: true,
                         }),
@@ -176,8 +197,8 @@ export default function ReciveNewLinenTab() {
                         </Select>
                     </div>
                 </CardContent>
+                
                 <CardContent className="space-y-4">
-
                     {/* แผนก */}
                     <div>
                         <Label>{t('receiveTab.selectDepartment')}</Label>
@@ -193,106 +214,142 @@ export default function ReciveNewLinenTab() {
                         </select>
                     </div>
 
-                    {/* Combobox สินค้า */}
+                    {/* เลือก Item และใส่จำนวน น้ำหนัก */}
                     {selectedDepartment && (
-                        <div>
-                            <Label>{t('receiveTab.selectItem')}</Label>
-                            <Input
-                                placeholder={t('receiveTab.searchItemPlaceholder')}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="mb-2"
-                            />
-                            <div className="border rounded max-h-40 overflow-y-auto">
-                                {filteredItems.map((item: any) => (
-                                    <div
-                                        key={item.id}
-                                        className={`p-2 hover:bg-gray-100 cursor-pointer ${selectedItem?.id === item.id ? "bg-blue-100" : ""}`}
-                                        onClick={() => setSelectedItem(item)}
-                                    >
-                                        {item.name_th || `${t('receiveTab.itemId')}: ${item.id}`}
-                                    </div>
-                                ))}
-                                {filteredItems.length === 0 && (
-                                    <div
-                                        className="p-2 text-blue-600 cursor-pointer hover:underline"
-                                        onClick={handleCreateNewUnregisteredItem}
-                                    >
-                                        + {t('receiveTab.addNewItem')} "{searchTerm}"
+                        <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
+                            <h3 className="font-semibold text-lg">เพิ่มสินค้าใหม่</h3>
+                            
+                            {/* เลือก Item */}
+                            <div>
+                                <Label>{t('receiveTab.selectItem')}</Label>
+                                <Input
+                                    placeholder={t('receiveTab.searchItemPlaceholder')}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="mb-2"
+                                />
+                                <div className="border rounded max-h-40 overflow-y-auto bg-white">
+                                    {filteredItems.map((item: any) => (
+                                        <div
+                                            key={item.id}
+                                            className={`p-2 hover:bg-gray-100 cursor-pointer ${selectedItem?.id === item.id ? "bg-blue-100" : ""}`}
+                                            onClick={() => setSelectedItem(item)}
+                                        >
+                                            {item.name_th || `${t('receiveTab.itemId')}: ${item.id}`}
+                                        </div>
+                                    ))}
+                                    {filteredItems.length === 0 && searchTerm && (
+                                        <div
+                                            className="p-2 text-blue-600 cursor-pointer hover:underline"
+                                            onClick={handleCreateNewUnregisteredItem}
+                                        >
+                                            + {t('receiveTab.addNewItem')} "{searchTerm}"
+                                        </div>
+                                    )}
+                                </div>
+                                {selectedItem && (
+                                    <div className="mt-2 text-sm text-green-600">
+                                        {t('receiveTab.selected')}: {selectedItem.name_th}
                                     </div>
                                 )}
                             </div>
+
+                            {/* ใส่จำนวนและน้ำหนัก */}
                             {selectedItem && (
-                                <div className="mt-2 text-sm text-green-600">
-                                    {t('receiveTab.selected')}: {selectedItem.name_th}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <Label>{t('receiveTab.quantity')}</Label>
+                                        <Input
+                                            type="number"
+                                            value={currentQty}
+                                            onChange={(e) => setCurrentQty(e.target.value)}
+                                            placeholder={t('receiveTab.quantity')}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>{t('receiveTab.weight')}</Label>
+                                        <Input
+                                            type="number"
+                                            value={currentWeight}
+                                            onChange={(e) => setCurrentWeight(e.target.value)}
+                                            placeholder={t('receiveTab.weight')}
+                                        />
+                                    </div>
+                                    <div className="flex items-end">
+                                        <Button 
+                                            type="button" 
+                                            onClick={addItemEntry} 
+                                            className="w-full bg-green-600 hover:bg-green-700"
+                                        >
+                                            + {t('receiveTab.addEntry')}
+                                        </Button>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     )}
                 </CardContent>
-                {selectedItem && (
-                    <CardContent className="space-y-6">
-                        {entries.map((entry, index) => (
+
+                {/* แสดงรายการที่เพิ่มแล้ว */}
+                {itemEntries.length > 0 && (
+                    <CardContent className="space-y-4">
+                        <h3 className="font-semibold text-lg">รายการสินค้าที่เพิ่ม</h3>
+                        {itemEntries.map((entry, index) => (
                             <div
                                 key={index}
-                                className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg relative bg-muted/40"
+                                className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 border rounded-lg bg-blue-50 relative"
                             >
                                 <div className="md:col-span-2">
-                                    <Label htmlFor={`qty-${index}`}>{t('receiveTab.quantity')}</Label>
-                                    <Input
-                                        id={`qty-${index}`}
-                                        type="number"
-                                        value={entry.qty}
-                                        onChange={(e) => handleChange(index, "qty", e.target.value)}
-                                        placeholder={t('receiveTab.quantity')}
-                                        className="w-full"
-                                    />
+                                    <Label>สินค้า</Label>
+                                    <div className="p-2 bg-white rounded border">
+                                        {entry.item.name_th}
+                                    </div>
                                 </div>
-                                <div className="md:col-span-2">
-                                    <Label htmlFor={`weight-${index}`}>{t('receiveTab.weight')}</Label>
-                                    <Input
-                                        id={`weight-${index}`}
-                                        type="number"
-                                        value={entry.weight}
-                                        onChange={(e) => handleChange(index, "weight", e.target.value)}
-                                        placeholder={t('receiveTab.weight')}
-                                        className="w-full"
-                                    />
+                                <div>
+                                    <Label>{t('receiveTab.quantity')}</Label>
+                                    <div className="p-2 bg-white rounded border">
+                                        {entry.qty}
+                                    </div>
                                 </div>
-
-                                {index !== 0 && (
+                                <div>
+                                    <Label>{t('receiveTab.weight')}</Label>
+                                    <div className="p-2 bg-white rounded border">
+                                        {entry.weight}
+                                    </div>
+                                </div>
+                                <div className="flex items-end">
                                     <Button
                                         type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="absolute top-0 right-0 text-red-500 hover:text-red-700"
-                                        onClick={() => handleRemoveEntry(index)}
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => handleRemoveItemEntry(index)}
                                         title={t('receiveTab.removeItem')}
+                                        className="w-full"
                                     >
-                                        ✕
+                                        ลบ
                                     </Button>
-                                )}
+                                </div>
                             </div>
                         ))}
 
-                        <Button type="button" variant="secondary" onClick={addEntry} className="w-full md:w-auto">
-                            + {t('receiveTab.addEntry')}
-                        </Button>
-
                         {/* ผลรวมจำนวน qty */}
-                        <div className="text-right font-semibold">
+                        <div className="text-right font-semibold text-lg">
                             {t('receiveTab.totalQuantity')}:{" "}
-                            {entries.reduce((sum, entry) => sum + Number(entry.qty || 0), 0)}
+                            {itemEntries.reduce((sum, entry) => sum + Number(entry.qty || 0), 0)}
                         </div>
                     </CardContent>
                 )}
 
                 <CardFooter className="flex justify-end">
-                    <Button onClick={handleCreateNewNewLinen}>{t('receiveTab.saveAll')}</Button>
+                    <Button 
+                        onClick={handleCreateNewNewLinen}
+                        disabled={itemEntries.length === 0}
+                        className="px-8"
+                    >
+                        {t('receiveTab.saveAll')}
+                    </Button>
                 </CardFooter>
             </Card >
-
         </>
     )
-
 }
