@@ -21,7 +21,7 @@ type Option = {
 
 export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
     const t = useTranslations("userManagement");
-    
+
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -43,7 +43,7 @@ export default function EditUserModal({ open, setOpen, user, refresh }: Props) {
             ]);
             setPermissions(await permsRes.json());
             setDepartments(await deptsRes.json());
-            setSaleOffices(await salesRes.json());
+            setSaleOffices((await salesRes.json()).data || []);
         }
 
         fetchOptions();

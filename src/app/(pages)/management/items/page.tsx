@@ -12,37 +12,36 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { IconChevronLeft, IconChevronRight, IconPencil, IconPlus, IconReload, IconSearch, IconTrash } from "@tabler/icons-react";
-import { Factories } from "@/types/factories";
-import CreateFactoryForm from "./CreateFactoryOfficeForm";
-import EditFactoryForm from "./EditFactoryForm";
-import { Loader2 } from "lucide-react";
+import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { Item } from "@/types/item";
 import { Input } from "@/components/ui/input";
+import ItemDetail from "./ItemDetail";
+import CreateItemForm from "./CreateItemForm";
 
 
-export default function FactoriesPage() {
-    const t = useTranslations("Factories");
+export default function ItemsPage() {
+    const t = useTranslations("Items");
 
-    const [factories, setFactories] = useState<Factories[]>([]);
+    const [items, setItems] = useState<Item[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedFactory, setSelectedFactory] = useState<Factories | null>(null);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [keyword, setKeyword] = useState('');
+    const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 
-    const fetchFactories = async (keyword = "", page = currentPage) => {
+    const fetchItems = async (keyword = "", page = currentPage) => {
+        setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factories/paginated?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch factories");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/items/item-pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${keyword}`);
+            if (!res.ok) throw new Error("Failed to fetch items");
             const data = await res.json();
-            setFactories(data.data || []);
+            setItems(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -54,73 +53,31 @@ export default function FactoriesPage() {
     };
 
     useEffect(() => {
-        fetchFactories();
+        fetchItems(keyword, currentPage);
     }, [currentPage]);
 
-    const handleDelete = async (id: number) => {
-        if (!confirm(t("deleteConfirm"))) return;
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/permission/${id}`, {
-                method: "DELETE",
-            });
-            if (!res.ok) throw new Error(t("deleteError"));
-            setFactories(prev => prev.filter(p => p.id !== id));
-        } catch (error) {
-            alert(t("deleteFailed"));
-        }
-    };
 
-    const handleCreateSuccess = () => {
-        setIsCreateFormVisible(false);
-        fetchFactories();
-    };
-
-    const handleCreateStart = () => {
+    const handleCreateItem = () => {
         setIsCreateFormVisible(true);
-    };
-
-    const handleCreateError = () => {
-        setError(t("createError"));
-    };
-
-    const handleCreateFactory = () => {
-        setEditDialogOpen(false); // ปิด edit form ถ้าเปิดอยู่
-        setSelectedFactory(null); // รีเซ็ต selected factory
-        setIsCreateFormVisible(true);
+        setSelectedItem(null); // ปิดฟอร์ม detail
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        fetchFactories();
+        fetchItems();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
         setKeyword(input);
-        fetchFactories(input);
+        fetchItems(input, 1);
     };
 
-    const handleEditFactory = (factory: Factories) => {
-        setIsCreateFormVisible(false); // ปิด create form ถ้าเปิดอยู่
-        setSelectedFactory(factory);
-        setEditDialogOpen(true);
-    };
-
-    const handleEditSuccess = () => {
-        setEditDialogOpen(false);
-        setSelectedFactory(null);
-        fetchFactories();
-    };
-
-    const handleEditStart = () => {
-        // Optional: add any logic when edit starts
-    };
-
-    const handleEditError = () => {
-        setError(t("editError"));
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
 
     const handlePreviousPage = () => {
@@ -135,14 +92,10 @@ export default function FactoriesPage() {
         }
     };
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
     return (
 
         <div>
-            <SiteHeader headerTopic={t("headerTopic")} />
+            <SiteHeader headerTopic="รายการสินค้า (Items)" />
 
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
@@ -154,67 +107,74 @@ export default function FactoriesPage() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                             />
+
                             <Button type="button" variant="outline" onClick={handleReset}>
                                 <IconReload />
                             </Button>
                             <Button type="submit">
                                 <IconSearch />
-                                {t('search')}
+                                ค้นหา
                             </Button>
                             <Button
-                                onClick={handleCreateFactory}
+                                type="button"
+                                onClick={handleCreateItem}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t("createNewFactory")}
-                                disabled={isCreating}
+                                title="สร้าง Item ใหม่"
                             >
-                                {isCreating ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                    <IconPlus className="w-4 h-4" />
-                                )}
+                                <IconPlus className="w-4 h-4" />
                             </Button>
                         </form>
 
+                        {error && <p className="text-red-500">{error}</p>}
+
                         {loading ? (
-                            <p>{t("loading")}</p>
-                        ) : error ? (
-                            <p className="text-red-500">{error}</p>
+                            <p>กำลังโหลด...</p>
                         ) : (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t("nameThai")}</TableHead>
-                                        <TableHead>{t("nameEnglish")}</TableHead>
-                                        <TableHead>{t("address")}</TableHead>
-                                        <TableHead className="text-right">{t("actions")}</TableHead>
+                                        <TableHead>ชื่อไทย</TableHead>
+                                        <TableHead>ชื่ออังกฤษ</TableHead>
+                                        <TableHead>สถานะ</TableHead>
+                                        <TableHead>วันที่สร้าง</TableHead>
+                                        <TableHead>วันที่แก้ไข</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {factories.map((factory, index) => (
-                                        <TableRow key={factory.id}>
+                                    {items.map((item, index) => (
+                                        <TableRow key={item.id}>
+                                            <TableCell className="w-10">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="selectedItem"
+                                                        value={item.id}
+                                                        checked={selectedItem?.id === item.id}
+                                                        onChange={() => {
+                                                            setSelectedItem(item);
+                                                            setIsCreateFormVisible(false);
+                                                        }}
+                                                    />
+                                                </label>
+                                            </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                            <TableCell>{factory.name_th}</TableCell>
-                                            <TableCell>{factory.name_en}</TableCell>
-                                            <TableCell>{factory.address || "-"}</TableCell>
-                                            <TableCell className="text-right space-x-2">
-
-                                                <Button
-                                                    variant="secondary"
-                                                    size="sm"
-                                                    onClick={() => handleEditFactory(factory)}
-                                                >
-                                                    <IconPencil />
-                                                </Button>
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(factory.id)}
-                                                >
-                                                    <IconTrash />
-                                                </Button>
+                                            <TableCell>{item.name_th}</TableCell>
+                                            <TableCell>{item.name_en}</TableCell>
+                                            <TableCell>
+                                                <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                    }`}>
+                                                    {item.status ? 'Active' : 'Inactive'}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.create_at ? new Date(item.create_at).toLocaleDateString('th-TH') : '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.update_at ? new Date(item.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -266,23 +226,24 @@ export default function FactoriesPage() {
                             </div>
                         )}
 
-                        <CreateFactoryForm
-                            isVisible={isCreateFormVisible}
-                            onClose={() => setIsCreateFormVisible(false)}
-                            onSuccess={handleCreateSuccess}
-                            onStart={handleCreateStart}
-                            onError={handleCreateError}
-                        />
-                        <EditFactoryForm
-                            isVisible={editDialogOpen}
-                            factory={selectedFactory}
-                            onClose={() => setEditDialogOpen(false)}
-                            onSuccess={handleEditSuccess}
-                            onStart={handleEditStart}
-                            onError={handleEditError}
-                        />
-                    </div>
+                        {selectedItem && !isCreateFormVisible && (
+                            <ItemDetail item={selectedItem} refresh={() => fetchItems(keyword, currentPage)} />
+                        )}
 
+                        {isCreateFormVisible && !selectedItem && (
+                            <CreateItemForm
+                                isVisible={true}
+                                onClose={() => setIsCreateFormVisible(false)}
+                                onSuccess={() => {
+                                    setIsCreating(false);
+                                    setIsCreateFormVisible(false);
+                                    fetchItems(keyword, currentPage);
+                                }}
+                                onStart={() => setIsCreating(true)}
+                                onError={() => setIsCreating(false)}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

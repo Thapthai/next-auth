@@ -216,7 +216,19 @@ export const data = {
             url: "/management/factories",
             icon: IconDashboard,
             permission: [1, 2],
-          }
+          },
+          {
+            title: "items",
+            url: "/management/items",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
+          {
+            title: "itemBags",
+            url: "/management/itemBags",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
         ]
       },
       {

@@ -8,10 +8,12 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input"; // คุณต้องมี input จาก ui component
 import { SaleOffice } from "@/types/saleOffice";
-import { IconCaretRightFilled, IconReload, IconSearch } from "@tabler/icons-react";
+import { IconCaretRightFilled, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
 import { Department } from "@/types/department";
 import DepartmentDetailForm from "./DepartmentDetail";
 import { Loader2 } from "lucide-react";
+import CreateDepartmentForm from "./DepartmentCreateForm";
+import { useTranslations } from "next-intl";
 
 export default function DepartmentBySaleOfficeId() {
     const params = useParams();
@@ -27,11 +29,31 @@ export default function DepartmentBySaleOfficeId() {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const router = useRouter();
     const pathname = usePathname();
+    const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
+    const [isCreateFormSuccess, setIsCreateFormSuccess] = useState(false);
+    const [isCreateFormError, setIsCreateFormError] = useState(false);
+    const [isCreateFormLoading, setIsCreateFormLoading] = useState(false);
+    const [isCreateFormData, setIsCreateFormData] = useState<Department | null>(null);
+    const [isCreateFormMessage, setIsCreateFormMessage] = useState<string | null>(null);
+    const [isAnyActionLoading, setIsAnyActionLoading] = useState(false);
 
+
+    const t = useTranslations('department');
+    const handleCreateSuccess = () => {
+        setIsCreateFormVisible(false);
+        setIsCreateFormSuccess(true);
+        setIsCreateFormError(false);
+        setIsCreateFormLoading(false);
+        setIsCreateFormData(null);
+        setIsCreateFormMessage(null);
+        setIsAnyActionLoading(false);
+        loadDepartments(); // รีเฟรชข้อมูล
+    };
     // Reset loading state when pathname changes (navigation completes)
     useEffect(() => {
         if (loadingId) {
             setLoadingId(null);
+            setIsAnyActionLoading(false);
         }
     }, [pathname]);
 
@@ -65,8 +87,17 @@ export default function DepartmentBySaleOfficeId() {
     const totalPages = Math.ceil(total / pageSize);
 
     const handleGoToDepartmentDetail = (saleId: number, depId: number) => {
-        setLoadingId(depId); // ✅ ใช้ depId
-        router.push(`/management/saleoffice/${saleId}/departments/${depId}`);
+        // หา department ที่ถูกเลือก
+        const selectedDept = departments.find(dept => dept.id === depId);
+        if (selectedDept) {
+            setSelectedDepartment(selectedDept);
+            setIsCreateFormVisible(false); // ปิดฟอร์มสร้าง
+        }
+    };
+
+    const handleCreateButtonClick = () => {
+        setIsCreateFormVisible(true);
+        setSelectedDepartment(null); // ปิดฟอร์ม detail
     };
 
     const loadDepartments = async () => {
@@ -121,6 +152,15 @@ export default function DepartmentBySaleOfficeId() {
                             <Button type="submit">
                                 <IconSearch />
                             </Button>
+                            <Button
+                                onClick={handleCreateButtonClick}
+                                variant="outline"
+                                size="icon"
+                                className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                                title={t("createNewDepartment")}
+                            >
+                                <IconPlus className="w-4 h-4" />
+                            </Button>
                         </form>
 
                         <Table>
@@ -131,55 +171,36 @@ export default function DepartmentBySaleOfficeId() {
                                     <TableHead>ชื่อไทย</TableHead>
                                     <TableHead>ชื่ออังกฤษ</TableHead>
                                     <TableHead>คำอธิบาย</TableHead>
-                                    <TableHead></TableHead>
+
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {departments.length > 0 ? (
-                                    departments.map((dept) => {
-                                        const isItemLoading = loadingId === dept.id;
-                                        
-                                        return (
-                                            <TableRow key={dept.id}>
-                                                <TableCell className="w-10">
-                                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="selectedDepartment"
-                                                            value={dept.id}
-                                                            checked={selectedDepartment?.id === dept.id}
-                                                            onChange={() => setSelectedDepartment(dept)}
-                                                            disabled={isItemLoading}
-                                                        />
-                                                        <span className="sr-only">เลือก</span>
-                                                    </label>
-                                                </TableCell>
-                                                <TableCell>{dept.department_code}</TableCell>
-                                                <TableCell>{dept.name_th}</TableCell>
-                                                <TableCell>{dept.name_en}</TableCell>
-                                                <TableCell>{dept.description}</TableCell>
-                                                <TableCell className="w-10">
-                                                    <Button
-                                                        variant="ghost"
-                                                        disabled={isItemLoading}
-                                                        onClick={() => handleGoToDepartmentDetail(Number(saleOfficeId), dept.id)}
-                                                        className={`transition-all duration-200 ${
-                                                            isItemLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-                                                        }`}
-                                                    >
-                                                        {isItemLoading ? (
-                                                            <div className="flex items-center gap-2">
-                                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                                                <span className="text-xs">กำลังโหลด...</span>
-                                                            </div>
-                                                        ) : (
-                                                            <IconCaretRightFilled />
-                                                        )}
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })
+                                    departments.map((dept) => (
+                                        <TableRow key={dept.id}>
+                                            <TableCell className="w-10">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="selectedDepartment"
+                                                        value={dept.id}
+                                                        checked={selectedDepartment?.id === dept.id}
+                                                        onChange={() => {
+                                                            setSelectedDepartment(dept);
+                                                            setIsCreateFormVisible(false);
+                                                        }}
+                                                        onClick={() => setIsCreateFormVisible(false)}
+                                                    />
+                                                    <span className="sr-only">เลือก</span>
+                                                </label>
+                                            </TableCell>
+                                            <TableCell>{dept.department_code}</TableCell>
+                                            <TableCell>{dept.name_th}</TableCell>
+                                            <TableCell>{dept.name_en}</TableCell>
+                                            <TableCell>{dept.description}</TableCell>
+
+                                        </TableRow>
+                                    ))
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={6} className="text-center py-4 text-gray-500">
@@ -210,7 +231,23 @@ export default function DepartmentBySaleOfficeId() {
                             </div>
                         )}
 
-                        <DepartmentDetailForm department={selectedDepartment} refresh={loadDepartments} />
+                        {selectedDepartment && !isCreateFormVisible && (
+                            <DepartmentDetailForm
+                                department={selectedDepartment}
+                                refresh={loadDepartments}
+                            />
+                        )}
+
+                        {isCreateFormVisible && !selectedDepartment && (
+                            <CreateDepartmentForm
+                                isVisible={true}
+                                saleOfficeId={Number(saleOfficeId)}
+                                onClose={() => setIsCreateFormVisible(false)}
+                                onSuccess={handleCreateSuccess}
+                                onStart={() => setIsCreateFormLoading(true)}
+                                onError={() => setIsCreateFormError(true)}
+                            />
+                        )}
 
                     </div>
                 </div>
