@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SaleOffice } from "@/types/saleOffice";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 
 type Props = {
     saleOffice: SaleOffice | null;
@@ -95,7 +96,7 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="default" onClick={handleSubmit}>
-                    💾 {t('save')}
+                    <IconDeviceFloppy /> {t('save')}
                 </Button>
             </div>
         </div>

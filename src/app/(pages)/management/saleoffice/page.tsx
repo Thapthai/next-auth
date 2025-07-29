@@ -110,7 +110,7 @@ export default function SaleOfficePage() {
 
     return (
         <>
-            <SiteHeader headerTopic="รายการสาขา (Sale Offices)" />
+            <SiteHeader headerTopic={t("headerTopic")} />
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
@@ -189,7 +189,7 @@ export default function SaleOfficePage() {
                         {!error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง {Math.min(currentPage * itemsPerPage, totalItems)} จาก {totalItems} รายการ
+                                    {t('show')} {(currentPage - 1) * itemsPerPage + 1} {t('to')} {Math.min(currentPage * itemsPerPage, totalItems)} {t('of')} {totalItems} {t('items')}
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Button
@@ -199,7 +199,7 @@ export default function SaleOfficePage() {
                                         disabled={currentPage === 1}
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
-                                        ก่อนหน้า
+                                        {t('previous')}
                                     </Button>
 
                                     <div className="flex items-center space-x-1">
@@ -222,7 +222,7 @@ export default function SaleOfficePage() {
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
                                     >
-                                        ถัดไป
+                                        {t('next')}
                                         <IconChevronRight className="w-4 h-4" />
                                     </Button>
                                 </div>

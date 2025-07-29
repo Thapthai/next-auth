@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Item } from "@/types/item";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 
 type Props = {
     item: Item | null;
@@ -55,7 +56,7 @@ export default function ItemDetail({ item, refresh }: Props) {
 
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">{t('nameThaiLabel')}</label>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <input
                         className="w-full border rounded px-2 py-1" 
                         value={form.name_th}
@@ -65,7 +66,7 @@ export default function ItemDetail({ item, refresh }: Props) {
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">{t('nameEnglishLabel')}</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_en}
@@ -85,7 +86,7 @@ export default function ItemDetail({ item, refresh }: Props) {
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="default" onClick={handleSubmit}>
-                    💾 {t('save')}
+                    <IconDeviceFloppy /> {t('save')}
                 </Button>
             </div>
         </div>

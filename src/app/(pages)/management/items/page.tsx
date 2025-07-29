@@ -95,7 +95,7 @@ export default function ItemsPage() {
     return (
 
         <div>
-            <SiteHeader headerTopic="รายการสินค้า (Items)" />
+            <SiteHeader headerTopic={t('headerTopic')} />
 
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
@@ -103,7 +103,7 @@ export default function ItemsPage() {
 
                         <form onSubmit={handleSearch} className="flex gap-2 mb-4">
                             <Input
-                                placeholder="ค้นหา name_th หรือ name_en"
+                                placeholder={t('search')}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                             />
@@ -113,7 +113,7 @@ export default function ItemsPage() {
                             </Button>
                             <Button type="submit">
                                 <IconSearch />
-                                ค้นหา
+                                {t('search')}
                             </Button>
                             <Button
                                 type="button"
@@ -121,7 +121,7 @@ export default function ItemsPage() {
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title="สร้าง Item ใหม่"
+                                title={t('createNewItem')}
                             >
                                 <IconPlus className="w-4 h-4" />
                             </Button>
@@ -130,18 +130,18 @@ export default function ItemsPage() {
                         {error && <p className="text-red-500">{error}</p>}
 
                         {loading ? (
-                            <p>กำลังโหลด...</p>
+                            <p>{t('loading')}</p>
                         ) : (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>ชื่อไทย</TableHead>
-                                        <TableHead>ชื่ออังกฤษ</TableHead>
-                                        <TableHead>สถานะ</TableHead>
-                                        <TableHead>วันที่สร้าง</TableHead>
-                                        <TableHead>วันที่แก้ไข</TableHead>
+                                        <TableHead>{t('nameThai')}</TableHead>
+                                        <TableHead>{t('nameEnglish')}</TableHead>
+                                        <TableHead>{t('status')}</TableHead>
+                                        <TableHead>{t('createdAt')}</TableHead>
+                                        <TableHead>{t('updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -167,7 +167,7 @@ export default function ItemsPage() {
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {item.status ? 'Active' : 'Inactive'}
+                                                    {item.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
@@ -186,7 +186,7 @@ export default function ItemsPage() {
                         {!loading && !error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง {Math.min(currentPage * itemsPerPage, totalItems)} จาก {totalItems} รายการ
+                                    {t('show')} {(currentPage - 1) * itemsPerPage + 1} {t('to')} {Math.min(currentPage * itemsPerPage, totalItems)} {t('of')} {totalItems} {t('items')}
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Button
@@ -196,7 +196,7 @@ export default function ItemsPage() {
                                         disabled={currentPage === 1}
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
-                                        ก่อนหน้า
+                                        {t('previous')}
                                     </Button>
 
                                     <div className="flex items-center space-x-1">
@@ -219,7 +219,7 @@ export default function ItemsPage() {
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
                                     >
-                                        ถัดไป
+                                        {t('next')}
                                         <IconChevronRight className="w-4 h-4" />
                                     </Button>
                                 </div>

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Department } from "@/types/department";
+import { useTranslations } from "next-intl";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 
 interface Props {
     department: Department | null;
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export default function DepartmentDetailForm({ department, refresh }: Props) {
+    const t = useTranslations('saleOffice');
     const [form, setForm] = useState({
         department_code: "",
         name_th: "",
@@ -51,11 +54,11 @@ export default function DepartmentDetailForm({ department, refresh }: Props) {
 
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
-            <h2 className="text-lg font-bold text-gray-800">แก้ไขแผนก</h2>
+            <h2 className="text-lg font-bold text-gray-800">{t('editDepartment')}</h2>
 
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">รหัสแผนก</label>
+                    <label className="text-sm text-gray-600">{t('departmentCode')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.department_code}
@@ -63,7 +66,7 @@ export default function DepartmentDetailForm({ department, refresh }: Props) {
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่อไทย</label>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_th}
@@ -71,7 +74,7 @@ export default function DepartmentDetailForm({ department, refresh }: Props) {
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่ออังกฤษ</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_en}
@@ -79,7 +82,7 @@ export default function DepartmentDetailForm({ department, refresh }: Props) {
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">คำอธิบาย</label>
+                    <label className="text-sm text-gray-600">{t('description')}</label>
                     <textarea
                         className="w-full border rounded px-2 py-1"
                         rows={3}
@@ -91,7 +94,7 @@ export default function DepartmentDetailForm({ department, refresh }: Props) {
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="default" onClick={handleSubmit}>
-                    💾 บันทึก
+                    <IconDeviceFloppy /> {t('save')}
                 </Button>
             </div>
         </div>

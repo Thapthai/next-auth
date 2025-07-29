@@ -8,7 +8,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input"; // คุณต้องมี input จาก ui component
 import { SaleOffice } from "@/types/saleOffice";
-import { IconCaretRightFilled, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconCaretRightFilled, IconChevronLeft, IconChevronRight, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
 import { Department } from "@/types/department";
 import DepartmentDetailForm from "./DepartmentDetail";
 import { Loader2 } from "lucide-react";
@@ -27,33 +27,23 @@ export default function DepartmentBySaleOfficeId() {
     const [input, setInput] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
     const [loadingId, setLoadingId] = useState<number | null>(null);
-    const router = useRouter();
+ 
     const pathname = usePathname();
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
-    const [isCreateFormSuccess, setIsCreateFormSuccess] = useState(false);
-    const [isCreateFormError, setIsCreateFormError] = useState(false);
-    const [isCreateFormLoading, setIsCreateFormLoading] = useState(false);
-    const [isCreateFormData, setIsCreateFormData] = useState<Department | null>(null);
-    const [isCreateFormMessage, setIsCreateFormMessage] = useState<string | null>(null);
-    const [isAnyActionLoading, setIsAnyActionLoading] = useState(false);
+ 
 
 
-    const t = useTranslations('department');
+    const t = useTranslations('saleOffice');
     const handleCreateSuccess = () => {
         setIsCreateFormVisible(false);
-        setIsCreateFormSuccess(true);
-        setIsCreateFormError(false);
-        setIsCreateFormLoading(false);
-        setIsCreateFormData(null);
-        setIsCreateFormMessage(null);
-        setIsAnyActionLoading(false);
+
         loadDepartments(); // รีเฟรชข้อมูล
     };
     // Reset loading state when pathname changes (navigation completes)
     useEffect(() => {
         if (loadingId) {
             setLoadingId(null);
-            setIsAnyActionLoading(false);
+
         }
     }, [pathname]);
 
@@ -120,9 +110,11 @@ export default function DepartmentBySaleOfficeId() {
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         <div className="flex items-center justify-between mb-4">
                             <Link href="/management/saleoffice">
-                                <Button variant="secondary">← กลับ</Button>
+                                <Button variant="secondary">
+                                    <IconArrowLeft /> {t('back')}
+                                </Button>
                             </Link>
-                            <h2 className="text-xl font-bold">แผนกใน {saleOffice?.site_office_name_th || `Sale Office ID: ${saleOfficeId}`}</h2>
+                            <h2 className="text-xl font-bold">{t('departmentIn')} {saleOffice?.site_office_name_th || `Sale Office ID: ${saleOfficeId}`}</h2>
                         </div>
 
                         <form
@@ -167,10 +159,10 @@ export default function DepartmentBySaleOfficeId() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead></TableHead>
-                                    <TableHead>รหัส</TableHead>
-                                    <TableHead>ชื่อไทย</TableHead>
-                                    <TableHead>ชื่ออังกฤษ</TableHead>
-                                    <TableHead>คำอธิบาย</TableHead>
+                                    <TableHead>{t('departmentCode')}</TableHead>
+                                    <TableHead>{t('nameThai')}</TableHead>
+                                    <TableHead>{t('nameEnglish')}</TableHead>
+                                    <TableHead>{t('description')}</TableHead>
 
                                 </TableRow>
                             </TableHeader>
@@ -191,7 +183,7 @@ export default function DepartmentBySaleOfficeId() {
                                                         }}
                                                         onClick={() => setIsCreateFormVisible(false)}
                                                     />
-                                                    <span className="sr-only">เลือก</span>
+                                                    <span className="sr-only">{t('select')}</span>
                                                 </label>
                                             </TableCell>
                                             <TableCell>{dept.department_code}</TableCell>
@@ -204,7 +196,7 @@ export default function DepartmentBySaleOfficeId() {
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={6} className="text-center py-4 text-gray-500">
-                                            ไม่พบข้อมูล
+                                            {t('noData')}
                                         </TableCell>
                                     </TableRow>
                                 )}
@@ -218,15 +210,15 @@ export default function DepartmentBySaleOfficeId() {
                                     disabled={page <= 1}
                                     onClick={() => setPage(page - 1)}
                                 >
-                                    ก่อนหน้า
+                                    <IconChevronLeft /> {t('previous')}
                                 </Button>
-                                <span className="text-sm text-gray-700">หน้า {page} / {totalPages}</span>
+                                <span className="text-sm text-gray-700">{t('page')} {page} / {totalPages}</span>
                                 <Button
                                     variant="outline"
                                     disabled={page >= totalPages}
                                     onClick={() => setPage(page + 1)}
                                 >
-                                    ถัดไป
+                                    {t('next')} <IconChevronRight />
                                 </Button>
                             </div>
                         )}
@@ -244,8 +236,7 @@ export default function DepartmentBySaleOfficeId() {
                                 saleOfficeId={Number(saleOfficeId)}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={handleCreateSuccess}
-                                onStart={() => setIsCreateFormLoading(true)}
-                                onError={() => setIsCreateFormError(true)}
+
                             />
                         )}
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 interface CreateItemFormProps {
     isVisible: boolean;
@@ -13,6 +14,7 @@ interface CreateItemFormProps {
 }
 
 export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart, onError }: CreateItemFormProps) {
+    const t = useTranslations('Items');
     const [form, setForm] = useState({
         name_th: '',
         name_en: '',
@@ -69,7 +71,7 @@ export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart,
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
             <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-800">สร้าง Item ใหม่</h2>
+                <h2 className="text-lg font-bold text-gray-800">{t('createNewItem')}</h2>
                 <Button 
                     variant="ghost" 
                     size="sm" 
@@ -83,7 +85,7 @@ export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart,
 
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">ชื่อไทย</label>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_th}
@@ -92,7 +94,7 @@ export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart,
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่ออังกฤษ</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_en}
@@ -101,7 +103,7 @@ export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart,
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <label className="text-sm text-gray-600">สถานะ</label>
+                    <label className="text-sm text-gray-600">{t('status')}</label>
                     <input
                         type="checkbox"
                         checked={form.status}
@@ -113,10 +115,10 @@ export default function CreateItemForm({ isVisible, onClose, onSuccess, onStart,
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="outline" onClick={handleClose} disabled={loading}>
-                    ยกเลิก
+                    {t('cancel')}
                 </Button>
                 <Button variant="default" onClick={handleSubmit} disabled={loading}>
-                    {loading ? '💾 กำลังบันทึก...' : '💾 บันทึก'}
+                    {loading ? t('saving') : t('save')}
                 </Button>
             </div>
         </div>

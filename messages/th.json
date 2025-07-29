@@ -260,6 +260,7 @@
         "headerTopic": "จัดการ โรงพยาบาล"
     },
     "saleOffice": {
+        "headerTopic": "จัดการสาขา",
         "createTitle": "สร้างสาขาใหม่",
         "siteCode": "Site Code",
         "siteCodePlaceholder": "เช่น: BKK001",
@@ -284,7 +285,24 @@
         "saveError": "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
         "status": "สถานะใช้งาน",
         "search": "ค้นหา",
-        "loading": "กำลังโหลด..."
+        "loading": "กำลังโหลด...",
+        "previous": "ก่อนหน้า",
+        "next": "ถัดไป",
+        "show": "แสดง",
+        "to": "ถึง",
+        "of": "จาก",
+        "items": "รายการ",
+        "back": "กลับ",
+        "departmentIn": "แผนกใน",
+        "departmentCode": "รหัสแผนก",
+        "nameThai": "ชื่อแผนก (ไทย)",
+        "nameEnglish": "ชื่อแผนก (อังกฤษ)",
+        "description": "คำอธิบาย",
+        "select": "เลือก", 
+        "noData": "ไม่พบข้อมูล",
+        "createDepartment": "สร้างแผนกใหม่",
+        "saving": "กำลังบันทึก...",
+        "editDepartment": "แก้ไขแผนก"
     },
     "permission": {
         "headerTopic": "จัดการสิทธิ์การใช้งาน",
@@ -421,7 +439,21 @@
         "nameThaiLabel": "ชื่อสินค้า (ไทย)",
         "nameThaiPlaceholder": "กรอกชื่อสินค้าไทย",
         "nameEnglishLabel": "ชื่อสินค้า (อังกฤษ)",
-        "nameEnglishPlaceholder": "กรอกชื่อสินค้าไทย"
+        "nameEnglishPlaceholder": "กรอกชื่อสินค้าไทย",
+        "active": "ใช้งาน",
+        "inactive": "ไม่ใช้งาน",
+        "createdAt": "วันที่สร้าง",
+        "updatedAt": "วันที่อัปเดต",
+        "page": "หน้า",
+        "of": "จาก",
+        "previous": "ก่อนหน้า",
+        "next": "ถัดไป",
+        "first": "หน้าแรก",
+        "last": "หน้าสุดท้าย",
+        "show": "แสดง",
+        "to": "ถึง",
+        "items": "รายการ",
+        "back": "กลับ"
     },
     "ItemBags": {
         "headerTopic": "รายการถุงสินค้า",

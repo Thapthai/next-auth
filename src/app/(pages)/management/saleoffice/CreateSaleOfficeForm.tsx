@@ -18,7 +18,7 @@ interface CreateSaleOfficeFormProps {
 
 export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, onStart, onError }: CreateSaleOfficeFormProps) {
     const t = useTranslations('saleOffice');
-    
+
     const [formData, setFormData] = useState({
         site_code: '',
         site_office_name_th: '',
@@ -42,7 +42,7 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
         e.preventDefault();
         setLoading(true);
         setError(null);
-        
+
         // Call onStart callback
         if (onStart) onStart();
 
@@ -102,9 +102,9 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold text-gray-800">{t('createTitle')}</h2>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleClose}
                     disabled={loading}
                     className="text-gray-500 hover:text-gray-700"
@@ -205,16 +205,16 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button 
-                        type="button" 
-                        variant="outline" 
+                    <Button
+                        type="button"
+                        variant="outline"
                         onClick={handleClose}
                         disabled={loading}
                     >
                         {t('cancel')}
                     </Button>
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         disabled={loading}
                         className="bg-blue-600 hover:bg-blue-700"
                     >

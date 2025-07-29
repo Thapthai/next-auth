@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 interface CreateDepartmentFormProps {
     isVisible: boolean;
@@ -21,6 +22,7 @@ export default function CreateDepartmentForm({
     onStart,
     onError
 }: CreateDepartmentFormProps) {
+    const t = useTranslations('saleOffice');
     const [form, setForm] = useState({
         department_code: '',
         name_th: '',
@@ -92,7 +94,7 @@ export default function CreateDepartmentForm({
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-800">สร้างแผนกใหม่</h2>
+                <h2 className="text-lg font-bold text-gray-800">{t('createDepartment')}</h2>
                 <Button 
                     variant="ghost" 
                     size="sm" 
@@ -105,7 +107,7 @@ export default function CreateDepartmentForm({
             </div>
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">รหัสแผนก</label>
+                    <label className="text-sm text-gray-600">{t('departmentCode')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.department_code}
@@ -114,7 +116,7 @@ export default function CreateDepartmentForm({
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่อไทย</label>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_th}
@@ -123,7 +125,7 @@ export default function CreateDepartmentForm({
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">ชื่ออังกฤษ</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <input
                         className="w-full border rounded px-2 py-1"
                         value={form.name_en}
@@ -132,7 +134,7 @@ export default function CreateDepartmentForm({
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-gray-600">คำอธิบาย</label>
+                    <label className="text-sm text-gray-600">{t('description')}</label>
                     <textarea
                         className="w-full border rounded px-2 py-1"
                         rows={3}
@@ -146,10 +148,10 @@ export default function CreateDepartmentForm({
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="outline" onClick={onClose} disabled={loading}>
-                    ยกเลิก
+                    {t('cancel')}
                 </Button>
                 <Button variant="default" onClick={handleSubmit} disabled={loading}>
-                    {loading ? '💾 กำลังบันทึก...' : '💾 บันทึก'}
+                    {loading ? t('saving') : t('save')}
                 </Button>
             </div>
         </div>

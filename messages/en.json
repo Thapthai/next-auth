@@ -79,7 +79,7 @@
         "myProfile": "My Profile",
         "settings": "Settings",
         "logoutButton": "Log out"
-    },  
+    },
     "Unauthorized": {
         "topic": "File Not Found (404)",
         "content": "You are not Unauthorized!",
@@ -260,6 +260,7 @@
         "headerTopic": "Sale Office Management"
     },
     "saleOffice": {
+        "headerTopic": "Sale Office Management",
         "createTitle": "Create New Sale Office",
         "siteCode": "Site Code",
         "siteCodePlaceholder": "e.g., BKK001",
@@ -284,7 +285,24 @@
         "saveError": "Error saving data",
         "status": "Active status",
         "search": "Search",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "previous": "Previous",
+        "next": "Next",
+        "show": "Show",
+        "to": "to",
+        "of": "of",
+        "items": "items",
+        "back": "Back",
+        "departmentIn": "Department in",
+        "departmentCode": "Department Code",
+        "nameThai": "Name (Thai)",
+        "nameEnglish": "Name (English)",
+        "description": "Description",
+        "select": "Select",
+        "noData": "No data found.",
+        "saving": "Saving...",
+        "createDepartment": "Create Department",
+        "editDepartment": "Edit Department"
     },
     "permission": {
         "headerTopic": "Permission Management",
@@ -366,7 +384,7 @@
         "createError": "Failed to create factory",
         "nameThaiLabel": "Factory Name (Thai)",
         "nameThaiPlaceholder": "Enter factory name in Thai",
-        "nameEnglishLabel": "Factory Name (English)", 
+        "nameEnglishLabel": "Factory Name (English)",
         "nameEnglishPlaceholder": "Enter factory name in English",
         "addressLabel": "Address",
         "addressPlaceholder": "Enter factory address",
@@ -421,7 +439,21 @@
         "nameThaiLabel": "Item Name (Thai)",
         "nameThaiPlaceholder": "Enter item name in Thai",
         "nameEnglishLabel": "Item Name (English)",
-        "nameEnglishPlaceholder": "Enter item name in English"
+        "nameEnglishPlaceholder": "Enter item name in English",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "page": "Page",
+        "of": "of",
+        "previous": "Previous",
+        "next": "Next",
+        "first": "First",
+        "last": "Last",
+        "show": "Show",
+        "to": "to",
+        "items": "items",
+        "back": "Back"
     },
     "ItemBags": {
         "headerTopic": "Item Bags",
