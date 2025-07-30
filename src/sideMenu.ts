@@ -229,6 +229,12 @@ export const data = {
             icon: IconDashboard,
             permission: [1, 2],
           },
+          {
+            title: "roundTime",
+            url: "/management/roundTime",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
         ]
       },
       {
