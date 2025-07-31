@@ -18,13 +18,11 @@ import RoundTimeExpressCreate from "./RoundTimeExpessCreate";
 import { RoundTimeExpresses } from "@/types/roundTimeExpress";
 
 
-export default function RoundTimeExpress() {
+export default function RoundTimeExpress({ saleOffices }: { saleOffices: SaleOffice[] }) {
     const t = useTranslations("roundTime");
     const [saleoffice_id, setSaleoffice_id] = useState("");
-    const [saleOffices, setSaleOffices] = useState<SaleOffice[]>([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [loadingSaleOffices, setLoadingSaleOffices] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [roundTimeExpress, setRoundTimeExpress] = useState<RoundTimeExpresses[]>([]);
@@ -34,20 +32,7 @@ export default function RoundTimeExpress() {
     const [isCreating, setIsCreating] = useState(false);
     const itemsPerPage = 10;
 
-    const fetchSaleOffices = async () => {
-        setLoadingSaleOffices(true);
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`);
-            if (!res.ok) throw new Error("Failed to fetch sale offices");
-            const data = await res.json();
-            setSaleOffices(data.data || []);
-        } catch (err) {
-            console.error(err);
-            setError("ไม่สามารถโหลดข้อมูลสำนักงานขายได้");
-        } finally {
-            setLoadingSaleOffices(false);
-        }
-    };
+    
 
     const fetchItems = async (saleoffice_id = "", page = currentPage) => {
 
@@ -74,10 +59,7 @@ export default function RoundTimeExpress() {
         }
     };
 
-    // Fetch Sale Offices on component mount
-    useEffect(() => {
-        fetchSaleOffices();
-    }, []);
+
 
     // Fetch round time dirties when page or saleoffice_id changes
     useEffect(() => {
@@ -126,10 +108,9 @@ export default function RoundTimeExpress() {
                                 <Select
                                     value={saleoffice_id}
                                     onValueChange={handleSaleOfficeChange}
-                                    disabled={loadingSaleOffices}
                                 >
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder={loadingSaleOffices ? "กำลังโหลด..." : "เลือกสำนักงานขาย"} />
+                                        <SelectValue placeholder="เลือกสำนักงานขาย" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {saleOffices.map((office) => (
@@ -145,7 +126,6 @@ export default function RoundTimeExpress() {
                                 type="button"
                                 variant="outline"
                                 onClick={handleReset}
-                                disabled={loadingSaleOffices}
                                 className="px-3"
                             >
                                 <IconReload className="w-4 h-4" />

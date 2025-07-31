@@ -9,23 +9,23 @@ import { useEffect, useState } from "react";
 import { Table, TableHead } from "@/components/ui/table";
 import { TableHeader, TableRow } from "@/components/ui/table";
 import { TableBody, TableCell } from "@/components/ui/table";
-import { RoundTimeDirties } from "@/types/roundTimeDirties";
+import { RoundTimeClean } from "@/types/roundTimeClean";
 import { SaleOffice } from "@/types/saleOffice";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import RoundTimeDirtyDetail from "./RoundTimeDirtyDetail";
-import RoundTimeDirtyCreate from "./RoundTimeDirtyCreate";
+import RoundTimeCleanDetail from "./RoundTimeCleanDetail";
+import RoundTimeCleanCreate from "./RoundTimeCleanCreate";
 
 
-export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffice[] }) {
+export default function RoundTimeCleanComponent({ saleOffices }: { saleOffices: SaleOffice[] }) {
     const t = useTranslations("roundTime");
-    const [saleoffice_id, setSaleoffice_id] = useState("");
+    const [saleoffice_id, setSaleoffice_id] = useState(""); 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [roundTimeDirties, setRoundTimeDirties] = useState<RoundTimeDirties[]>([]);
+    const [roundTimeClean, setRoundTimeClean] = useState<RoundTimeClean[]>([]);
     const [totalItems, setTotalItems] = useState(0);
-    const [selectedRoundTimeDirty, setSelectedRoundTimeDirty] = useState<any>(null);
+    const [selectedRoundTimeClean, setSelectedRoundTimeClean] = useState<any>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const itemsPerPage = 10;
@@ -35,7 +35,7 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
     const fetchItems = async (saleoffice_id = "", page = currentPage) => {
 
         if (!saleoffice_id) {
-            setRoundTimeDirties([]);
+            setRoundTimeClean([]);
             setTotalItems(0);
             setTotalPages(1);
             return;
@@ -43,10 +43,10 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
 
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/round-time-dirties/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&saleoffice_id=${saleoffice_id}`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/round-time-clean/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&saleoffice_id=${saleoffice_id}`);
             if (!res.ok) throw new Error("Failed to fetch items");
             const data = await res.json();
-            setRoundTimeDirties(data.data || []);
+            setRoundTimeClean(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -58,8 +58,7 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
     };
 
 
-
-    // Fetch round time dirties when page or saleoffice_id changes
+    // Fetch round time clean when page or saleoffice_id changes
     useEffect(() => {
         fetchItems(saleoffice_id, currentPage);
     }, [currentPage, saleoffice_id]);
@@ -89,15 +88,15 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
     };
 
     return <>
-        <TabsContent value="roundTimeDirty">
+        <TabsContent value="roundTimeClean">
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-2xl font-bold tracking-tight">{t("roundTimeDirty.cardTitle")}</h1>
-                                <p className="text-muted-foreground">{t("roundTimeDirty.cardDescription")}</p>
+                                <h1 className="text-2xl font-bold tracking-tight">{t("roundTimeClean.cardTitle")}</h1>
+                                <p className="text-muted-foreground">{t("roundTimeClean.cardDescription")}</p>
                             </div>
                         </div>
 
@@ -134,10 +133,10 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                 onClick={() => setIsCreateFormVisible(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white"
                         
-                                title={t('roundTimeDirty.createNewItem')}
+                                title={t('roundTimeClean.createNewItem')}
                             >
                                 <IconPlus className="w-4 h-4 mr-2" />
-                                {t('roundTimeDirty.create')}
+                                {t('roundTimeClean.create')}
                             </Button>
                         </div>
 
@@ -154,9 +153,9 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                     <span className="text-muted-foreground">{t('loading')}</span>
                                 </div>
                             </div>
-                        ) : roundTimeDirties.length === 0 ? (
+                        ) : roundTimeClean.length === 0 ? (
                             <div className="text-center py-8">
-                                <p className="text-muted-foreground">{t('roundTimeDirty.noData')}</p>
+                                <p className="text-muted-foreground">{t('roundTimeClean.noData')}</p>
                             </div>
                         ) : (
                             <div className="border rounded-lg">
@@ -165,21 +164,21 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                         <TableRow>
                                             <TableHead className="w-12"></TableHead>
                                             <TableHead className="w-16">#</TableHead>
-                                            <TableHead>{t('roundTimeDirty.time')}</TableHead>
-                                            <TableHead>{t('roundTimeDirty.status')}</TableHead>
-                                            <TableHead>{t('roundTimeDirty.createdAt')}</TableHead>
-                                            <TableHead>{t('roundTimeDirty.updatedAt')}</TableHead>
+                                            <TableHead>{t('roundTimeClean.time')}</TableHead>
+                                            <TableHead>{t('roundTimeClean.status')}</TableHead>
+                                            <TableHead>{t('roundTimeClean.createdAt')}</TableHead>
+                                            <TableHead>{t('roundTimeClean.updatedAt')}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {roundTimeDirties.map((roundTimeDirtie, index) => (
+                                        {roundTimeClean.map((item, index) => (
                                             <TableRow 
-                                                key={roundTimeDirtie.id}
+                                                key={item.id}
                                                 className={`cursor-pointer hover:bg-muted/50 ${
-                                                    selectedRoundTimeDirty?.id === roundTimeDirtie.id ? 'bg-muted' : ''
+                                                    selectedRoundTimeClean?.id === item.id ? 'bg-muted' : ''
                                                 }`}
                                                 onClick={() => {
-                                                    setSelectedRoundTimeDirty(roundTimeDirtie);
+                                                    setSelectedRoundTimeClean(item);
                                                     setIsCreateFormVisible(false);
                                                 }}
                                             >
@@ -187,10 +186,10 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                                     <input
                                                         type="radio"
                                                         name="selectedItem"
-                                                        value={roundTimeDirtie.id}
-                                                        checked={selectedRoundTimeDirty?.id === roundTimeDirtie.id}
+                                                        value={item.id}
+                                                        checked={selectedRoundTimeClean?.id === item.id}
                                                         onChange={() => {
-                                                            setSelectedRoundTimeDirty(roundTimeDirtie);
+                                                            setSelectedRoundTimeClean(item);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                         className="w-4 h-4 text-blue-600"
@@ -200,20 +199,20 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                                     {(currentPage - 1) * itemsPerPage + index + 1}
                                                 </TableCell>
                                                 <TableCell className="font-mono">
-                                                    {roundTimeDirtie.time}
+                                                    {item.time}
                                                 </TableCell>
                                                 <TableCell>
                                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                        roundTimeDirtie.status 
+                                                        item.status 
                                                             ? 'bg-green-100 text-green-800' 
                                                             : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                        {roundTimeDirtie.status ? t('roundTimeDirty.active') : t('roundTimeDirty.inactive')}
+                                                        {item.status ? t('roundTimeClean.active') : t('roundTimeClean.inactive')}
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="text-muted-foreground">
-                                                    {roundTimeDirtie.create_at 
-                                                        ? new Date(roundTimeDirtie.create_at).toLocaleDateString('th-TH', {
+                                                    {item.create_at 
+                                                        ? new Date(item.create_at).toLocaleDateString('th-TH', {
                                                             year: 'numeric',
                                                             month: 'short',
                                                             day: 'numeric',
@@ -224,8 +223,8 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                                                     }
                                                 </TableCell>
                                                 <TableCell className="text-muted-foreground">
-                                                    {roundTimeDirtie.update_at 
-                                                        ? new Date(roundTimeDirtie.update_at).toLocaleDateString('th-TH', {
+                                                    {item.update_at 
+                                                        ? new Date(item.update_at).toLocaleDateString('th-TH', {
                                                             year: 'numeric',
                                                             month: 'short',
                                                             day: 'numeric',
@@ -301,14 +300,14 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                             </div>
                         )}
 
-                        {selectedRoundTimeDirty && !isCreateFormVisible && (
-                            <RoundTimeDirtyDetail 
-                                roundTimeDirty={selectedRoundTimeDirty} 
+                        {selectedRoundTimeClean && !isCreateFormVisible && (
+                            <RoundTimeCleanDetail 
+                                roundTimeClean={selectedRoundTimeClean} 
                                 isVisible={true} 
                                 saleOfficeData={saleOffices}
-                                onClose={() => setSelectedRoundTimeDirty(null)} 
+                                onClose={() => setSelectedRoundTimeClean(null)} 
                                 onSuccess={() => {
-                                    setSelectedRoundTimeDirty(null);
+                                    setSelectedRoundTimeClean(null);
                                     fetchItems(saleoffice_id, currentPage);
                                 }} 
                                 onStart={() => setIsCreating(true)} 
@@ -317,7 +316,7 @@ export default function RoundTimeDirty({ saleOffices }: { saleOffices: SaleOffic
                         )}
 
                         {isCreateFormVisible && (
-                            <RoundTimeDirtyCreate
+                            <RoundTimeCleanCreate
                                 isVisible={true}
                                 saleOfficeData={saleOffices}
                                 onClose={() => setIsCreateFormVisible(false)}
