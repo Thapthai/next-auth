@@ -18,15 +18,14 @@ interface CreateFactoryFormProps {
 
 export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onStart, onError }: CreateFactoryFormProps) {
     const t = useTranslations('Factories');
-    
+
     const [formData, setFormData] = useState({
         name_th: '',
         name_en: '',
         address: '',
-        tel: '',
-        post: '',
+        phone: '',
         tax_id: '',
-        price: '',
+        description: '',
         status: true
     });
     const [loading, setLoading] = useState(false);
@@ -44,7 +43,7 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
         e.preventDefault();
         setLoading(true);
         setError(null);
-        
+
         // Call onStart callback
         if (onStart) onStart();
 
@@ -54,10 +53,8 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: formData.name_th,
                 name_en: formData.name_en,
                 address: formData.address,
-                tel: formData.tel,
-                post: formData.post,
-                tax_id: parseInt(formData.tax_id) || 0,
-                price: parseFloat(formData.price) || 0,
+                phone: formData.phone,
+                description: formData.description,
                 status: formData.status
             };
 
@@ -79,10 +76,9 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: '',
                 name_en: '',
                 address: '',
-                tel: '',
-                post: '',
+                phone: '',
                 tax_id: '',
-                price: '',
+                description: '',
                 status: true
             });
             onSuccess();
@@ -103,10 +99,9 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: '',
                 name_en: '',
                 address: '',
-                tel: '',
-                post: '',
+                phone: '',
                 tax_id: '',
-                price: '',
+                description: '',
                 status: true
             });
             setError(null);
@@ -120,9 +115,9 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold text-gray-800">{t('createTitle')}</h2>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleClose}
                     disabled={loading}
                     className="text-gray-500 hover:text-gray-700"
@@ -168,11 +163,11 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="tel" className="text-sm text-gray-600">{t('phoneLabel')}</Label>
+                        <Label htmlFor="phone" className="text-sm text-gray-600">{t('phoneLabel')}</Label>
                         <Input
-                            id="tel"
-                            name="tel"
-                            value={formData.tel}
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleInputChange}
                             placeholder={t('phonePlaceholder')}
                             disabled={loading}
@@ -180,43 +175,31 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="post" className="text-sm text-gray-600">{t('postLabel')}</Label>
-                        <Input
-                            id="post"
-                            name="post"
-                            value={formData.post}
-                            onChange={handleInputChange}
-                            placeholder={t('postPlaceholder')}
-                            disabled={loading}
-                            className="w-full border rounded px-2 py-1"
-                        />
-                    </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="price" className="text-sm text-gray-600">{t('priceLabel')}</Label>
-                        <Input
-                            id="price"
-                            name="price"
-                            type="number"
-                            step="0.01"
-                            value={formData.price}
-                            onChange={handleInputChange}
-                            placeholder={t('pricePlaceholder')}
-                            disabled={loading}
-                            className="w-full border rounded px-2 py-1"
-                        />
-                    </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="tax_id" className="text-sm text-gray-600">{t('taxIdLabel')}</Label>
                         <Input
-                            id="tax_id"
-                            name="tax_id"
-                            type="number"
+                            id="description"
+                            name="description"
+                            type="text"
                             value={formData.tax_id}
                             onChange={handleInputChange}
                             placeholder={t('taxIdPlaceholder')}
+                            disabled={loading}
+                            className="w-full border rounded px-2 py-1"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="description" className="text-sm text-gray-600">{t('descriptionLabel')}</Label>
+                        <Input
+                            id="description"
+                            name="description"
+                            type="text"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            placeholder={t('descriptionPlaceholder')}
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
@@ -237,16 +220,16 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button 
-                        type="button" 
-                        variant="outline" 
+                    <Button
+                        type="button"
+                        variant="outline"
                         onClick={handleClose}
                         disabled={loading}
                     >
                         {t('cancel')}
                     </Button>
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         disabled={loading}
                         className="bg-blue-600 hover:bg-blue-700"
                     >

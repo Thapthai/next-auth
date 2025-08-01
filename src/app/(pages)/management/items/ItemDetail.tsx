@@ -42,7 +42,7 @@ export default function ItemDetail({
         department_id: 0,
         item_category_id: null as number | null,
         stock_location_id: 0,
-        rfid_number: '',
+        rfid_number: null as string | null,
         name_th: '',
         name_en: '',
         status: true
@@ -59,7 +59,7 @@ export default function ItemDetail({
                 department_id: item.department_id || 0,
                 item_category_id: item.item_category_id || null,
                 stock_location_id: item.stock_location_id || 0,
-                rfid_number: item.rfid_number || '',
+                rfid_number: item.rfid_number || null,
                 name_th: item.name_th || '',
                 name_en: item.name_en || '',
                 status: item.status ?? true
@@ -94,8 +94,8 @@ export default function ItemDetail({
     // Handle sale office change
     const handleSaleOfficeChange = (value: string) => {
         const saleOfficeId = parseInt(value) || 0;
-        setForm({ 
-            ...form, 
+        setForm({
+            ...form,
             saleoffice_id: saleOfficeId,
             department_id: 0 // Reset department when office changes
         });
@@ -163,6 +163,25 @@ export default function ItemDetail({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
+                    <Input
+                        value={form.name_th}
+                        onChange={(e) => setForm({ ...form, name_th: e.target.value })}
+                        disabled={loading}
+                        placeholder={t('nameThai')}
+                    />
+                </div>
+
+                <div>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
+                    <Input
+                        value={form.name_en}
+                        onChange={(e) => setForm({ ...form, name_en: e.target.value })}
+                        disabled={loading}
+                        placeholder={t('nameEnglish')}
+                    />
+                </div>
+                <div>
                     <label className="text-sm text-gray-600">{t('material')}</label>
                     <Select
                         value={form.material_id?.toString() || ''}
@@ -176,7 +195,7 @@ export default function ItemDetail({
                             <SelectItem value="0">{t('none')}</SelectItem>
                             {materialData.map((material) => (
                                 <SelectItem key={material.id} value={material.id.toString()}>
-                                    {material.material_code} - {material.material_name_th}
+                                    {material.material_code} - {material.material_name_th} ({material.material_name_en})
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -212,10 +231,10 @@ export default function ItemDetail({
                     >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder={
-                                form.saleoffice_id === 0 
-                                    ? t('selectSaleOfficeFirst') 
-                                    : loadingDepartments 
-                                        ? t('loading') 
+                                form.saleoffice_id === 0
+                                    ? t('selectSaleOfficeFirst')
+                                    : loadingDepartments
+                                        ? t('loading')
                                         : t('selectDepartment')
                             } />
                         </SelectTrigger>
@@ -251,7 +270,7 @@ export default function ItemDetail({
                             <SelectItem value="0">{t('none')}</SelectItem>
                             {itemCategoryData.map((category) => (
                                 <SelectItem key={category.id} value={category.id.toString()}>
-                                    {category.name}
+                                    {category.name_th} - {category.name_en}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -272,37 +291,17 @@ export default function ItemDetail({
                 <div>
                     <label className="text-sm text-gray-600">{t('rfidNumber')}</label>
                     <Input
-                        value={form.rfid_number}
+                        value={form.rfid_number || ''}
                         onChange={(e) => setForm({ ...form, rfid_number: e.target.value })}
                         disabled={loading}
                         placeholder={t('rfidNumber')}
                     />
                 </div>
 
-                <div>
-                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
-                    <Input
-                        value={form.name_th}
-                        onChange={(e) => setForm({ ...form, name_th: e.target.value })}
-                        disabled={loading}
-                        placeholder={t('nameThai')}
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
-                    <Input
-                        value={form.name_en}
-                        onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                        disabled={loading}
-                        placeholder={t('nameEnglish')}
-                    />
-                </div>
-
                 <div className="flex items-center justify-between md:col-span-2">
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-500">
-                            {t('status')} 
+                            {t('status')}
                         </span>
                         <Switch
                             checked={form.status}

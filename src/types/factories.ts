@@ -1,10 +1,10 @@
 export type Factories = {
     id: number;
-    price: number;
+    description: string;
     address: string;
-    post: string;
-    tel: string;
-    tax_id: number;
+    phone: string;
+    email: string;
+    price: number;
     name_th: string;
     name_en: string;
     status: boolean;

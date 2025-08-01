@@ -173,7 +173,12 @@ export default function SaleOfficePage() {
                                         <TableCell>{office.site_code}</TableCell>
                                         <TableCell>{office.site_office_name_th}</TableCell>
                                         <TableCell>{office.site_office_name_en}</TableCell>
-                                        <TableCell>{office.status ? t('active') : t('inactive')}</TableCell>
+                                        <TableCell>
+                                            <span className={`px-2 py-1 rounded-full text-xs ${office.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                }`}>
+                                                {office.status ? t('active') : t('inactive')}
+                                            </span>
+                                        </TableCell>
                                         <TableCell className="w-10">
                                             <Button
                                                 variant="ghost"

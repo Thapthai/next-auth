@@ -31,7 +31,7 @@ export default function SapSalePage() {
     const [search, setSearch] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(5);
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 

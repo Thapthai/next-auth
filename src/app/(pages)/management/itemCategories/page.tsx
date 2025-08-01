@@ -12,35 +12,40 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { IconChevronLeft, IconChevronRight, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
-import { Factories } from "@/types/factories";
-import CreateFactoryForm from "./CreateFactoryOfficeForm";
-import EditFactoryForm from "./EditFactoryForm";
+import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { ItemCategory } from "@/types/itemCategory";
 import { Input } from "@/components/ui/input";
+import ItemCategoryDetail from "./ItemCategoryDetail";
+import CreateItemCategoryForm from "./CreateItemCategoryForm";
 
+export default function ItemCategoriesPage() {
+    const t = useTranslations("ItemCategories");
 
-export default function FactoriesPage() {
-    const t = useTranslations("Factories");
-
-    const [factories, setFactories] = useState<Factories[]>([]);
+    const [itemCategories, setItemCategories] = useState<ItemCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedFactory, setSelectedFactory] = useState<Factories | null>(null);
+    const [selectedItemCategory, setSelectedItemCategory] = useState<ItemCategory | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [keyword, setKeyword] = useState('');
+    const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
-    const [input, setInput] = useState('');
+    const [input, setInput] = useState("");
     const [isCreating, setIsCreating] = useState(false);
 
-    const fetchFactories = async (keyword = "", page = currentPage) => {
+    // Fetch related data for dropdowns
+    const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
+    const [departmentData, setDepartmentData] = useState<any[]>([]);
+    const [materialData, setMaterialData] = useState<any[]>([]);
+
+    const fetchItemCategories = async (keyword = "", page = currentPage) => {
+        setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factories/paginated?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch factories");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/item-categories/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${keyword}`);
+            if (!res.ok) throw new Error("Failed to fetch item categories");
             const data = await res.json();
-            setFactories(data.data || []);
+            setItemCategories(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -51,56 +56,61 @@ export default function FactoriesPage() {
         }
     };
 
-    useEffect(() => {
-        fetchFactories();
-    }, [currentPage]);
-
-    const handleDelete = async (id: number) => {
-        if (!confirm(t("deleteConfirm"))) return;
+    // Fetch related data for dropdowns
+    const fetchOptions = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/permission/${id}`, {
-                method: "DELETE",
-            });
-            if (!res.ok) throw new Error(t("deleteError"));
-            setFactories(prev => prev.filter(p => p.id !== id));
-        } catch (error) {
-            alert(t("deleteFailed"));
+            const [saleOfficesRes, departmentsRes, materialsRes] = await Promise.all([
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`),
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/materials`)
+            ]);
+
+            if (saleOfficesRes.ok) {
+                const saleOfficesData = await saleOfficesRes.json();
+                setSaleOfficeData(saleOfficesData.data || []);
+            }
+
+            if (departmentsRes.ok) {
+                const departmentsData = await departmentsRes.json();
+                setDepartmentData(departmentsData.data || []);
+            }
+
+            if (materialsRes.ok) {
+                const materialsData = await materialsRes.json();
+                setMaterialData(materialsData.data || []);
+            }
+        } catch (err) {
+            console.error('Failed to fetch options:', err);
         }
     };
 
-    const handleCreateSuccess = () => {
-        setIsCreateFormVisible(false);
-        fetchFactories();
-    };
+    useEffect(() => {
+        fetchItemCategories(keyword, currentPage);
+        fetchOptions();
+    }, [currentPage]);
 
-    const handleCreateStart = () => {
+    const handleCreateItemCategory = () => {
         setIsCreateFormVisible(true);
-    };
-
-    const handleCreateError = () => {
-        setError(t("createError"));
-    };
-
-    const handleCreateFactory = () => {
-        setIsCreateFormVisible(true);
-        setSelectedFactory(null); // ปิดฟอร์ม detail
+        setSelectedItemCategory(null); // ปิดฟอร์ม detail
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        fetchFactories();
+        fetchItemCategories();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
         setKeyword(input);
-        fetchFactories(input);
+        fetchItemCategories(input, 1);
     };
 
-
+    const handlePageChange = (page: number): void => {
+        setCurrentPage(page);
+    };
 
     const handlePreviousPage = () => {
         if (currentPage > 1) {
@@ -114,14 +124,9 @@ export default function FactoriesPage() {
         }
     };
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
     return (
-
         <div>
-            <SiteHeader headerTopic={t("headerTopic")} />
+            <SiteHeader headerTopic={t('headerTopic')} />
 
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
@@ -133,6 +138,7 @@ export default function FactoriesPage() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                             />
+
                             <Button type="button" variant="outline" onClick={handleReset}>
                                 <IconReload />
                             </Button>
@@ -142,11 +148,11 @@ export default function FactoriesPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateFactory}
+                                onClick={handleCreateItemCategory}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t("createNewFactory")}
+                                title={t('createNewItemCategory')}
                             >
                                 <IconPlus className="w-4 h-4" />
                             </Button>
@@ -155,55 +161,57 @@ export default function FactoriesPage() {
                         {error && <p className="text-red-500">{error}</p>}
 
                         {loading ? (
-                            <p>{t("loading")}</p>
+                            <p>{t('loading')}</p>
                         ) : (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t("nameThai")}</TableHead>
-                                        <TableHead>{t("nameEnglish")}</TableHead>
-                                        <TableHead>{t("address")}</TableHead>
-                                        <TableHead>{t("phone")}</TableHead>
-                                        <TableHead>{t("status")}</TableHead>
-                                        <TableHead>{t("createdAt")}</TableHead>
-                                        <TableHead>{t("updatedAt")}</TableHead>
+                                        <TableHead>{t('nameThai')}</TableHead>
+                                        <TableHead>{t('nameEnglish')}</TableHead>
+                                        <TableHead>{t('description')}</TableHead>
+                                        <TableHead>{t('saleOffice')}</TableHead>
+                                        <TableHead>{t('department')}</TableHead>
+                                        <TableHead>{t('status')}</TableHead>
+                                        <TableHead>{t('createdAt')}</TableHead>
+                                        <TableHead>{t('updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {factories.map((factory, index) => (
-                                        <TableRow key={factory.id}>
+                                    {itemCategories.map((category, index) => (
+                                        <TableRow key={category.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedFactory"
-                                                        value={factory.id}
-                                                        checked={selectedFactory?.id === factory.id}
+                                                        name="selectedItemCategory"
+                                                        value={category.id}
+                                                        checked={selectedItemCategory?.id === category.id}
                                                         onChange={() => {
-                                                            setSelectedFactory(factory);
+                                                            setSelectedItemCategory(category);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
                                                 </label>
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                            <TableCell>{factory.name_th}</TableCell>
-                                            <TableCell>{factory.name_en}</TableCell>
-                                            <TableCell>{factory.address}</TableCell>
-                                            <TableCell>{factory.phone}</TableCell>
+                                            <TableCell>{category.name_th || '-'}</TableCell>
+                                            <TableCell>{category.name_en || '-'}</TableCell>
+                                            <TableCell>{category.description || '-'}</TableCell>
+                                            <TableCell>{category.sale_office?.site_office_name_th || '-'}</TableCell>
+                                            <TableCell>{category.department?.name_th || '-'}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${factory.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <span className={`px-2 py-1 rounded-full text-xs ${category.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {factory.status ? t('active') : t('inactive')}
+                                                    {category.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                {factory.create_at ? new Date(factory.create_at).toLocaleDateString('th-TH') : '-'}
+                                                {category.create_at ? new Date(category.create_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                             <TableCell>
-                                                {factory.update_at ? new Date(factory.update_at).toLocaleDateString('th-TH') : '-'}
+                                                {category.update_at ? new Date(category.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -255,40 +263,43 @@ export default function FactoriesPage() {
                             </div>
                         )}
 
-                        {selectedFactory && !isCreateFormVisible && (
-                            <EditFactoryForm
+                        {selectedItemCategory && !isCreateFormVisible && (
+                            <ItemCategoryDetail
+                                itemCategory={selectedItemCategory}
                                 isVisible={true}
-                                factory={selectedFactory}
-                                onClose={() => setSelectedFactory(null)}
+                                saleOfficeData={saleOfficeData}
+                                departmentData={departmentData}
+                                materialData={materialData}
+                                onClose={() => setSelectedItemCategory(null)}
                                 onSuccess={() => {
-                                    setSelectedFactory(null);
-                                    fetchFactories(keyword, currentPage);
+                                    setSelectedItemCategory(null);
+                                    fetchItemCategories(keyword, currentPage);
                                 }}
-                                onStart={() => {}}
                                 onError={() => {
-                                    console.error('Error updating factory');
+                                    console.error('Error updating item category');
                                 }}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedFactory && (
-                            <CreateFactoryForm
+                        {isCreateFormVisible && !selectedItemCategory && (
+                            <CreateItemCategoryForm
                                 isVisible={true}
+                                saleOfficeData={saleOfficeData}
+                                departmentData={departmentData}
+                                materialData={materialData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchFactories(keyword, currentPage);
+                                    fetchItemCategories(keyword, currentPage);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
                             />
                         )}
                     </div>
-
                 </div>
             </div>
         </div>
-
     );
 }

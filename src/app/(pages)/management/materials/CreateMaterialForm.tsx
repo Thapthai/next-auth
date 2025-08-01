@@ -209,7 +209,7 @@ export default function CreateMaterialForm({ isVisible, onClose, onSuccess, onSt
                                     key={materialType.id}
                                     value={materialType.id.toString()}
                                 >
-                                    {materialType.description}
+                                    {materialType.name_th} - {materialType.name_en}
                                 </SelectItem>
                             ))}
                         </SelectContent>

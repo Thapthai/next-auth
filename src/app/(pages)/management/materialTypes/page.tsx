@@ -31,7 +31,7 @@ export default function MaterialTypesPage() {
     const [search, setSearch] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(5);
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 
@@ -135,6 +135,8 @@ export default function MaterialTypesPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
+                                        <TableHead>{t('nameThai')}</TableHead>
+                                        <TableHead>{t('nameEnglish')}</TableHead>
                                         <TableHead>{t('description')}</TableHead>
                                         <TableHead>{t('status')}</TableHead>
                                         <TableHead>{t('createdAt')}</TableHead>
@@ -159,6 +161,8 @@ export default function MaterialTypesPage() {
                                                 </label>
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                                            <TableCell>{materialType.name_th}</TableCell>
+                                            <TableCell>{materialType.name_en}</TableCell>
                                             <TableCell>{materialType.description}</TableCell>
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${materialType.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

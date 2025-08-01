@@ -22,7 +22,7 @@ export default function DepartmentBySaleOfficeId() {
     const [saleOffice, setSaleOffice] = useState<SaleOffice | null>(null);
     const [keyword, setKeyword] = useState("");
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(5);
     const [total, setTotal] = useState(0);
     const [input, setInput] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
@@ -125,7 +125,7 @@ export default function DepartmentBySaleOfficeId() {
                             className="flex items-center gap-2 mb-4"
                         >
                             <Input
-                                placeholder="ค้นหาแผนก"
+                                placeholder={t('search')}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                             />
@@ -159,17 +159,17 @@ export default function DepartmentBySaleOfficeId() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead></TableHead>
+                                    <TableHead>#</TableHead>
                                     <TableHead>{t('departmentCode')}</TableHead>
                                     <TableHead>{t('nameThai')}</TableHead>
                                     <TableHead>{t('nameEnglish')}</TableHead>
                                     <TableHead>{t('description')}</TableHead>
                                     <TableHead>{t('status')}</TableHead>
-
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {departments.length > 0 ? (
-                                    departments.map((dept) => (
+                                    departments.map((dept, index) => (
                                         <TableRow key={dept.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
@@ -187,16 +187,22 @@ export default function DepartmentBySaleOfficeId() {
                                                     <span className="sr-only">{t('select')}</span>
                                                 </label>
                                             </TableCell>
+                                            <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
                                             <TableCell>{dept.department_code}</TableCell>
                                             <TableCell>{dept.name_th}</TableCell>
                                             <TableCell>{dept.name_en}</TableCell>
                                             <TableCell>{dept.description}</TableCell>
-                                            <TableCell>{dept.status ? t('active') : t('inactive')}</TableCell>
+                                            <TableCell>
+                                                <span className={`px-2 py-1 rounded-full text-xs ${dept.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                    }`}>
+                                                    {dept.status ? t('active') : t('inactive')}
+                                                </span>
+                                            </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-4 text-gray-500">
+                                        <TableCell colSpan={7} className="text-center py-4 text-gray-500">
                                             {t('noData')}
                                         </TableCell>
                                     </TableRow>
@@ -204,23 +210,47 @@ export default function DepartmentBySaleOfficeId() {
                             </TableBody>
                         </Table>
 
+                        {/* Pagination */}
                         {total > pageSize && (
-                            <div className="flex justify-end items-center gap-2 mt-4">
-                                <Button
-                                    variant="outline"
-                                    disabled={page <= 1}
-                                    onClick={() => setPage(page - 1)}
-                                >
-                                    <IconChevronLeft /> {t('previous')}
-                                </Button>
-                                <span className="text-sm text-gray-700">{t('page')} {page} / {totalPages}</span>
-                                <Button
-                                    variant="outline"
-                                    disabled={page >= totalPages}
-                                    onClick={() => setPage(page + 1)}
-                                >
-                                    {t('next')} <IconChevronRight />
-                                </Button>
+                            <div className="flex items-center justify-between mt-4">
+                                <div className="text-sm text-gray-500">
+                                    {t('show')} {(page - 1) * pageSize + 1} {t('to')} {Math.min(page * pageSize, total)} {t('of')} {total} {t('items')}
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(page - 1)}
+                                        disabled={page <= 1}
+                                    >
+                                        <IconChevronLeft className="w-4 h-4" />
+                                        {t('previous')}
+                                    </Button>
+
+                                    <div className="flex items-center space-x-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                                            <Button
+                                                key={pageNum}
+                                                variant={page === pageNum ? "default" : "outline"}
+                                                size="sm"
+                                                onClick={() => setPage(pageNum)}
+                                                className="w-8 h-8 p-0"
+                                            >
+                                                {pageNum}
+                                            </Button>
+                                        ))}
+                                    </div>
+
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(page + 1)}
+                                        disabled={page >= totalPages}
+                                    >
+                                        {t('next')}
+                                        <IconChevronRight className="w-4 h-4" />
+                                    </Button>
+                                </div>
                             </div>
                         )}
 

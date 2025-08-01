@@ -94,7 +94,7 @@ export default function MaterialTypeDetail({
             </div>
             <div className="space-y-2">
                 <div>
-                    <label className="text-sm text-gray-600">{t('nameTh')}</label>
+                    <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <Input 
                         value={form.name_th} 
                         onChange={(e) => setForm({ ...form, name_th: e.target.value })} 
@@ -103,7 +103,7 @@ export default function MaterialTypeDetail({
                 </div>
                 
                 <div>
-                    <label className="text-sm text-gray-600">{t('nameEn')}</label>
+                    <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <Input 
                         value={form.name_en} 
                         onChange={(e) => setForm({ ...form, name_en: e.target.value })} 

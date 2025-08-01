@@ -62,20 +62,20 @@ export default function CreateMaterialTypeForm({ isVisible, onClose, onSuccess, 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium">{t('nameTh')} *</label>
+                    <label className="text-sm font-medium">{t('nameThai')} *</label>
                     <Input
                         value={form.name_th}
                         onChange={(e) => setForm({ ...form, name_th: e.target.value })}
-                        placeholder={t('nameThPlaceholder')}
+                        placeholder={t('nameThaiPlaceholder')}
                     />
                 </div>
 
                 <div>
-                    <label className="text-sm font-medium">{t('nameEn')} *</label>
+                    <label className="text-sm font-medium">{t('nameEnglish')} *</label>
                     <Input
                         value={form.name_en}
                         onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                        placeholder={t('nameEn')}
+                        placeholder={t('nameEnglishPlaceholder')}
                     />
                 </div>
 
