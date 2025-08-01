@@ -148,6 +148,7 @@ export default function SaleOfficePage() {
                                     <TableHead>{t('siteCode')}</TableHead>
                                     <TableHead>{t('nameThaiLabel')}</TableHead>
                                     <TableHead>{t('nameEnglishLabel')}</TableHead>
+                                    <TableHead>{t('status')}</TableHead>
                                     <TableHead></TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -172,6 +173,7 @@ export default function SaleOfficePage() {
                                         <TableCell>{office.site_code}</TableCell>
                                         <TableCell>{office.site_office_name_th}</TableCell>
                                         <TableCell>{office.site_office_name_en}</TableCell>
+                                        <TableCell>{office.status ? t('active') : t('inactive')}</TableCell>
                                         <TableCell className="w-10">
                                             <Button
                                                 variant="ghost"

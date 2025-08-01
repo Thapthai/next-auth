@@ -13,41 +13,35 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { Item } from "@/types/item";
-import { Material } from "@/types/material";
+import { SapSale } from "@/types/sapSale";
 import { Input } from "@/components/ui/input";
-import ItemDetail from "./ItemDetail";
-import CreateItemForm from "./CreateItemForm";
+import SapSaleDetail from "./SapSaleDetail";
+import CreateSapSaleForm from "./CreateSapSaleForm";
 
 
-export default function ItemsPage() {
-    const t = useTranslations("Items");
+export default function SapSalePage() {
+    const t = useTranslations("SapSale");
 
-    const [items, setItems] = useState<Item[]>([]);
+    const [sapSales, setSapSales] = useState<SapSale[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedSapSale, setSelectedSapSale] = useState<SapSale | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [keyword, setKeyword] = useState("");
+    const [search, setSearch] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
-    const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
+    const [itemsPerPage] = useState(10);
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
-    const [materialData, setMaterialData] = useState<Material[]>([]);
-    const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
-    const [departmentData, setDepartmentData] = useState<any[]>([]);
-    const [itemCategoryData, setItemCategoryData] = useState<any[]>([]);
-    const [loadingOptions, setLoadingOptions] = useState(false);
 
-    const fetchItems = async (keyword = "", page = currentPage) => {
+    const fetchSapSales = async (search = "", page = currentPage) => {
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/items/item-pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch items");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sap-sale/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${search}`);
+            if (!res.ok) throw new Error("Failed to fetch SAP sales");
             const data = await res.json();
-            setItems(data.data || []);
+            setSapSales(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -58,69 +52,30 @@ export default function ItemsPage() {
         }
     };
 
-    // Fetch related data for dropdowns
-    const fetchOptions = async () => {
-        setLoadingOptions(true);
-        try {
-            const [materialsRes, saleOfficesRes, departmentsRes, itemCategoriesRes] = await Promise.all([
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/materials`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/item-categories`)
-            ]);
-
-            if (materialsRes.ok) {
-                const materialsData = await materialsRes.json();
-                setMaterialData(materialsData.data || []);
-            }
-
-            if (saleOfficesRes.ok) {
-                const saleOfficesData = await saleOfficesRes.json();
-                setSaleOfficeData(saleOfficesData.data || []);
-            }
-
-            if (departmentsRes.ok) {
-                const departmentsData = await departmentsRes.json();
-                setDepartmentData(departmentsData.data || []);
-            }
-
-            if (itemCategoriesRes.ok) {
-                const itemCategoriesData = await itemCategoriesRes.json();
-                setItemCategoryData(itemCategoriesData.data || []);
-            }
-        } catch (err) {
-            console.error('Failed to fetch options:', err);
-        } finally {
-            setLoadingOptions(false);
-        }
-    };
-
     useEffect(() => {
-        fetchItems(keyword, currentPage);
-        fetchOptions();
+        fetchSapSales(search, currentPage);
     }, [currentPage]);
 
-
-    const handleCreateItem = () => {
+    const handleCreateSapSale = () => {
         setIsCreateFormVisible(true);
-        setSelectedItem(null); // ปิดฟอร์ม detail
+        setSelectedSapSale(null);
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
-        setKeyword('');
-        fetchItems();
+        setSearch('');
+        fetchSapSales();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
-        setKeyword(input);
-        fetchItems(input, 1);
+        setSearch(input);
+        fetchSapSales(input, 1);
     };
 
-    const handlePageChange = (page: number): void => {
+    const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
 
@@ -137,7 +92,6 @@ export default function ItemsPage() {
     };
 
     return (
-
         <div>
             <SiteHeader headerTopic={t('headerTopic')} />
 
@@ -161,7 +115,7 @@ export default function ItemsPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateItem}
+                                onClick={handleCreateSapSale}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
@@ -181,44 +135,44 @@ export default function ItemsPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t('nameThai')}</TableHead>
-                                        <TableHead>{t('nameEnglish')}</TableHead>
+                                        <TableHead>{t('code')}</TableHead>
+                                        <TableHead>{t('description')}</TableHead>
                                         <TableHead>{t('status')}</TableHead>
                                         <TableHead>{t('createdAt')}</TableHead>
                                         <TableHead>{t('updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {items.map((item, index) => (
-                                        <TableRow key={item.id}>
+                                    {sapSales.map((sapSale, index) => (
+                                        <TableRow key={sapSale.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedItem"
-                                                        value={item.id}
-                                                        checked={selectedItem?.id === item.id}
+                                                        name="selectedSapSale"
+                                                        value={sapSale.id}
+                                                        checked={selectedSapSale?.id === sapSale.id}
                                                         onChange={() => {
-                                                            setSelectedItem(item);
+                                                            setSelectedSapSale(sapSale);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
                                                 </label>
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                            <TableCell>{item.name_th}</TableCell>
-                                            <TableCell>{item.name_en}</TableCell>
+                                            <TableCell className="font-mono">{sapSale.code}</TableCell>
+                                            <TableCell>{sapSale.description}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <span className={`px-2 py-1 rounded-full text-xs ${sapSale.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {item.status ? t('active') : t('inactive')}
+                                                    {sapSale.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                {item.create_at ? new Date(item.create_at).toLocaleDateString('th-TH') : '-'}
+                                                {sapSale.create_at ? new Date(sapSale.create_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                             <TableCell>
-                                                {item.update_at ? new Date(item.update_at).toLocaleDateString('th-TH') : '-'}
+                                                {sapSale.update_at ? new Date(sapSale.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -244,17 +198,30 @@ export default function ItemsPage() {
                                     </Button>
 
                                     <div className="flex items-center space-x-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                            <Button
-                                                key={page}
-                                                variant={currentPage === page ? "default" : "outline"}
-                                                size="sm"
-                                                onClick={() => handlePageChange(page)}
-                                                className="w-8 h-8 p-0"
-                                            >
-                                                {page}
-                                            </Button>
-                                        ))}
+                                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                                            let page;
+                                            if (totalPages <= 5) {
+                                                page = i + 1;
+                                            } else if (currentPage <= 3) {
+                                                page = i + 1;
+                                            } else if (currentPage >= totalPages - 2) {
+                                                page = totalPages - 4 + i;
+                                            } else {
+                                                page = currentPage - 2 + i;
+                                            }
+                                            
+                                            return (
+                                                <Button
+                                                    key={page}
+                                                    variant={currentPage === page ? "default" : "outline"}
+                                                    size="sm"
+                                                    onClick={() => handlePageChange(page)}
+                                                    className="w-8 h-8 p-0"
+                                                >
+                                                    {page}
+                                                </Button>
+                                            );
+                                        })}
                                     </div>
 
                                     <Button
@@ -270,37 +237,29 @@ export default function ItemsPage() {
                             </div>
                         )}
 
-                        {selectedItem && !isCreateFormVisible && (
-                            <ItemDetail 
-                                item={selectedItem} 
+                        {selectedSapSale && !isCreateFormVisible && (
+                            <SapSaleDetail 
+                                sapSale={selectedSapSale} 
                                 isVisible={true}
-                                materialData={materialData}
-                                saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
-                                onClose={() => setSelectedItem(null)}
+                                onClose={() => setSelectedSapSale(null)} 
                                 onSuccess={() => {
-                                    setSelectedItem(null);
-                                    fetchItems(keyword, currentPage);
+                                    setSelectedSapSale(null);
+                                    fetchSapSales(search, currentPage);
                                 }}
                                 onError={() => {
-                                    console.error('Error updating item');
+                                    console.error('Error updating SAP Sale');
                                 }}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedItem && (
-                            <CreateItemForm
+                        {isCreateFormVisible && !selectedSapSale && (
+                            <CreateSapSaleForm
                                 isVisible={true}
-                                materialData={materialData}
-                                saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchItems(keyword, currentPage);
+                                    fetchSapSales(search, currentPage);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
@@ -310,6 +269,5 @@ export default function ItemsPage() {
                 </div>
             </div>
         </div>
-
     );
 }

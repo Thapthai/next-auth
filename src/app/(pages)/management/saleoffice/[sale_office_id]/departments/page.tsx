@@ -27,13 +27,13 @@ export default function DepartmentBySaleOfficeId() {
     const [input, setInput] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
     const [loadingId, setLoadingId] = useState<number | null>(null);
- 
+
     const pathname = usePathname();
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
- 
 
 
-    const t = useTranslations('saleOffice');
+
+    const t = useTranslations('SaleOfficeManage');
     const handleCreateSuccess = () => {
         setIsCreateFormVisible(false);
 
@@ -104,7 +104,7 @@ export default function DepartmentBySaleOfficeId() {
 
     return (
         <>
-            <SiteHeader headerTopic="รายการสาขา (Sale Offices)" />
+            <SiteHeader headerTopic={t('headerTopic')} />
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
@@ -163,6 +163,7 @@ export default function DepartmentBySaleOfficeId() {
                                     <TableHead>{t('nameThai')}</TableHead>
                                     <TableHead>{t('nameEnglish')}</TableHead>
                                     <TableHead>{t('description')}</TableHead>
+                                    <TableHead>{t('status')}</TableHead>
 
                                 </TableRow>
                             </TableHeader>
@@ -190,7 +191,7 @@ export default function DepartmentBySaleOfficeId() {
                                             <TableCell>{dept.name_th}</TableCell>
                                             <TableCell>{dept.name_en}</TableCell>
                                             <TableCell>{dept.description}</TableCell>
-
+                                            <TableCell>{dept.status ? t('active') : t('inactive')}</TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
@@ -227,6 +228,7 @@ export default function DepartmentBySaleOfficeId() {
                             <DepartmentDetailForm
                                 department={selectedDepartment}
                                 refresh={loadDepartments}
+                                onClose={() => setSelectedDepartment(null)}
                             />
                         )}
 

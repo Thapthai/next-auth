@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -235,6 +236,18 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
+                    </div>
+
+                    <div className="flex items-center gap-2 md:col-span-2">
+                        <span className="text-sm text-gray-600">{t('status')}</span>
+                        <Switch
+                            checked={formData.status}
+                            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, status: checked }))}
+                            disabled={loading}
+                        />
+                        <span className="text-sm text-gray-600">
+                            {formData.status ? t('active') : t('inactive')}
+                        </span>
                     </div>
                 </div>
 

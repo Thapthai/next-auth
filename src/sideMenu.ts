@@ -235,6 +235,36 @@ export const data = {
             icon: IconDashboard,
             permission: [1, 2],
           },
+          {
+            title: "materials",
+            url: "/management/materials",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
+          {
+            title: "materialTypes",
+            url: "/management/materialTypes",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
+          {
+            title: "sapSale",
+            url: "/management/sapSale",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },  
+          {
+            title: "itemCategories",
+            url: "/management/itemCategories",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
+          {
+            title: "itemCategoryPrices",
+            url: "/management/itemCategoryPrices",
+            icon: IconDashboard,
+            permission: [1, 2],
+          },
         ]
       },
       {

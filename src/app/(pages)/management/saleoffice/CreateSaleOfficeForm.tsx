@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Switch } from "@/components/ui/switch";
 
 interface CreateSaleOfficeFormProps {
     isVisible: boolean;
@@ -23,9 +24,7 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
         site_code: '',
         site_office_name_th: '',
         site_office_name_en: '',
-        address: '',
-        phone: '',
-        email: ''
+        status: true
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -65,9 +64,7 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
                 site_code: '',
                 site_office_name_th: '',
                 site_office_name_en: '',
-                address: '',
-                phone: '',
-                email: ''
+                status: true
             });
             onSuccess();
             onClose();
@@ -87,9 +84,7 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
                 site_code: '',
                 site_office_name_th: '',
                 site_office_name_en: '',
-                address: '',
-                phone: '',
-                email: ''
+                status: true
             });
             setError(null);
             onClose();
@@ -136,19 +131,6 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm text-gray-600">{t('phone')}</Label>
-                        <Input
-                            id="phone"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            placeholder={t('phonePlaceholder')}
-                            disabled={loading}
-                            className="w-full border rounded px-2 py-1"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
                         <Label htmlFor="site_office_name_th" className="text-sm text-gray-600">{t('nameThaiLabel')} *</Label>
                         <Input
                             id="site_office_name_th"
@@ -177,29 +159,13 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="email" className="text-sm text-gray-600">{t('email')}</Label>
-                        <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            placeholder={t('emailPlaceholder')}
+                        <Label htmlFor="address" className="text-sm text-gray-600">{t('status')}</Label>
+                        <Switch
+                            id="status"
+                            name="status"
+                            onCheckedChange={(checked) => setFormData({ ...formData, status: checked })}
                             disabled={loading}
-                            className="w-full border rounded px-2 py-1"
-                        />
-                    </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="address" className="text-sm text-gray-600">{t('address')}</Label>
-                        <Input
-                            id="address"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            placeholder={t('addressPlaceholder')}
-                            disabled={loading}
-                            className="w-full border rounded px-2 py-1"
+                            checked={formData.status}
                         />
                     </div>
                 </div>

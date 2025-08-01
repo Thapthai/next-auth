@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { SaleOffice } from "@/types/saleOffice";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 
@@ -85,12 +86,14 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <label className="text-sm text-gray-600">{t('status')}</label>
-                    <input
-                        type="checkbox"
+                    <span className="text-sm text-gray-600">{t('status')}</span>
+                    <Switch
                         checked={form.status}
-                        onChange={(e) => setForm({ ...form, status: e.target.checked })}
+                        onCheckedChange={(checked) => setForm({ ...form, status: checked })}
                     />
+                    <span className="text-sm text-gray-600">
+                        {form.status ? t('active') : t('inactive')}
+                    </span>
                 </div>
             </div>
 

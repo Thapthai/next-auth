@@ -13,41 +13,35 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { Item } from "@/types/item";
-import { Material } from "@/types/material";
+import { MaterialType } from "@/types/materialType";
 import { Input } from "@/components/ui/input";
-import ItemDetail from "./ItemDetail";
-import CreateItemForm from "./CreateItemForm";
+import MaterialTypeDetail from "./MaterialTypeDetail";
+import CreateMaterialTypeForm from "./CreateMaterialTypeForm";
 
 
-export default function ItemsPage() {
-    const t = useTranslations("Items");
+export default function MaterialTypesPage() {
+    const t = useTranslations("MaterialTypes");
 
-    const [items, setItems] = useState<Item[]>([]);
+    const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedMaterialType, setSelectedMaterialType] = useState<MaterialType | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [keyword, setKeyword] = useState("");
+    const [search, setSearch] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
-    const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
+    const [itemsPerPage] = useState(10);
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
-    const [materialData, setMaterialData] = useState<Material[]>([]);
-    const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
-    const [departmentData, setDepartmentData] = useState<any[]>([]);
-    const [itemCategoryData, setItemCategoryData] = useState<any[]>([]);
-    const [loadingOptions, setLoadingOptions] = useState(false);
 
-    const fetchItems = async (keyword = "", page = currentPage) => {
+    const fetchMaterialTypes = async (search = "", page = currentPage) => {
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/items/item-pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch items");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/material-types/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${search}`);
+            if (!res.ok) throw new Error("Failed to fetch material types");
             const data = await res.json();
-            setItems(data.data || []);
+            setMaterialTypes(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -58,69 +52,30 @@ export default function ItemsPage() {
         }
     };
 
-    // Fetch related data for dropdowns
-    const fetchOptions = async () => {
-        setLoadingOptions(true);
-        try {
-            const [materialsRes, saleOfficesRes, departmentsRes, itemCategoriesRes] = await Promise.all([
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/materials`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/item-categories`)
-            ]);
-
-            if (materialsRes.ok) {
-                const materialsData = await materialsRes.json();
-                setMaterialData(materialsData.data || []);
-            }
-
-            if (saleOfficesRes.ok) {
-                const saleOfficesData = await saleOfficesRes.json();
-                setSaleOfficeData(saleOfficesData.data || []);
-            }
-
-            if (departmentsRes.ok) {
-                const departmentsData = await departmentsRes.json();
-                setDepartmentData(departmentsData.data || []);
-            }
-
-            if (itemCategoriesRes.ok) {
-                const itemCategoriesData = await itemCategoriesRes.json();
-                setItemCategoryData(itemCategoriesData.data || []);
-            }
-        } catch (err) {
-            console.error('Failed to fetch options:', err);
-        } finally {
-            setLoadingOptions(false);
-        }
-    };
-
     useEffect(() => {
-        fetchItems(keyword, currentPage);
-        fetchOptions();
+        fetchMaterialTypes(search, currentPage);
     }, [currentPage]);
 
-
-    const handleCreateItem = () => {
+    const handleCreateMaterialType = () => {
         setIsCreateFormVisible(true);
-        setSelectedItem(null); // ปิดฟอร์ม detail
+        setSelectedMaterialType(null);
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
-        setKeyword('');
-        fetchItems();
+        setSearch('');
+        fetchMaterialTypes();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
-        setKeyword(input);
-        fetchItems(input, 1);
+        setSearch(input);
+        fetchMaterialTypes(input, 1);
     };
 
-    const handlePageChange = (page: number): void => {
+    const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
 
@@ -137,7 +92,6 @@ export default function ItemsPage() {
     };
 
     return (
-
         <div>
             <SiteHeader headerTopic={t('headerTopic')} />
 
@@ -161,7 +115,7 @@ export default function ItemsPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateItem}
+                                onClick={handleCreateMaterialType}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
@@ -181,44 +135,42 @@ export default function ItemsPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t('nameThai')}</TableHead>
-                                        <TableHead>{t('nameEnglish')}</TableHead>
+                                        <TableHead>{t('description')}</TableHead>
                                         <TableHead>{t('status')}</TableHead>
                                         <TableHead>{t('createdAt')}</TableHead>
                                         <TableHead>{t('updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {items.map((item, index) => (
-                                        <TableRow key={item.id}>
+                                    {materialTypes.map((materialType, index) => (
+                                        <TableRow key={materialType.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedItem"
-                                                        value={item.id}
-                                                        checked={selectedItem?.id === item.id}
+                                                        name="selectedMaterialType"
+                                                        value={materialType.id}
+                                                        checked={selectedMaterialType?.id === materialType.id}
                                                         onChange={() => {
-                                                            setSelectedItem(item);
+                                                            setSelectedMaterialType(materialType);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
                                                 </label>
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                            <TableCell>{item.name_th}</TableCell>
-                                            <TableCell>{item.name_en}</TableCell>
+                                            <TableCell>{materialType.description}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <span className={`px-2 py-1 rounded-full text-xs ${materialType.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {item.status ? t('active') : t('inactive')}
+                                                    {materialType.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                {item.create_at ? new Date(item.create_at).toLocaleDateString('th-TH') : '-'}
+                                                {materialType.create_at ? new Date(materialType.create_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                             <TableCell>
-                                                {item.update_at ? new Date(item.update_at).toLocaleDateString('th-TH') : '-'}
+                                                {materialType.update_at ? new Date(materialType.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -244,17 +196,30 @@ export default function ItemsPage() {
                                     </Button>
 
                                     <div className="flex items-center space-x-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                            <Button
-                                                key={page}
-                                                variant={currentPage === page ? "default" : "outline"}
-                                                size="sm"
-                                                onClick={() => handlePageChange(page)}
-                                                className="w-8 h-8 p-0"
-                                            >
-                                                {page}
-                                            </Button>
-                                        ))}
+                                        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                                            let page;
+                                            if (totalPages <= 5) {
+                                                page = i + 1;
+                                            } else if (currentPage <= 3) {
+                                                page = i + 1;
+                                            } else if (currentPage >= totalPages - 2) {
+                                                page = totalPages - 4 + i;
+                                            } else {
+                                                page = currentPage - 2 + i;
+                                            }
+                                            
+                                            return (
+                                                <Button
+                                                    key={page}
+                                                    variant={currentPage === page ? "default" : "outline"}
+                                                    size="sm"
+                                                    onClick={() => handlePageChange(page)}
+                                                    className="w-8 h-8 p-0"
+                                                >
+                                                    {page}
+                                                </Button>
+                                            );
+                                        })}
                                     </div>
 
                                     <Button
@@ -270,37 +235,21 @@ export default function ItemsPage() {
                             </div>
                         )}
 
-                        {selectedItem && !isCreateFormVisible && (
-                            <ItemDetail 
-                                item={selectedItem} 
-                                isVisible={true}
-                                materialData={materialData}
-                                saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
-                                onClose={() => setSelectedItem(null)}
-                                onSuccess={() => {
-                                    setSelectedItem(null);
-                                    fetchItems(keyword, currentPage);
-                                }}
-                                onError={() => {
-                                    console.error('Error updating item');
-                                }}
-                            />
+                        {selectedMaterialType && !isCreateFormVisible && (
+                            <MaterialTypeDetail materialType={selectedMaterialType} isVisible={true} onClose={() => setSelectedMaterialType(null)} onSuccess={() => {
+                                setSelectedMaterialType(null);
+                                fetchMaterialTypes(search, currentPage);
+                            }} />
                         )}
 
-                        {isCreateFormVisible && !selectedItem && (
-                            <CreateItemForm
+                        {isCreateFormVisible && !selectedMaterialType && (
+                            <CreateMaterialTypeForm
                                 isVisible={true}
-                                materialData={materialData}
-                                saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchItems(keyword, currentPage);
+                                    fetchMaterialTypes(search, currentPage);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
@@ -310,6 +259,5 @@ export default function ItemsPage() {
                 </div>
             </div>
         </div>
-
     );
 }
