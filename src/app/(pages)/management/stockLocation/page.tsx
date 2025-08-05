@@ -13,111 +13,95 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { Item } from "@/types/item";
-import { Material } from "@/types/material";
+import { StockLocation } from "@/types/stockLocation";
 import { Input } from "@/components/ui/input";
-import ItemDetail from "./ItemDetail";
-import CreateItemForm from "./CreateItemForm";
+import StockLocationDetail from "./StockLocationDetail";
+import CreateStockLocationForm from "./CreateStockLocationForm";
 
+export default function StockLocationsPage() {
+    const t = useTranslations("StockLocations");
 
-export default function ItemsPage() {
-    const t = useTranslations("Items");
-
-    const [items, setItems] = useState<Item[]>([]);
+    const [stockLocations, setStockLocations] = useState<StockLocation[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedStockLocation, setSelectedStockLocation] = useState<StockLocation | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
-    const [totalItems, setTotalItems] = useState(0);
+    const [totalStockLocations, setTotalStockLocations] = useState(0);
     const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
-    const [materialData, setMaterialData] = useState<Material[]>([]);
     const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
     const [departmentData, setDepartmentData] = useState<any[]>([]);
-    const [itemCategoryData, setItemCategoryData] = useState<any[]>([]);
     const [loadingOptions, setLoadingOptions] = useState(false);
 
-    const fetchItems = async (keyword = "", page = currentPage) => {
+    const fetchStockLocations = async (keyword = "", page = currentPage) => {
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/items/item-pagination-with-search?page=${page}&pageSize=${itemsPerPage}&search=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch items");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
+            if (!res.ok) throw new Error("Failed to fetch stock locations");
             const data = await res.json();
-            setItems(data.data || []);
-            setTotalItems(data.total || 0);
-            setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
-        } catch (err) {
-            console.error(err);
-            setError(t("fetchError"));
+            setStockLocations(data.data || []);
+            setTotalPages(data.totalPages || 1);
+            setTotalStockLocations(data.total || 0);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "An error occurred");
         } finally {
             setLoading(false);
         }
     };
 
-    // Fetch related data for dropdowns
     const fetchOptions = async () => {
         setLoadingOptions(true);
         try {
-            const [materialsRes, saleOfficesRes, departmentsRes, itemCategoriesRes] = await Promise.all([
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/materials`),
+            const [saleOfficeRes, departmentRes] = await Promise.all([
                 fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/item-categories`)
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`)
             ]);
 
-            if (materialsRes.ok) {
-                const materialsData = await materialsRes.json();
-                setMaterialData(materialsData.data || []);
+            if (saleOfficeRes.ok) {
+                const saleOfficeData = await saleOfficeRes.json();
+                setSaleOfficeData(saleOfficeData.data || []);
             }
 
-            if (saleOfficesRes.ok) {
-                const saleOfficesData = await saleOfficesRes.json();
-                setSaleOfficeData(saleOfficesData.data || []);
-            }
 
-            if (departmentsRes.ok) {
-                const departmentsData = await departmentsRes.json();
-                setDepartmentData(departmentsData.data || []);
-            }
+            console.log(saleOfficeData);
 
-            if (itemCategoriesRes.ok) {
-                const itemCategoriesData = await itemCategoriesRes.json();
-                setItemCategoryData(itemCategoriesData.data || []);
+            if (departmentRes.ok) {
+                const departmentData = await departmentRes.json();
+                setDepartmentData(departmentData.data || []);
             }
-        } catch (err) {
-            console.error('Failed to fetch options:', err);
+        } catch (error) {
+            console.error("Failed to fetch options:", error);
         } finally {
             setLoadingOptions(false);
         }
     };
 
     useEffect(() => {
-        fetchItems(keyword, currentPage);
+        fetchStockLocations(keyword, currentPage);
         fetchOptions();
     }, [currentPage]);
 
-
-    const handleCreateItem = () => {
+    const handleCreateStockLocation = () => {
         setIsCreateFormVisible(true);
-        setSelectedItem(null); // ปิดฟอร์ม detail
+        setSelectedStockLocation(null); // ปิดฟอร์ม detail
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        fetchItems();
+        fetchStockLocations();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
         setKeyword(input);
-        fetchItems(input, 1);
+        fetchStockLocations(input, 1);
     };
 
     const handlePageChange = (page: number): void => {
@@ -136,13 +120,28 @@ export default function ItemsPage() {
         }
     };
 
+    const handleStockLocationCreated = () => {
+        setIsCreateFormVisible(false);
+        fetchStockLocations(keyword, currentPage);
+    };
+
+    const handleStockLocationUpdated = () => {
+        setSelectedStockLocation(null);
+        fetchStockLocations(keyword, currentPage);
+    };
+
+    const handleStockLocationDeleted = () => {
+        setSelectedStockLocation(null);
+        fetchStockLocations(keyword, currentPage);
+    };
+
     if (loading) return <div className="flex justify-center items-center h-64">{t('loading')}</div>;
     if (error) return <div className="text-red-500 text-center">{t('error')}</div>;
 
     return (
-
         <div>
-            <SiteHeader headerTopic={t('headerTopic')} />
+
+            <SiteHeader headerTopic={t('title')} />
 
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
@@ -164,11 +163,11 @@ export default function ItemsPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateItem}
+                                onClick={handleCreateStockLocation}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t('createNewItem')}
+                                title={t('createButton')}
                             >
                                 <IconPlus className="w-4 h-4" />
                             </Button>
@@ -184,44 +183,48 @@ export default function ItemsPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t('nameThai')}</TableHead>
-                                        <TableHead>{t('nameEnglish')}</TableHead>
-                                        <TableHead>{t('status')}</TableHead>
-                                        <TableHead>{t('createdAt')}</TableHead>
-                                        <TableHead>{t('updatedAt')}</TableHead>
+                                        <TableHead>{t('table.description')}</TableHead>
+                                        <TableHead>{t('table.siteShortCode')}</TableHead>
+                                        <TableHead>{t('table.status')}</TableHead>
+                                        <TableHead>{t('table.createdAt')}</TableHead>
+                                        <TableHead>{t('table.updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {items.map((item, index) => (
-                                        <TableRow key={item.id}>
+                                    {stockLocations.map((stockLocation, index) => (
+                                        <TableRow key={stockLocation.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedItem"
-                                                        value={item.id}
-                                                        checked={selectedItem?.id === item.id}
+                                                        name="selectedStockLocation"
+                                                        value={stockLocation.id}
+                                                        checked={selectedStockLocation?.id === stockLocation.id}
                                                         onChange={() => {
-                                                            setSelectedItem(item);
+                                                            setSelectedStockLocation(stockLocation);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
                                                 </label>
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                            <TableCell>{item.name_th}</TableCell>
-                                            <TableCell>{item.name_en}</TableCell>
+                                            <TableCell className="font-medium">
+                                                {stockLocation.description}
+                                            </TableCell>
+                                            <TableCell>{stockLocation.site_short_code}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <span className={`px-2 py-1 rounded-full text-xs ${stockLocation.status
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {item.status ? t('active') : t('inactive')}
+                                                    {stockLocation.status ? t('status.active') : t('status.inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                {item.create_at ? new Date(item.create_at).toLocaleDateString('th-TH') : '-'}
+                                                {stockLocation.create_at ? new Date(stockLocation.create_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                             <TableCell>
-                                                {item.update_at ? new Date(item.update_at).toLocaleDateString('th-TH') : '-'}
+                                                {stockLocation.update_at ? new Date(stockLocation.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -233,7 +236,7 @@ export default function ItemsPage() {
                         {!loading && !error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    {t('show')} {(currentPage - 1) * itemsPerPage + 1} {t('to')} {Math.min(currentPage * itemsPerPage, totalItems)} {t('of')} {totalItems} {t('items')}
+                                    {t('pagination.showing')} {(currentPage - 1) * itemsPerPage + 1} {t('pagination.to')} {Math.min(currentPage * itemsPerPage, totalStockLocations)} {t('pagination.of')} {totalStockLocations} {t('pagination.results')}
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Button
@@ -243,7 +246,7 @@ export default function ItemsPage() {
                                         disabled={currentPage === 1}
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
-                                        {t('previous')}
+                                        {t('pagination.previous')}
                                     </Button>
 
                                     <div className="flex items-center space-x-1">
@@ -266,44 +269,34 @@ export default function ItemsPage() {
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
                                     >
-                                        {t('next')}
+                                        {t('pagination.next')}
                                         <IconChevronRight className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>
                         )}
 
-                        {selectedItem && !isCreateFormVisible && (
-                            <ItemDetail
-                                item={selectedItem}
+                        {selectedStockLocation && !isCreateFormVisible && (
+                            <StockLocationDetail
+                                stockLocation={selectedStockLocation}
                                 isVisible={true}
-                                materialData={materialData}
                                 saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
-                                onClose={() => setSelectedItem(null)}
-                                onSuccess={() => {
-                                    setSelectedItem(null);
-                                    fetchItems(keyword, currentPage);
-                                }}
-                                onError={() => {
-                                    console.error('Error updating item');
-                                }}
+                                onClose={() => setSelectedStockLocation(null)}
+                                onSuccess={handleStockLocationUpdated}
+                                onStart={() => setIsCreating(true)}
+                                onError={() => setIsCreating(false)}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedItem && (
-                            <CreateItemForm
+                        {isCreateFormVisible && !selectedStockLocation && (
+                            <CreateStockLocationForm
                                 isVisible={true}
-                                materialData={materialData}
                                 saleOfficeData={saleOfficeData}
-                                departmentData={departmentData}
-                                itemCategoryData={itemCategoryData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchItems(keyword, currentPage);
+                                    fetchStockLocations(keyword, currentPage);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
@@ -313,6 +306,5 @@ export default function ItemsPage() {
                 </div>
             </div>
         </div>
-
     );
 }

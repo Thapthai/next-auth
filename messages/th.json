@@ -79,7 +79,8 @@
         "materialTypes": "รายการประเภทวัสดุ",
         "sapSale": "รายการ SAP",
         "itemCategories": "รายการประเภทสินค้า",
-        "itemCategoryPrices": "รายการราคาสินค้า"
+        "itemCategoryPrices": "รายการราคาสินค้า",
+        "stockLocations": "รายการสต๊อก"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",
@@ -411,6 +412,9 @@
     "DirtyDoc": {
         "headerTopic": "บันทึกเอกสารผ้าสกปรก โรงซัก"
     },
+    "Management": {
+        "headerTopic": "จัดการ"
+    },
     "Factories": {
         "headerTopic": "โรงงาน",
         "factoriesList": "รายการโรงงาน",
@@ -456,7 +460,6 @@
         "showingResults": "แสดง {start} ถึง {end} จาก {total} รายการ",
         "itemsPerPage": "รายการต่อหน้า:",
         "page": "หน้า",
-       
         "previous": "ก่อนหน้า",
         "next": "ถัดไป",
         "first": "หน้าแรก",
@@ -938,5 +941,93 @@
         "items": "รายการ",
         "previous": "ก่อนหน้า",
         "next": "ถัดไป"
+    },
+    "StockLocations": {
+        "title": "จัดการสถานที่เก็บสต็อก",
+        "createButton": "สร้างสถานที่เก็บสต็อก",
+        "searchPlaceholder": "ค้นหาด้วยคำอธิบายหรือรหัสไซต์...",
+        "selectMessage": "เลือกสถานที่เก็บสต็อกเพื่อดูรายละเอียด",
+        "search": "ค้นหา",
+        "clearSearch": "ล้าง",
+        "createNewStockLocation": "สร้างสถานที่เก็บสต็อกใหม่",
+        "stockLocation": "สถานที่เก็บสต็อก",
+        "stockLocationPlaceholder": "กรอกสถานที่เก็บสต็อก",
+        "stockLocationStatus": "สถานะสถานที่เก็บสต็อก",
+        "stockLocationStatusPlaceholder": "กรอกสถานะสถานที่เก็บสต็อก",
+        "table": {
+            "description": "คำอธิบาย",
+            "siteShortCode": "รหัสไซต์",
+            "status": "สถานะ",
+            "actions": "การดำเนินการ",
+            "createdAt": "สร้างเมื่อ",
+            "updatedAt": "อัปเดตเมื่อ"
+        },
+        "pagination": {
+            "showing": "แสดง",
+            "to": "ถึง",
+            "results": "ผลลัพธ์",
+            "page": "หน้า",
+            "of": "จาก"
+        },
+        "form": {
+            "create": {
+                "title": "สร้างสถานที่เก็บสต็อกใหม่",
+                "button": "สร้าง"
+            },
+            "saleOffice": "สำนักงานขาย",
+            "department": "แผนก",
+            "siteShortCode": "รหัสไซต์",
+            "description": "คำอธิบาย",
+            "status": "สถานะ",
+            "selectSaleOffice": "เลือกสำนักงานขาย",
+            "selectDepartment": "เลือกแผนก",
+            "siteShortCodePlaceholder": "ใส่รหัสไซต์",
+            "descriptionPlaceholder": "ใส่คำอธิบาย",
+            "cancel": "ยกเลิก",
+            "creating": "กำลังสร้าง..."
+        },
+        "detail": {
+            "title": "รายละเอียดสถานที่เก็บสต็อก",
+            "id": "รหัส",
+            "saleOffice": "สำนักงานขาย",
+            "department": "แผนก",
+            "siteShortCode": "รหัสไซต์",
+            "description": "คำอธิบาย",
+            "status": "สถานะ",
+            "createdAt": "สร้างเมื่อ",
+            "updatedAt": "อัปเดตเมื่อ",
+            "edit": "แก้ไข",
+            "delete": "ลบ",
+            "deleteConfirm": "คุณแน่ใจหรือไม่ที่จะลบสถานที่เก็บสต็อกนี้?",
+            "cancel": "ยกเลิก",
+            "update": "อัปเดต",
+            "updating": "กำลังอัปเดต...",
+            "unknown": "ไม่ทราบ"
+        },
+        "loading": "กำลังโหลด...",
+        "error": "เกิดข้อผิดพลาด",
+        "description": "คำอธิบาย",
+        "saleOffice": "สำนักงานขาย",
+        "department": "แผนก",
+        "createdAt": "สร้างเมื่อ",
+        "updatedAt": "อัปเดตเมื่อ",
+        "selectSaleOffice": "เลือกสำนักงานขาย",
+        "selectDepartment": "เลือกแผนก",
+        "status": "สถานะ",
+        "active": "ใช้งาน",
+        "inactive": "ไม่ใช้งาน",
+        "create": "สร้าง",
+        "cancel": "ยกเลิก",
+        "saving": "กำลังบันทึก...",
+        "updateSuccess": "บันทึกข้อมูลเรียบร้อยแล้ว",
+        "updateError": "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        "edit": "แก้ไข",
+        "delete": "ลบ",
+        "deleteConfirm": "คุณแน่ใจหรือไม่ที่จะลบสถานที่เก็บสต็อกนี้?",
+        "save": "บันทึก",
+        "update": "อัปเดต",
+        "updating": "กำลังอัปเดต...",
+        "unknown": "ไม่ทราบ",
+        "site_short_code": "รหัสไซต์"
     }
 }

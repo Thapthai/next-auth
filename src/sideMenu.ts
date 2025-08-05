@@ -189,7 +189,7 @@ export const data = {
     },
     {
       title: "management",
-      url: "#",
+      url: "/management",
       icon: IconSettings,
       permission: [1, 2],
       sub: [
@@ -214,6 +214,12 @@ export const data = {
         {
           title: "factories",
           url: "/management/factories",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
+          title: "stockLocations",
+          url: "/management/stockLocation",
           icon: IconDashboard,
           permission: [1, 2],
         },

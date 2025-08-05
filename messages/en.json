@@ -79,7 +79,8 @@
         "materialTypes": "Material Types",
         "sapSale": "SAP Sale",
         "itemCategories": "Item Categories",
-        "itemCategoryPrices": "Item Category Prices"
+        "itemCategoryPrices": "Item Category Prices",
+        "stockLocations": "Stock Locations"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
@@ -410,6 +411,9 @@
     },
     "DirtyDoc": {
         "headerTopic": "Dirty Doc"
+    },
+    "Management": {
+        "headerTopic": "Management"
     },
     "Factories": {
         "headerTopic": "Factories",
@@ -916,5 +920,93 @@
         "items": "items",
         "previous": "Previous",
         "next": "Next"
+    },
+    "StockLocations": {
+        "search": "Search",
+        "clearSearch": "Clear",
+        "createNewStockLocation": "Create New Stock Location",
+        "stockLocation": "Stock Location",
+        "stockLocationPlaceholder": "Enter stock location",
+        "stockLocationStatus": "Stock Location Status",
+        "stockLocationStatusPlaceholder": "Enter stock location status",
+        "title": "Stock Locations Management",
+        "createButton": "Create Stock Location",
+        "searchPlaceholder": "Search by description or site code...",
+        "selectMessage": "Select a stock location to view details",
+        "table": {
+            "description": "Description",
+            "siteShortCode": "Site Code",
+            "status": "Status",
+            "actions": "Actions",
+            "createdAt": "Created At",
+            "updatedAt": "Updated At"
+        },
+        "pagination": {
+            "showing": "Showing",
+            "to": "to",
+            "results": "results",
+            "page": "Page",
+            "of": "of"
+        },
+        "form": {
+            "create": {
+                "title": "Create New Stock Location",
+                "button": "Create"
+            },
+            "saleOffice": "Sale Office",
+            "department": "Department",
+            "siteShortCode": "Site Short Code",
+            "description": "Description",
+            "status": "Status",
+            "selectSaleOffice": "Select sale office",
+            "selectDepartment": "Select department",
+            "siteShortCodePlaceholder": "Enter site short code",
+            "descriptionPlaceholder": "Enter description",
+            "cancel": "Cancel",
+            "creating": "Creating..."
+        },
+        "detail": {
+            "title": "Stock Location Details",
+            "id": "ID",
+            "saleOffice": "Sale Office",
+            "department": "Department",
+            "siteShortCode": "Site Short Code",
+            "description": "Description",
+            "status": "Status",
+            "createdAt": "Created At",
+            "updatedAt": "Updated At",
+            "edit": "Edit",
+            "delete": "Delete",
+            "deleteConfirm": "Are you sure you want to delete this stock location?",
+            "cancel": "Cancel",
+            "update": "Update",
+            "updating": "Updating...",
+            "unknown": "Unknown"
+        },
+        "loading": "Loading...",
+        "error": "Error",
+        "description": "Description",
+        "saleOffice": "Sale Office",
+        "department": "Department",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "selectSaleOffice": "Select sale office",
+        "selectDepartment": "Select department",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "create": "Create",
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "updateSuccess": "Data updated successfully",
+        "updateError": "Error occurred while updating data",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Are you sure you want to delete this stock location?",
+        "save": "Save",
+        "update": "Update",
+        "updating": "Updating...",
+        "unknown": "Unknown",
+        "site_short_code": "Site Short Code"
     }
 }

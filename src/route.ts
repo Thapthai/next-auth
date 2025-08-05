@@ -13,7 +13,7 @@ export const publicRoutes = [
     '/sounds/levelup.mp3',
     "/sounds/flipdish-ringer.mp3",
     "/verify-email-successful",
-    "/dashboard",
+
     "/stockIn",
     "/laundryClaim",
     "/damagedHospital",
