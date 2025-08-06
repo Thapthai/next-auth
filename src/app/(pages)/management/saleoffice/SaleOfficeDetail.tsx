@@ -5,14 +5,15 @@ import { SaleOffice } from "@/types/saleOffice";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 
 type Props = {
     saleOffice: SaleOffice | null;
     refresh: () => void; // เพื่อ reload ข้อมูลหลังจาก update
+    onClose: () => void;
 };
 
-export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
+export default function SaleOfficeDetail({ saleOffice, refresh, onClose }: Props) {
     const t = useTranslations('saleOffice');
     const [form, setForm] = useState({
         site_code: "",
@@ -20,6 +21,7 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
         site_office_name_en: "",
         status: true,
     });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (saleOffice) {
@@ -50,12 +52,29 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
             alert(t('saveError'));
         }
     };
+    const handleClose = () => {
+        if (!loading) {
+            onClose();
+        }
+    };
+    
 
     if (!saleOffice) return null;
 
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
-            <h2 className="text-lg font-bold text-gray-800">{t('editTitle')}</h2>
+            <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold text-gray-800">{t('editTitle')}</h2>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClose}
+                    disabled={loading}
+                    className="text-gray-500 hover:text-gray-700"
+                >
+                    <IconX className="w-4 h-4" />
+                </Button>
+            </div>
 
             <div className="space-y-2">
                 <div>
@@ -102,6 +121,6 @@ export default function SaleOfficeDetail({ saleOffice, refresh }: Props) {
                     <IconDeviceFloppy /> {t('save')}
                 </Button>
             </div>
-        </div>
+        </div >
     );
 }

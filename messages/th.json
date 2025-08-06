@@ -82,7 +82,8 @@
         "itemCategoryPrices": "รายการราคาสินค้า",
         "stockLocations": "รายการสต๊อก",
         "saleOfficeGroupTypes": "ชนิดกลุ่มสาขา",
-        "saleOfficeGroups": "กลุ่มสาขา"
+        "saleOfficeGroups": "กลุ่มสาขา",
+        "factorySaleOffice": "การตั้งค่าโรงซัก ของโรงพยาบาล"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",
@@ -954,7 +955,6 @@
             "description": "คำอธิบาย",
             "siteShortCode": "รหัสไซต์",
             "status": "สถานะ",
-
             "createdAt": "สร้างเมื่อ",
             "updatedAt": "อัปเดตเมื่อ"
         },
@@ -966,7 +966,6 @@
             "previous": "ก่อนหน้า",
             "next": "ถัดไป"
         },
-
         "loading": "กำลังโหลด...",
         "error": "เกิดข้อผิดพลาด",
         "description": "คำอธิบาย",
@@ -1060,5 +1059,52 @@
         "saving": "กำลังบันทึก...",
         "save": "บันทึก",
         "editSaleOfficeGroup": "แก้ไขกลุ่มสำนักงานขาย"
+    },
+    "FactorySaleOffice": {
+        "headerTopic": "จัดการการตั้งค่าโรงซัก ของโรงพยาบาล",
+        "fetchError": "ไม่สามารถโหลดข้อมูลได้",
+        "search": "ค้นหา",
+        "createNewFactorySaleOffice": "สร้างการตั้งค่าโรงซัก ของโรงพยาบาลใหม่",
+        "table": {
+            "saleOffice": "สำนักงานขาย",
+            "factory": "โรงงาน",
+            "status": "สถานะ"
+        },
+        "active": "ใช้งาน",
+        "inactive": "ไม่ใช้งาน",
+        "show": "แสดง",
+        "to": "ถึง",
+        "of": "จาก",
+        "items": "รายการ",
+        "previous": "ก่อนหน้า",
+        "next": "ถัดไป",
+        "Form": {
+            "createTitle": "สร้างการตั้งค่าโรงซัก ของโรงพยาบาล",
+            "createError": "สร้างข้อมูลไม่สำเร็จ",
+            "saleOffice": "สำนักงานขาย",
+            "factory": "โรงงาน",
+            "status": "สถานะ",
+            "selectSaleOffice": "เลือกสำนักงานขาย",
+            "selectFactory": "เลือกโรงงาน",
+            "createButton": "สร้าง",
+            "active": "ใช้งาน",
+            "inactive": "ไม่ใช้งาน",
+            "cancel": "ยกเลิก",
+            "saving": "กำลังบันทึก..."
+        },
+        "Detail": {
+            "editTitle": "แก้ไขการตั้งค่าโรงซัก ของโรงพยาบาล",
+            "editError": "แก้ไขข้อมูลไม่สำเร็จ",
+            "saleOffice": "สำนักงานขาย",
+            "factory": "โรงงาน",
+            "status": "สถานะ",
+            "selectSaleOffice": "เลือกสำนักงานขาย",
+            "selectFactory": "เลือกโรงงาน",
+            "active": "ใช้งาน",
+            "inactive": "ไม่ใช้งาน",
+            "cancel": "ยกเลิก",
+            "saving": "กำลังบันทึก...",
+            "save": "บันทึก"
+        }
     }
 }

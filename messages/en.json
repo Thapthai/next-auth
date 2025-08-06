@@ -82,7 +82,8 @@
         "itemCategoryPrices": "Item Category Prices",
         "stockLocations": "Stock Locations",
         "saleOfficeGroupTypes": "Sale Office Group Types",
-        "saleOfficeGroups": "Sale Office Groups"
+        "saleOfficeGroups": "Sale Office Groups",
+        "factorySaleOffice": "Factory Sale Office"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
@@ -1037,5 +1038,52 @@
         "saving": "Saving...",
         "save": "Save",
         "editSaleOfficeGroup": "Edit Sale Office Group"
+    },
+    "FactorySaleOffice": {
+        "headerTopic": "Factory Sale Office",
+        "fetchError": "Failed to fetch data",
+        "search": "Search",
+        "createNewFactorySaleOffice": "Create New Factory Sale Office",
+        "table": {
+            "saleOffice": "Sale Office",
+            "factory": "Factory",
+            "status": "Status"
+        },
+        "active": "Active",
+        "inactive": "Inactive",
+        "show": "Showing",
+        "to": "to",
+        "of": "of",
+        "items": "items",
+        "previous": "Previous",
+        "next": "Next",
+        "Form": {
+            "createTitle": "Create Factory Sale Office",
+            "createError": "Create failed",
+            "saleOffice": "Sale Office",
+            "factory": "Factory",
+            "status": "Status",
+            "selectSaleOffice": "Select Sale Office",
+            "selectFactory": "Select Factory",
+            "createButton": "Create",
+            "active": "Active",
+            "inactive": "Inactive",
+            "cancel": "Cancel",
+            "saving": "Saving..."
+        },
+        "Detail": {
+            "editTitle": "Edit Factory Sale Office",
+            "editError": "Edit failed",
+            "saleOffice": "Sale Office",
+            "factory": "Factory",
+            "status": "Status",
+            "selectSaleOffice": "Select Sale Office",
+            "selectFactory": "Select Factory",
+            "active": "Active",
+            "inactive": "Inactive",
+            "cancel": "Cancel",
+            "saving": "Saving...",
+            "save": "Save"
+        }
     }
 }

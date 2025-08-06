@@ -230,6 +230,12 @@ export const data = {
           permission: [1, 2],
         },
         {
+          title: "factorySaleOffice",
+          url: "/management/factory-sale-office",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
           title: "stockLocations",
           url: "/management/stockLocation",
           icon: IconDashboard,

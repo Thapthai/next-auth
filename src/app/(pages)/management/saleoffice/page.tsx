@@ -23,6 +23,7 @@ export default function SaleOfficePage() {
     const [input, setInput] = useState("");
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
+    const [navigatingToId, setNavigatingToId] = useState<number | null>(null);
     const router = useRouter();
     const t = useTranslations('saleOffice');
     const [currentPage, setCurrentPage] = useState(1);
@@ -69,8 +70,14 @@ export default function SaleOfficePage() {
         loadSaleOffices();
     };
 
-    const handleGoToDepartment = (id: number) => {
-        router.push(`/management/saleoffice/${id}/departments`);
+    const handleGoToDepartment = async (id: number) => {
+        setNavigatingToId(id);
+        try {
+            router.push(`/management/saleoffice/${id}/departments`);
+        } finally {
+            // Loading จะหยุดเมื่อ component unmount หรือ navigate เสร็จ
+            setTimeout(() => setNavigatingToId(null), 1000);
+        }
     };
 
     const handleCreateSaleOffice = () => {
@@ -171,8 +178,16 @@ export default function SaleOfficePage() {
                                         </TableCell>
                                         <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                         <TableCell>{office.site_code}</TableCell>
-                                        <TableCell>{office.site_office_name_th}</TableCell>
-                                        <TableCell>{office.site_office_name_en}</TableCell>
+                                        <TableCell>
+                                            <div className="max-w-40 truncate" title={office.site_office_name_th}>
+                                                {office.site_office_name_th}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="max-w-40 truncate" title={office.site_office_name_en}>
+                                                {office.site_office_name_en}
+                                            </div>
+                                        </TableCell>
                                         <TableCell>
                                             <span className={`px-2 py-1 rounded-full text-xs ${office.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                 }`}>
@@ -184,8 +199,13 @@ export default function SaleOfficePage() {
                                                 variant="ghost"
                                                 onClick={() => handleGoToDepartment(office.id)}
                                                 className="transition-all duration-200 hover:bg-gray-100"
+                                                disabled={navigatingToId === office.id}
                                             >
-                                                <IconCaretRightFilled />
+                                                {navigatingToId === office.id ? (
+                                                    <IconReload className="animate-spin w-4 h-4" />
+                                                ) : (
+                                                    <IconCaretRightFilled />
+                                                )}
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -236,7 +256,9 @@ export default function SaleOfficePage() {
                             </div>
                         )}
                         {selectedOffice && !isCreateFormVisible && (
-                            <SaleOfficeDetail saleOffice={selectedOffice} refresh={() => loadSaleOffices(keyword)} />
+                            <SaleOfficeDetail saleOffice={selectedOffice}
+                                refresh={() => loadSaleOffices(keyword)}
+                                onClose={() => setSelectedOffice(null)} />
                         )}
 
                         {isCreateFormVisible && !selectedOffice && (

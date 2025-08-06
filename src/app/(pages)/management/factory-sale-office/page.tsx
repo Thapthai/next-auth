@@ -13,37 +13,39 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
-import { Factories } from "@/types/factories";
-import EditFactoryForm from "./EditFactoryForm";
+import { FactorySaleOffice } from "@/types/factorySaleOffice";
+
 import { Input } from "@/components/ui/input";
-import CreateFactoryForm from "./CreateFactoryForm";
+import FactorySaleOfficeDetail from "./FactorySaleOfficeDetail";
+import CreateFactorySaleOfficeForm from "./CreateFactorySaleOfficeForm";
 
+export default function FactorySaleOfficePage() {
+    const t = useTranslations("FactorySaleOffice");
 
-export default function FactoriesPage() {
-    const t = useTranslations("Factories");
-
-    const [factories, setFactories] = useState<Factories[]>([]);
+    const [factorySaleOffices, setFactorySaleOffices] = useState<FactorySaleOffice[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedFactory, setSelectedFactory] = useState<Factories | null>(null);
+    const [selectedItem, setSelectedItem] = useState<FactorySaleOffice | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [keyword, setKeyword] = useState('');
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
-    const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
+    const [itemsPerPage] = useState(5);
     const [input, setInput] = useState('');
-    const [isCreating, setIsCreating] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
+    const [saleOffices, setSaleOffices] = useState<any[]>([]);
+    const [factories, setFactories] = useState<any[]>([]);
+    const [loadingMasterData, setLoadingMasterData] = useState(false);
 
-    const fetchFactories = async (keyword = "", page = currentPage) => {
+    const fetchFactorySaleOffices = async (keyword = "", page = currentPage) => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factories/paginated?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch factories");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factory-sale-office/paginated?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
+            if (!res.ok) throw new Error("Failed to fetch factory sale offices");
             const data = await res.json();
-            setFactories(data.data || []);
+            setFactorySaleOffices(data.data || []);
             setTotalItems(data.total || 0);
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
@@ -55,38 +57,41 @@ export default function FactoriesPage() {
     };
 
     useEffect(() => {
-        fetchFactories();
+        fetchFactorySaleOffices();
     }, [currentPage]);
 
-    const handleDelete = async (id: number) => {
-        if (!confirm(t("deleteConfirm"))) return;
+    useEffect(() => {
+        loadMasterData();
+    }, []);
+
+    const loadMasterData = async () => {
+        setLoadingMasterData(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factories/${id}`, {
-                method: "DELETE",
-            });
-            if (!res.ok) throw new Error(t("deleteError"));
-            setFactories(prev => prev.filter(p => p.id !== id));
-        } catch (error) {
-            alert(t("deleteFailed"));
+            // Load sale offices and factories in parallel
+            const [saleOfficesRes, factoriesRes] = await Promise.all([
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/factories`)
+            ]);
+
+            if (saleOfficesRes.ok) {
+                const saleOfficesData = await saleOfficesRes.json();
+                setSaleOffices(saleOfficesData.data || saleOfficesData || []);
+            }
+
+            if (factoriesRes.ok) {
+                const factoriesData = await factoriesRes.json();
+                setFactories(factoriesData.data || factoriesData || []);
+            }
+        } catch (err) {
+            console.error('Error loading master data:', err);
+        } finally {
+            setLoadingMasterData(false);
         }
     };
 
-    const handleCreateSuccess = () => {
-        setIsCreateFormVisible(false);
-        fetchFactories();
-    };
-
-    const handleCreateStart = () => {
+    const handleCreateItem = () => {
         setIsCreateFormVisible(true);
-    };
-
-    const handleCreateError = () => {
-        setError(t("createError"));
-    };
-
-    const handleCreateFactory = () => {
-        setIsCreateFormVisible(true);
-        setSelectedFactory(null); // ปิดฟอร์ม detail
+        setSelectedItem(null);
     };
 
     const handleReset = async () => {
@@ -94,7 +99,7 @@ export default function FactoriesPage() {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        await fetchFactories();
+        await fetchFactorySaleOffices();
         setSearchLoading(false);
     };
 
@@ -103,11 +108,9 @@ export default function FactoriesPage() {
         setSearchLoading(true);
         setCurrentPage(1);
         setKeyword(input);
-        await fetchFactories(input);
+        await fetchFactorySaleOffices(input);
         setSearchLoading(false);
     };
-
-
 
     const handlePreviousPage = () => {
         if (currentPage > 1) {
@@ -126,7 +129,6 @@ export default function FactoriesPage() {
     };
 
     return (
-
         <div>
             <SiteHeader headerTopic={t("headerTopic")} />
 
@@ -174,11 +176,11 @@ export default function FactoriesPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateFactory}
+                                onClick={handleCreateItem}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t("createNewFactory")}
+                                title={t("createNewFactorySaleOffice")}
                             >
                                 <IconPlus className="w-4 h-4" />
                             </Button>
@@ -193,33 +195,29 @@ export default function FactoriesPage() {
                                     <span>กำลังโหลดข้อมูล...</span>
                                 </div>
                             </div>
-                        ) : factories.length > 0 ? (
+                        ) : factorySaleOffices.length > 0 ? (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t("nameThai")}</TableHead>
-                                        <TableHead>{t("nameEnglish")}</TableHead>
-                                        <TableHead>{t("address")}</TableHead>
-                                        <TableHead>{t("tel")}</TableHead>
-                                        <TableHead>{t("post")}</TableHead>
-                                        <TableHead>{t("price")}</TableHead>
-                                        <TableHead>{t("status")}</TableHead>
+                                        <TableHead>{t("table.saleOffice")}</TableHead>
+                                        <TableHead>{t("table.factory")}</TableHead>
+                                        <TableHead>{t("table.status")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {factories.map((factory, index) => (
-                                        <TableRow key={factory.id}>
+                                    {factorySaleOffices.map((item, index) => (
+                                        <TableRow key={item.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedFactory"
-                                                        value={factory.id}
-                                                        checked={selectedFactory?.id === factory.id}
+                                                        name="selectedItem"
+                                                        value={item.id}
+                                                        checked={selectedItem?.id === item.id}
                                                         onChange={() => {
-                                                            setSelectedFactory(factory);
+                                                            setSelectedItem(item);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
@@ -227,28 +225,19 @@ export default function FactoriesPage() {
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                             <TableCell>
-                                                <div className="max-w-32 truncate" title={factory.name_th}>
-                                                    {factory.name_th}
+                                                <div className="max-w-48 truncate" title={item.sale_office?.site_office_name_th}>
+                                                    {item.sale_office?.site_office_name_th || `ID: ${item.sale_office_id}`}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="max-w-32 truncate" title={factory.name_en}>
-                                                    {factory.name_en}
+                                                <div className="max-w-48 truncate" title={item.factory?.name_th}>
+                                                    {item.factory?.name_th || `ID: ${item.factory_id}`}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="max-w-48 truncate" title={factory.address}>
-                                                    {factory.address}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>{(factory as any).tel || '-'}</TableCell>
-                                            <TableCell>{(factory as any).post || '-'}</TableCell>
-                                            <TableCell>฿{factory.price?.toLocaleString() || '0'}</TableCell>
-
-                                            <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${factory.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <span className={`px-2 py-1 rounded-full text-xs ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {factory.status ? t('active') : t('inactive')}
+                                                    {item.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
 
@@ -332,40 +321,43 @@ export default function FactoriesPage() {
                             </div>
                         )}
 
-                        {selectedFactory && !isCreateFormVisible && (
-                            <EditFactoryForm
+                        {selectedItem && !isCreateFormVisible && (
+                            <FactorySaleOfficeDetail
                                 isVisible={true}
-                                factory={selectedFactory}
-                                onClose={() => setSelectedFactory(null)}
+                                factorySaleOffice={selectedItem}
+                                saleOffices={saleOffices}
+                                factories={factories}
+                                loadingMasterData={loadingMasterData}
+                                onClose={() => setSelectedItem(null)}
                                 onSuccess={() => {
-                                    setSelectedFactory(null);
-                                    fetchFactories(keyword, currentPage);
+                                    setSelectedItem(null);
+                                    fetchFactorySaleOffices(keyword, currentPage);
                                 }}
                                 onStart={() => { }}
                                 onError={() => {
-                                    console.error('Error updating factory');
+                                    console.error('Error updating factory sale office');
                                 }}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedFactory && (
-                            <CreateFactoryForm
+                        {isCreateFormVisible && !selectedItem && (
+                            <CreateFactorySaleOfficeForm
                                 isVisible={true}
+                                saleOffices={saleOffices}
+                                factories={factories}
+                                loadingMasterData={loadingMasterData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
-                                    setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchFactories(keyword, currentPage);
+                                    fetchFactorySaleOffices(keyword, currentPage);
                                 }}
-                                onStart={() => setIsCreating(true)}
-                                onError={() => setIsCreating(false)}
+                                onStart={() => { }}
+                                onError={() => { }}
                             />
                         )}
                     </div>
-
                 </div>
             </div>
         </div>
-
     );
 }

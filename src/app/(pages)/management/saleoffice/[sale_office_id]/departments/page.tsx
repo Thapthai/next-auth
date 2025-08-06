@@ -189,9 +189,21 @@ export default function DepartmentBySaleOfficeId() {
                                             </TableCell>
                                             <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
                                             <TableCell>{dept.department_code}</TableCell>
-                                            <TableCell>{dept.name_th}</TableCell>
-                                            <TableCell>{dept.name_en}</TableCell>
-                                            <TableCell>{dept.description}</TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={dept.name_th}>
+                                                    {dept.name_th}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={dept.name_en}>
+                                                    {dept.name_en}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={dept.description}>
+                                                    {dept.description}
+                                                </div>
+                                            </TableCell>
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${dept.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>

@@ -23,19 +23,20 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
         name_th: '',
         name_en: '',
         address: '',
-        phone: '',
+        post: '',
+        tel: '',
         tax_id: '',
-        description: '',
+        price: '',
         status: true
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: type === 'number' ? (value === '' ? '' : value) : value
         }));
     };
 
@@ -53,8 +54,10 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: formData.name_th,
                 name_en: formData.name_en,
                 address: formData.address,
-                phone: formData.phone,
-                description: formData.description,
+                post: formData.post,
+                tel: formData.tel,
+                tax_id: parseInt(formData.tax_id),
+                price: parseFloat(formData.price),
                 status: formData.status
             };
 
@@ -76,9 +79,10 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: '',
                 name_en: '',
                 address: '',
-                phone: '',
+                post: '',
+                tel: '',
                 tax_id: '',
-                description: '',
+                price: '',
                 status: true
             });
             onSuccess();
@@ -99,9 +103,10 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                 name_th: '',
                 name_en: '',
                 address: '',
-                phone: '',
+                post: '',
+                tel: '',
                 tax_id: '',
-                description: '',
+                price: '',
                 status: true
             });
             setError(null);
@@ -163,11 +168,11 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm text-gray-600">{t('phoneLabel')}</Label>
+                        <Label htmlFor="tel" className="text-sm text-gray-600">{t('phoneLabel')}</Label>
                         <Input
-                            id="phone"
-                            name="phone"
-                            value={formData.phone}
+                            id="tel"
+                            name="tel"
+                            value={formData.tel}
                             onChange={handleInputChange}
                             placeholder={t('phonePlaceholder')}
                             disabled={loading}
@@ -175,44 +180,59 @@ export default function CreateFactoryForm({ isVisible, onClose, onSuccess, onSta
                         />
                     </div>
 
-
-
                     <div className="space-y-2">
-                        <Label htmlFor="tax_id" className="text-sm text-gray-600">{t('taxIdLabel')}</Label>
+                        <Label htmlFor="post" className="text-sm text-gray-600">{t('postLabel')}</Label>
                         <Input
-                            id="description"
-                            name="description"
-                            type="text"
-                            value={formData.tax_id}
+                            id="post"
+                            name="post"
+                            value={formData.post}
                             onChange={handleInputChange}
-                            placeholder={t('taxIdPlaceholder')}
+                            placeholder={t('postPlaceholder')}
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description" className="text-sm text-gray-600">{t('descriptionLabel')}</Label>
+                        <Label htmlFor="tax_id" className="text-sm text-gray-600">{t('taxIdLabel')} *</Label>
                         <Input
-                            id="description"
-                            name="description"
-                            type="text"
-                            value={formData.description}
+                            id="tax_id"
+                            name="tax_id"
+                            type="number"
+                            value={formData.tax_id}
                             onChange={handleInputChange}
-                            placeholder={t('descriptionPlaceholder')}
+                            placeholder={t('taxIdPlaceholder')}
+                            required
+                            disabled={loading}
+                            className="w-full border rounded px-2 py-1"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="price" className="text-sm text-gray-600">{t('priceLabel')} *</Label>
+                        <Input
+                            id="price"
+                            name="price"
+                            type="number"
+                            step="0.01"
+                            value={formData.price}
+                            onChange={handleInputChange}
+                            placeholder={t('pricePlaceholder')}
+                            required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="address" className="text-sm text-gray-600">{t('addressLabel')}</Label>
+                        <Label htmlFor="address" className="text-sm text-gray-600">{t('addressLabel')} *</Label>
                         <Input
                             id="address"
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
                             placeholder={t('addressPlaceholder')}
+                            required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />

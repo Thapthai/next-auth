@@ -21,7 +21,7 @@ interface EditFactoryFormProps {
 
 export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess, onStart, onError }: EditFactoryFormProps) {
     const t = useTranslations('Factories');
-    
+
     const [formData, setFormData] = useState({
         name_th: '',
         name_en: '',
@@ -43,29 +43,32 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                 name_en: factory.name_en || '',
                 address: factory.address || '',
                 tel: factory.tel || '',
-                post: factory.post || '',
-                tax_id: factory.tax_id?.toString() || '',
+                post: (factory as any).post || '',
+                tax_id: (factory as any).tax_id?.toString() || '',
                 price: factory.price?.toString() || '',
                 status: factory.status ?? true
             });
         }
     }, [factory]);
 
+
+    console.log(factory);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: type === 'number' ? (value === '' ? '' : value) : value
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!factory) return;
-        
+
         setLoading(true);
         setError(null);
-        
+
         // Call onStart callback
         if (onStart) onStart();
 
@@ -121,9 +124,9 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold text-gray-800">{t('editTitle')}</h2>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleClose}
                     disabled={loading}
                     className="text-gray-500 hover:text-gray-700"
@@ -171,7 +174,7 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="edit_tel" className="text-sm text-gray-600">{t('phoneLabel')}</Label>
+                        <Label htmlFor="edit_tel" className="text-sm text-gray-600">{t('phoneLabel')} </Label>
                         <Input
                             id="edit_tel"
                             name="tel"
@@ -197,7 +200,7 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="edit_price" className="text-sm text-gray-600">{t('priceLabel')}</Label>
+                        <Label htmlFor="edit_price" className="text-sm text-gray-600">{t('priceLabel')} *</Label>
                         <Input
                             id="edit_price"
                             name="price"
@@ -206,13 +209,14 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                             value={formData.price}
                             onChange={handleInputChange}
                             placeholder={t('pricePlaceholder')}
+                            required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="edit_tax_id" className="text-sm text-gray-600">{t('taxIdLabel')}</Label>
+                        <Label htmlFor="edit_tax_id" className="text-sm text-gray-600">{t('taxIdLabel')} *</Label>
                         <Input
                             id="edit_tax_id"
                             name="tax_id"
@@ -220,19 +224,21 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                             value={formData.tax_id}
                             onChange={handleInputChange}
                             placeholder={t('taxIdPlaceholder')}
+                            required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="edit_address" className="text-sm text-gray-600">{t('addressLabel')}</Label>
+                        <Label htmlFor="edit_address" className="text-sm text-gray-600">{t('addressLabel')} *</Label>
                         <Input
                             id="edit_address"
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
                             placeholder={t('addressPlaceholder')}
+                            required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
                         />
@@ -252,16 +258,16 @@ export default function EditFactoryForm({ isVisible, factory, onClose, onSuccess
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button 
-                        type="button" 
-                        variant="outline" 
+                    <Button
+                        type="button"
+                        variant="outline"
                         onClick={handleClose}
                         disabled={loading}
                     >
                         {t('cancel')}
                     </Button>
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         disabled={loading}
                         className="bg-blue-600 hover:bg-blue-700"
                     >
