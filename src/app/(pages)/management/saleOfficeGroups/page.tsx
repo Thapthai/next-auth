@@ -13,39 +13,38 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { StockLocation } from "@/types/stockLocation";
+import { SaleOfficeGroup } from "@/types/saleOfficeGroup";
 import { Input } from "@/components/ui/input";
-import StockLocationDetail from "./StockLocationDetail";
-import CreateStockLocationForm from "./CreateStockLocationForm";
+import SaleOfficeGroupDetail from "./SaleOfficeGroupDetail";
+import CreateSaleOfficeGroupForm from "./CreateSaleOfficeGroupForm";
 
-export default function StockLocationsPage() {
-    const t = useTranslations("StockLocations");
+export default function SaleOfficeGroupsPage() {
+    const t = useTranslations("SaleOfficeGroups");
 
-    const [stockLocations, setStockLocations] = useState<StockLocation[]>([]);
+    const [saleOfficeGroups, setSaleOfficeGroups] = useState<SaleOfficeGroup[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedStockLocation, setSelectedStockLocation] = useState<StockLocation | null>(null);
+    const [selectedSaleOfficeGroup, setSelectedSaleOfficeGroup] = useState<SaleOfficeGroup | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
-    const [totalStockLocations, setTotalStockLocations] = useState(0);
+    const [totalSaleOfficeGroups, setTotalSaleOfficeGroups] = useState(0);
     const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
-    const [departmentData, setDepartmentData] = useState<any[]>([]);
-    const [loadingOptions, setLoadingOptions] = useState(false);
+    const [saleOfficeGroupTypeData, setSaleOfficeGroupTypeData] = useState<any[]>([]);
 
-    const fetchStockLocations = async (keyword = "", page = currentPage) => {
+    const fetchSaleOfficeGroups = async (keyword = "", page = currentPage) => {
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
-            if (!res.ok) throw new Error("Failed to fetch stock locations");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-office-groups/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`);
+            if (!res.ok) throw new Error("Failed to fetch sale office groups");
             const data = await res.json();
-            setStockLocations(data.data || []);
+            setSaleOfficeGroups(data.data || []);
             setTotalPages(data.totalPages || 1);
-            setTotalStockLocations(data.total || 0);
+            setTotalSaleOfficeGroups(data.total || 0);
         } catch (error) {
             setError(error instanceof Error ? error.message : "An error occurred");
         } finally {
@@ -54,11 +53,10 @@ export default function StockLocationsPage() {
     };
 
     const fetchOptions = async () => {
-        setLoadingOptions(true);
         try {
-            const [saleOfficeRes, departmentRes] = await Promise.all([
+            const [saleOfficeRes, saleOfficeGroupTypeRes] = await Promise.all([
                 fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`),
-                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments`)
+                fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-office-group-types`)
             ]);
 
             if (saleOfficeRes.ok) {
@@ -66,42 +64,37 @@ export default function StockLocationsPage() {
                 setSaleOfficeData(saleOfficeData.data || []);
             }
 
-
-            console.log(saleOfficeData);
-
-            if (departmentRes.ok) {
-                const departmentData = await departmentRes.json();
-                setDepartmentData(departmentData.data || []);
+            if (saleOfficeGroupTypeRes.ok) {
+                const saleOfficeGroupTypeData = await saleOfficeGroupTypeRes.json();
+                setSaleOfficeGroupTypeData(saleOfficeGroupTypeData || []);
             }
         } catch (error) {
             console.error("Failed to fetch options:", error);
-        } finally {
-            setLoadingOptions(false);
         }
     };
 
     useEffect(() => {
-        fetchStockLocations(keyword, currentPage);
+        fetchSaleOfficeGroups(keyword, currentPage);
         fetchOptions();
     }, [currentPage]);
 
-    const handleCreateStockLocation = () => {
+    const handleCreateSaleOfficeGroup = () => {
         setIsCreateFormVisible(true);
-        setSelectedStockLocation(null); // ปิดฟอร์ม detail
+        setSelectedSaleOfficeGroup(null); // ปิดฟอร์ม detail
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        fetchStockLocations();
+        fetchSaleOfficeGroups();
     };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setCurrentPage(1);
         setKeyword(input);
-        fetchStockLocations(input, 1);
+        fetchSaleOfficeGroups(input, 1);
     };
 
     const handlePageChange = (page: number): void => {
@@ -120,19 +113,14 @@ export default function StockLocationsPage() {
         }
     };
 
-    const handleStockLocationCreated = () => {
+    const handleSaleOfficeGroupCreated = () => {
         setIsCreateFormVisible(false);
-        fetchStockLocations(keyword, currentPage);
+        fetchSaleOfficeGroups(keyword, currentPage);
     };
 
-    const handleStockLocationUpdated = () => {
-        setSelectedStockLocation(null);
-        fetchStockLocations(keyword, currentPage);
-    };
-
-    const handleStockLocationDeleted = () => {
-        setSelectedStockLocation(null);
-        fetchStockLocations(keyword, currentPage);
+    const handleSaleOfficeGroupUpdated = () => {
+        setSelectedSaleOfficeGroup(null);
+        fetchSaleOfficeGroups(keyword, currentPage);
     };
 
     if (loading) return <div className="flex justify-center items-center h-64">{t('loading')}</div>;
@@ -140,7 +128,6 @@ export default function StockLocationsPage() {
 
     return (
         <div>
-
             <SiteHeader headerTopic={t('title')} />
 
             <div className="flex flex-1 flex-col">
@@ -163,7 +150,7 @@ export default function StockLocationsPage() {
                             </Button>
                             <Button
                                 type="button"
-                                onClick={handleCreateStockLocation}
+                                onClick={handleCreateSaleOfficeGroup}
                                 variant="outline"
                                 size="icon"
                                 className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
@@ -183,25 +170,27 @@ export default function StockLocationsPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
+                                        <TableHead>{t('table.nameTh')}</TableHead>
+                                        <TableHead>{t('table.nameEn')}</TableHead>
+                                        <TableHead>{t('table.code')}</TableHead>
                                         <TableHead>{t('table.description')}</TableHead>
-                                        <TableHead>{t('table.siteShortCode')}</TableHead>
                                         <TableHead>{t('table.status')}</TableHead>
                                         <TableHead>{t('table.createdAt')}</TableHead>
                                         <TableHead>{t('table.updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {stockLocations.map((stockLocation, index) => (
-                                        <TableRow key={stockLocation.id}>
+                                    {saleOfficeGroups.map((saleOfficeGroup, index) => (
+                                        <TableRow key={saleOfficeGroup.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedStockLocation"
-                                                        value={stockLocation.id}
-                                                        checked={selectedStockLocation?.id === stockLocation.id}
+                                                        name="selectedSaleOfficeGroup"
+                                                        value={saleOfficeGroup.id}
+                                                        checked={selectedSaleOfficeGroup?.id === saleOfficeGroup.id}
                                                         onChange={() => {
-                                                            setSelectedStockLocation(stockLocation);
+                                                            setSelectedSaleOfficeGroup(saleOfficeGroup);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
@@ -209,22 +198,24 @@ export default function StockLocationsPage() {
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                             <TableCell className="font-medium">
-                                                {stockLocation.description}
+                                                {saleOfficeGroup.name_th}
                                             </TableCell>
-                                            <TableCell>{stockLocation.site_short_code}</TableCell>
+                                            <TableCell>{saleOfficeGroup.name_en}</TableCell>
+                                            <TableCell>{saleOfficeGroup.code || '-'}</TableCell>
+                                            <TableCell>{saleOfficeGroup.description || '-'}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${stockLocation.status
+                                                <span className={`px-2 py-1 rounded-full text-xs ${saleOfficeGroup.status
                                                     ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {stockLocation.status ? t('active') : t('inactive')}
+                                                    {saleOfficeGroup.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
                                             <TableCell>
-                                                {stockLocation.create_at ? new Date(stockLocation.create_at).toLocaleDateString('th-TH') : '-'}
+                                                {saleOfficeGroup.create_at ? new Date(saleOfficeGroup.create_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                             <TableCell>
-                                                {stockLocation.update_at ? new Date(stockLocation.update_at).toLocaleDateString('th-TH') : '-'}
+                                                {saleOfficeGroup.update_at ? new Date(saleOfficeGroup.update_at).toLocaleDateString('th-TH') : '-'}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -236,7 +227,7 @@ export default function StockLocationsPage() {
                         {!loading && !error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    {t('pagination.showing')} {(currentPage - 1) * itemsPerPage + 1} {t('pagination.to')} {Math.min(currentPage * itemsPerPage, totalStockLocations)} {t('pagination.of')} {totalStockLocations} {t('pagination.results')}
+                                    {t('pagination.showing')} {(currentPage - 1) * itemsPerPage + 1} {t('pagination.to')} {Math.min(currentPage * itemsPerPage, totalSaleOfficeGroups)} {t('pagination.of')} {totalSaleOfficeGroups} {t('pagination.results')}
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Button
@@ -276,27 +267,29 @@ export default function StockLocationsPage() {
                             </div>
                         )}
 
-                        {selectedStockLocation && !isCreateFormVisible && (
-                            <StockLocationDetail
-                                stockLocation={selectedStockLocation}
+                        {selectedSaleOfficeGroup && !isCreateFormVisible && (
+                            <SaleOfficeGroupDetail
+                                saleOfficeGroup={selectedSaleOfficeGroup}
                                 isVisible={true}
                                 saleOfficeData={saleOfficeData}
-                                onClose={() => setSelectedStockLocation(null)}
-                                onSuccess={handleStockLocationUpdated}
+                                saleOfficeGroupTypeData={saleOfficeGroupTypeData}
+                                onClose={() => setSelectedSaleOfficeGroup(null)}
+                                onSuccess={handleSaleOfficeGroupUpdated}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedStockLocation && (
-                            <CreateStockLocationForm
+                        {isCreateFormVisible && !selectedSaleOfficeGroup && (
+                            <CreateSaleOfficeGroupForm
                                 isVisible={true}
                                 saleOfficeData={saleOfficeData}
+                                saleOfficeGroupTypeData={saleOfficeGroupTypeData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchStockLocations(keyword, currentPage);
+                                    fetchSaleOfficeGroups(keyword, currentPage);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}

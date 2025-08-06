@@ -200,6 +200,18 @@ export const data = {
           permission: [1, 2],
         },
         {
+          title: "saleOfficeGroupTypes",
+          url: "/management/saleOfficeGroupTypes",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
+          title: "saleOfficeGroups",
+          url: "/management/saleOfficeGroups",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
           title: "userMnagement",
           url: "/management/user",
           icon: IconDashboard,
