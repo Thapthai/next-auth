@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconCaretRightFilled, IconReload, IconSearch, IconPlus, IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
+import { IconCaretRightFilled, IconReload, IconSearch, IconPlus, IconChevronRight, IconChevronLeft, IconChevronRightPipe, IconChevronLeftPipe } from "@tabler/icons-react";
 import { SiteHeader } from "@/components/site-header";
 import { SaleOffice } from "@/types/saleOffice";
 import { v4 as uuidv4 } from 'uuid';
@@ -115,6 +115,19 @@ export default function SaleOfficePage() {
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+    };
+
+    // Function to get visible page numbers (current page and neighbors)
+    const getVisiblePages = () => {
+        const pages = [];
+        const start = Math.max(1, currentPage - 1);
+        const end = Math.min(totalPages, currentPage + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        return pages;
     };
 
     return (
@@ -248,39 +261,64 @@ export default function SaleOfficePage() {
                                 <div className="text-sm text-gray-500">
                                     {t('show')} {(currentPage - 1) * itemsPerPage + 1} {t('to')} {Math.min(currentPage * itemsPerPage, totalItems)} {t('of')} {totalItems} {t('items')}
                                 </div>
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-1">
+                                    {/* First page */}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handlePageChange(1)}
+                                        disabled={currentPage === 1}
+                                        className="w-8 h-8 p-0"
+                                    >
+                                        <IconChevronLeftPipe className="w-4 h-4" />
+                                   
+                                    </Button>
+
+                                    {/* Previous page */}
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={handlePreviousPage}
                                         disabled={currentPage === 1}
+                                        className="w-8 h-8 p-0"
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
-                                        {t('previous')}
                                     </Button>
 
-                                    <div className="flex items-center space-x-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                            <Button
-                                                key={page}
-                                                variant={currentPage === page ? "default" : "outline"}
-                                                size="sm"
-                                                onClick={() => handlePageChange(page)}
-                                                className="w-8 h-8 p-0"
-                                            >
-                                                {page}
-                                            </Button>
-                                        ))}
-                                    </div>
+                                    {/* Page numbers */}
+                                    {getVisiblePages().map((page) => (
+                                        <Button
+                                            key={page}
+                                            variant={currentPage === page ? "default" : "outline"}
+                                            size="sm"
+                                            onClick={() => handlePageChange(page)}
+                                            className="w-8 h-8 p-0"
+                                        >
+                                            {page}
+                                        </Button>
+                                    ))}
 
+                                    {/* Next page */}
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
+                                        className="w-8 h-8 p-0"
                                     >
-                                        {t('next')}
                                         <IconChevronRight className="w-4 h-4" />
+                                    </Button>
+
+                                    {/* Last page */}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handlePageChange(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                        className="w-8 h-8 p-0"
+                                    >
+
+                                        <IconChevronRightPipe className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input"; // คุณต้องมี input จาก ui component
 import { SaleOffice } from "@/types/saleOffice";
-import { IconArrowLeft, IconReload, IconChevronLeft, IconChevronRight, IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconReload, IconChevronLeft, IconChevronRight, IconPlus, IconSearch, IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
 import { Department } from "@/types/department";
 import DepartmentDetailForm from "./DepartmentDetail";
 import { Loader2 } from "lucide-react";
@@ -87,6 +87,19 @@ export default function DepartmentBySaleOfficeId() {
     useEffect(() => {
         loadDepartments();
     }, [saleOfficeId, keyword, page, pageSize]);
+
+    // Function to get visible page numbers (current page and neighbors)
+    const getVisiblePages = () => {
+        const pages = [];
+        const start = Math.max(1, page - 1);
+        const end = Math.min(totalPages, page + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        return pages;
+    };
 
     const handleReset = () => {
         setInput("");
@@ -223,39 +236,62 @@ export default function DepartmentBySaleOfficeId() {
                                 <div className="text-sm text-gray-500">
                                     {t('show')} {(page - 1) * pageSize + 1} {t('to')} {Math.min(page * pageSize, total)} {t('of')} {total} {t('items')}
                                 </div>
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-1">
+                                    {/* First page */}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(1)}
+                                        disabled={page === 1}
+                                        className="w-8 h-8 p-0"
+                                    >
+                                        <IconChevronLeftPipe className="w-4 h-4" />
+                                    </Button>
+
+                                    {/* Previous page */}
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setPage(page - 1)}
                                         disabled={page <= 1}
+                                        className="w-8 h-8 p-0"
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
-                                        {t('previous')}
                                     </Button>
 
-                                    <div className="flex items-center space-x-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                                            <Button
-                                                key={pageNum}
-                                                variant={page === pageNum ? "default" : "outline"}
-                                                size="sm"
-                                                onClick={() => setPage(pageNum)}
-                                                className="w-8 h-8 p-0"
-                                            >
-                                                {pageNum}
-                                            </Button>
-                                        ))}
-                                    </div>
+                                    {/* Page numbers */}
+                                    {getVisiblePages().map((pageNum) => (
+                                        <Button
+                                            key={pageNum}
+                                            variant={page === pageNum ? "default" : "outline"}
+                                            size="sm"
+                                            onClick={() => setPage(pageNum)}
+                                            className="w-8 h-8 p-0"
+                                        >
+                                            {pageNum}
+                                        </Button>
+                                    ))}
 
+                                    {/* Next page */}
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setPage(page + 1)}
                                         disabled={page >= totalPages}
+                                        className="w-8 h-8 p-0"
                                     >
-                                        {t('next')}
                                         <IconChevronRight className="w-4 h-4" />
+                                    </Button>
+
+                                    {/* Last page */}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(totalPages)}
+                                        disabled={page === totalPages}
+                                        className="w-8 h-8 p-0"
+                                    >
+                                        <IconChevronRightPipe className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>
@@ -283,6 +319,7 @@ export default function DepartmentBySaleOfficeId() {
                             <CreateDepartmentForm
                                 isVisible={true}
                                 saleOfficeId={Number(saleOfficeId)}
+                                refresh={() => loadDepartments(keyword, page)}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={handleCreateSuccess}
 

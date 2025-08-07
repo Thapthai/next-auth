@@ -38,7 +38,8 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
         }
     }, [department]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!department) return;
 
         setLoading(true);
@@ -95,35 +96,47 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                 </div>
             )}
 
-            <div className="space-y-2">
-                <div>
+            <div className="space-y-4">
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('departmentCode')}</label>
                     <Input
                         value={form.department_code}
                         onChange={(e) => setForm({ ...form, department_code: e.target.value })}
                         disabled={loading}
                         placeholder={t('departmentCode')}
+                        maxLength={50}
                     />
+                    <div className="text-xs text-gray-500">
+                        {form.department_code.length}/50 ตัวอักษร
+                    </div>
                 </div>
-                <div>
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('nameThai')}</label>
                     <Input
                         value={form.name_th}
                         onChange={(e) => setForm({ ...form, name_th: e.target.value })}
                         disabled={loading}
                         placeholder={t('nameThai')}
+                        maxLength={50}
                     />
+                    <div className="text-xs text-gray-500">
+                        {form.name_th.length}/50 ตัวอักษร
+                    </div>
                 </div>
-                <div>
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('nameEnglish')}</label>
                     <Input
                         value={form.name_en}
                         onChange={(e) => setForm({ ...form, name_en: e.target.value })}
                         disabled={loading}
                         placeholder={t('nameEnglish')}
+                        maxLength={50}
                     />
+                    <div className="text-xs text-gray-500">
+                        {form.name_en.length}/50 ตัวอักษร
+                    </div>
                 </div>
-                <div>
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('description')}</label>
                     <textarea
                         className="w-full border rounded px-2 py-1 min-h-[80px] resize-y"
@@ -132,7 +145,11 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, description: e.target.value })}
                         disabled={loading}
                         placeholder={t('description')}
+                        maxLength={200}
                     />
+                    <div className="text-xs text-gray-500">
+                        {form.description.length}/200 ตัวอักษร
+                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">{t('status')}</span>
