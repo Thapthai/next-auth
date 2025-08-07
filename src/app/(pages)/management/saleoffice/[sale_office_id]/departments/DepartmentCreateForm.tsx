@@ -64,7 +64,29 @@ export default function CreateDepartmentForm({
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.message || t('createError'));
+
+                // Handle error messages as array
+                let errorMessage = t('createError');
+
+                if (res.status === 409 || res.status === 400) {
+                    if (errorData.message && Array.isArray(errorData.message)) {
+                        const translatedMessages = errorData.message.map((msg: string) => {
+                            switch (msg) {
+                                case 'Department code already exists in this sale office':
+                                    return t('departmentCodeExistsInSaleOffice');
+                                default:
+                                    return msg;
+                            }
+                        });
+                        errorMessage = translatedMessages.join(', ');
+                    } else {
+                        errorMessage = errorData.message || t('createError');
+                    }
+                } else {
+                    errorMessage = errorData.message || t('createError');
+                }
+
+                throw new Error(errorMessage);
             }
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
@@ -168,7 +190,7 @@ export default function CreateDepartmentForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('description')}</label>
                     <textarea
-                        className="w-full border rounded px-2 py-1"
+                        className="w-full border rounded px-2 py-1 min-h-[80px] resize-y"
                         rows={3}
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}

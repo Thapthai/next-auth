@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function DepartmentDetailForm({ department, refresh, onClose }: Props) {
-    const t = useTranslations('SaleOfficeManage');
+    const t = useTranslations('saleOffice');
     const [form, setForm] = useState({
         department_code: "",
         name_th: "",
@@ -54,7 +54,29 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.message || t('saveError'));
+
+                // Handle error messages as array
+                let errorMessage = t('saveError');
+
+                if (res.status === 409 || res.status === 400) {
+                    if (errorData.message && Array.isArray(errorData.message)) {
+                        const translatedMessages = errorData.message.map((msg: string) => {
+                            switch (msg) {
+                                case 'Department code already exists in this sale office':
+                                    return t('departmentCodeExistsInSaleOffice');
+                                default:
+                                    return msg;
+                            }
+                        });
+                        errorMessage = translatedMessages.join(', ');
+                    } else {
+                        errorMessage = errorData.message || t('saveError');
+                    }
+                } else {
+                    errorMessage = errorData.message || t('saveError');
+                }
+
+                throw new Error(errorMessage);
             }
 
             refresh();
@@ -105,6 +127,7 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                         disabled={loading}
                         placeholder={t('departmentCode')}
                         maxLength={50}
+                        required
                     />
                     <div className="text-xs text-gray-500">
                         {form.department_code.length}/50 ตัวอักษร
@@ -118,6 +141,7 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                         disabled={loading}
                         placeholder={t('nameThai')}
                         maxLength={50}
+                        required
                     />
                     <div className="text-xs text-gray-500">
                         {form.name_th.length}/50 ตัวอักษร
@@ -131,6 +155,7 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                         disabled={loading}
                         placeholder={t('nameEnglish')}
                         maxLength={50}
+                        required
                     />
                     <div className="text-xs text-gray-500">
                         {form.name_en.length}/50 ตัวอักษร
@@ -145,10 +170,10 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, description: e.target.value })}
                         disabled={loading}
                         placeholder={t('description')}
-                        maxLength={200}
+                        maxLength={100}
                     />
                     <div className="text-xs text-gray-500">
-                        {form.description.length}/200 ตัวอักษร
+                        {form.description.length}/100 ตัวอักษร
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

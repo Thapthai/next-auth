@@ -66,7 +66,45 @@ export default function SaleOfficeDetail({ saleOffice, refresh, onClose }: Props
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.message || t('saveError'));
+
+                // Handle different error responses
+                let errorMessage = t('saveError');
+
+                if (res.status === 409 || res.status === 400) {
+                    // Handle error messages as array
+                    if (errorData.message && Array.isArray(errorData.message)) {
+                        const translatedMessages = errorData.message.map((msg: string) => {
+                            // Map specific error keys to translation keys
+                            switch (msg) {
+                                case 'Sale office code already exists':
+                                    return t('saleOfficeCodeExists');
+                                case 'Site path already exists':
+                                    return t('sitePathExists');
+                                case 'Lab site code already exists':
+                                    return t('labSiteCodeExists');
+                                case 'Sale office code must not exceed 50 characters':
+                                    return t('saleOfficeCodeTooLong');
+                                case 'Thai name must not exceed 50 characters':
+                                    return t('nameThTooLong');
+                                case 'English name must not exceed 50 characters':
+                                    return t('nameEnTooLong');
+                                case 'Site path must not exceed 50 characters':
+                                    return t('sitePathTooLong');
+                                case 'Lab site code must not exceed 50 characters':
+                                    return t('labSiteCodeTooLong');
+                                default:
+                                    return msg; // Return original message if no translation found
+                            }
+                        });
+                        errorMessage = translatedMessages.join(', ');
+                    } else {
+                        errorMessage = errorData.message || t('saveError');
+                    }
+                } else {
+                    errorMessage = errorData.message || t('saveError');
+                }
+
+                throw new Error(errorMessage);
             }
 
             refresh();
@@ -83,7 +121,7 @@ export default function SaleOfficeDetail({ saleOffice, refresh, onClose }: Props
             onClose();
         }
     };
-    
+
 
     if (!saleOffice) return null;
 

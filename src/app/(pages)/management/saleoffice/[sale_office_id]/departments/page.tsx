@@ -31,7 +31,7 @@ export default function DepartmentBySaleOfficeId() {
     const pathname = usePathname();
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
 
-    const t = useTranslations('SaleOfficeManage');
+    const t = useTranslations('saleOffice');
     const handleCreateSuccess = () => {
         setIsCreateFormVisible(false);
         setPage(1); // รีเซ็ตกลับไปหน้า 1 เพื่อเห็นรายการใหม่

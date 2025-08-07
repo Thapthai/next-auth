@@ -58,7 +58,33 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.message || t('createError'));
+                
+                // Handle error messages as array
+                let errorMessage = t('createError');
+                
+                if (res.status === 409 || res.status === 400) {
+                    if (errorData.message && Array.isArray(errorData.message)) {
+                        const translatedMessages = errorData.message.map((msg: string) => {
+                            switch (msg) {
+                                case 'Sale office code already exists':
+                                    return t('saleOfficeCodeExists');
+                                case 'Site path already exists':
+                                    return t('sitePathExists');
+                                case 'Lab site code already exists':
+                                    return t('labSiteCodeExists');
+                                default:
+                                    return msg;
+                            }
+                        });
+                        errorMessage = translatedMessages.join(', ');
+                    } else {
+                        errorMessage = errorData.message || t('createError');
+                    }
+                } else {
+                    errorMessage = errorData.message || t('createError');
+                }
+                
+                throw new Error(errorMessage);
             }
 
             // สร้างสำเร็จ
@@ -73,7 +99,7 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
             onSuccess();
             onClose();
         } catch (err) {
-            console.error('Create sale office error:', err);
+
             setError(err instanceof Error ? err.message : t('createError'));
             // Call onError callback
             if (onError) onError();
