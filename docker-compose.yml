@@ -23,10 +23,10 @@ services:
       - NEXT_DISABLE_TYPECHECK=true
     networks:
       - frontend-network
-      - auth-nest-js_auth-network
+      - Nelinen-network-production
 
 networks:
   frontend-network:
     driver: bridge
-  auth-nest-js_auth-network:
+  Nelinen-network-production:
     external: true 
