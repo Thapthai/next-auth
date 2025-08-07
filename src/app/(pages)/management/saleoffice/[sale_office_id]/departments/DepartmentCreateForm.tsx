@@ -31,9 +31,12 @@ export default function CreateDepartmentForm({
         sale_office_id: saleOfficeId || 0
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async () => {
         setLoading(true);
+        setError(null);
+        
         if (onStart) onStart();
 
         try {
@@ -56,7 +59,8 @@ export default function CreateDepartmentForm({
             });
 
             if (!res.ok) {
-                throw new Error('Failed to create department');
+                const errorData = await res.json();
+                throw new Error(errorData.message || t('createError'));
             }
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
@@ -71,6 +75,7 @@ export default function CreateDepartmentForm({
             onClose();
         } catch (err) {
             console.error('Create department error:', err);
+            setError(err instanceof Error ? err.message : t('createError'));
             if (onError) onError();
         } finally {
             setLoading(false);
@@ -105,6 +110,13 @@ export default function CreateDepartmentForm({
                     <IconX className="w-4 h-4" />
                 </Button>
             </div>
+
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    {error}
+                </div>
+            )}
+
             <div className="space-y-2">
                 <div>
                     <label className="text-sm text-gray-600">{t('departmentCode')}</label>

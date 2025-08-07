@@ -311,7 +311,8 @@
         "noData": "ไม่พบข้อมูล",
         "saving": "กำลังบันทึก...",
         "createDepartment": "สร้างแผนกใหม่",
-        "editDepartment": "แก้ไขแผนก"
+        "editDepartment": "แก้ไขแผนก",
+        "createNewDepartment": "สร้างแผนกใหม่"
     },
     "saleOffice": {
         "headerTopic": "จัดการสาขา",
@@ -358,7 +359,13 @@
         "noData": "ไม่พบข้อมูล",
         "createDepartment": "สร้างแผนกใหม่",
         "saving": "กำลังบันทึก...",
-        "editDepartment": "แก้ไขแผนก"
+        "editDepartment": "แก้ไขแผนก",
+        "saleOfficeCode": "รหัสโรงพยาบาล",
+        "saleOfficeCodePlaceholder": "เช่น: BKK001",
+        "sitePath": "ไซต์ พาร์ท sitePath",
+        "sitePathPlaceholder": " ",
+        "labSiteCode": "แลปไซต์ พาร์ท labSiteCode",
+        "labSiteCodePlaceholder": "เช่น: BKK001"
     },
     "permission": {
         "headerTopic": "จัดการสิทธิ์การใช้งาน",

@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 
 export default function SaleOfficePage() {
     const [saleOffices, setSaleOffices] = useState<SaleOffice[]>([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedOffice, setSelectedOffice] = useState<SaleOffice | null>(null);
     const [keyword, setKeyword] = useState("");
@@ -39,6 +40,7 @@ export default function SaleOfficePage() {
     }, []);
 
     const loadSaleOffices = async (keyword = "", page = currentPage) => {
+        setLoading(true);
         try {
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`;
             const res = await fetch(url);
@@ -51,6 +53,8 @@ export default function SaleOfficePage() {
         } catch (err) {
             console.error('Fetch error:', err);
             setError("ไม่สามารถโหลดข้อมูลได้");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,13 +65,15 @@ export default function SaleOfficePage() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setKeyword(input);
-        loadSaleOffices(input);
+        setCurrentPage(1); // รีเซ็ตกลับไปหน้า 1
+        loadSaleOffices(input, 1); // ส่ง page = 1 โดยตรง
     };
 
     const handleReset = () => {
         setInput("");
         setKeyword("");
-        loadSaleOffices();
+        setCurrentPage(1); // รีเซ็ตกลับไปหน้า 1
+        loadSaleOffices("", 1); // ส่ง page = 1 โดยตรง
     };
 
     const handleGoToDepartment = async (id: number) => {
@@ -88,7 +94,8 @@ export default function SaleOfficePage() {
     const handleCreateSuccess = () => {
         setIsCreating(false);
         setIsCreateFormVisible(false);
-        loadSaleOffices(keyword);
+        setCurrentPage(1); // รีเซ็ตกลับไปหน้า 1 เพื่อเห็นรายการใหม่
+        loadSaleOffices(keyword, 1);
     };
 
     const handleCreateStart = () => {
@@ -147,71 +154,101 @@ export default function SaleOfficePage() {
                                 <IconPlus className="w-4 h-4" />
                             </Button>
                         </form>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead></TableHead>
-                                    <TableHead>#</TableHead>
-                                    <TableHead>{t('siteCode')}</TableHead>
-                                    <TableHead>{t('nameThaiLabel')}</TableHead>
-                                    <TableHead>{t('nameEnglishLabel')}</TableHead>
-                                    <TableHead>{t('status')}</TableHead>
-                                    <TableHead></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {saleOffices.map((office, index) => (
-                                    <TableRow key={uuidv4()}>
-                                        <TableCell className="w-10">
-                                            <label className="flex items-center space-x-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="selectedOffice"
-                                                    value={office.id}
-                                                    checked={selectedOffice?.id === office.id}
-                                                    onChange={() => {
-                                                        setSelectedOffice(office);
-                                                        setIsCreateFormVisible(false);
-                                                    }}
-                                                />
-                                            </label>
-                                        </TableCell>
-                                        <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                        <TableCell>{office.site_code}</TableCell>
-                                        <TableCell>
-                                            <div className="max-w-40 truncate" title={office.site_office_name_th}>
-                                                {office.site_office_name_th}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="max-w-40 truncate" title={office.site_office_name_en}>
-                                                {office.site_office_name_en}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className={`px-2 py-1 rounded-full text-xs ${office.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                }`}>
-                                                {office.status ? t('active') : t('inactive')}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className="w-10">
-                                            <Button
-                                                variant="ghost"
-                                                onClick={() => handleGoToDepartment(office.id)}
-                                                className="transition-all duration-200 hover:bg-gray-100"
-                                                disabled={navigatingToId === office.id}
-                                            >
-                                                {navigatingToId === office.id ? (
-                                                    <IconReload className="animate-spin w-4 h-4" />
-                                                ) : (
-                                                    <IconCaretRightFilled />
-                                                )}
-                                            </Button>
-                                        </TableCell>
+
+
+                        {loading ? (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="flex items-center gap-2">
+                                    <IconReload className="animate-spin w-5 h-5" />
+                                    <span>กำลังโหลดข้อมูล...</span>
+                                </div>
+                            </div>
+                        ) : saleOffices.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead></TableHead>
+                                        <TableHead>#</TableHead>
+                                        <TableHead>{t('saleOfficeCode')}</TableHead>
+                                        <TableHead>{t('nameThaiLabel')}</TableHead>
+                                        <TableHead>{t('nameEnglishLabel')}</TableHead>
+                                        <TableHead>{t('sitePath')}</TableHead>
+                                        <TableHead>{t('labSiteCode')}</TableHead>
+                                        <TableHead>{t('status')}</TableHead>
+                                        <TableHead></TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {saleOffices.map((office, index) => (
+                                        <TableRow key={uuidv4()}>
+                                            <TableCell className="w-10">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="selectedOffice"
+                                                        value={office.id}
+                                                        checked={selectedOffice?.id === office.id}
+                                                        onChange={() => {
+                                                            setSelectedOffice(office);
+                                                            setIsCreateFormVisible(false);
+                                                        }}
+                                                    />
+                                                </label>
+                                            </TableCell>
+                                            <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                                            <TableCell>{office.sale_office_code}</TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={office.name_th}>
+                                                    {office.name_th}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={office.name_en}>
+                                                    {office.name_en}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={office.site_path}>
+                                                    {office.site_path}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="max-w-40 truncate" title={office.lab_site_code}>
+                                                    {office.lab_site_code}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className={`px-2 py-1 rounded-full text-xs ${office.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                    }`}>
+                                                    {office.status ? t('active') : t('inactive')}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="w-10">
+                                                <Button
+                                                    variant="ghost"
+                                                    onClick={() => handleGoToDepartment(office.id)}
+                                                    className="transition-all duration-200 hover:bg-gray-100"
+                                                    disabled={navigatingToId === office.id}
+                                                >
+                                                    {navigatingToId === office.id ? (
+                                                        <IconReload className="animate-spin w-4 h-4" />
+                                                    ) : (
+                                                        <IconCaretRightFilled />
+                                                    )}
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="text-center">
+                                    <p className="text-gray-500 text-lg">ไม่พบข้อมูล</p>
+                                    <p className="text-gray-400 text-sm mt-2">ลองค้นหาด้วยคำค้นอื่น หรือเพิ่มข้อมูลใหม่</p>
+                                </div>
+                            </div>
+                        )}
                         {/* Pagination */}
                         {!error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
@@ -257,7 +294,7 @@ export default function SaleOfficePage() {
                         )}
                         {selectedOffice && !isCreateFormVisible && (
                             <SaleOfficeDetail saleOffice={selectedOffice}
-                                refresh={() => loadSaleOffices(keyword)}
+                                refresh={() => loadSaleOffices(keyword, currentPage)}
                                 onClose={() => setSelectedOffice(null)} />
                         )}
 

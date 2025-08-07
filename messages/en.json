@@ -311,7 +311,8 @@
         "noData": "No data found.",
         "saving": "Saving...",
         "createDepartment": "Create Department",
-        "editDepartment": "Edit Department"
+        "editDepartment": "Edit Department",
+        "createNewDepartment": "Create New Department"
     },
     "saleOffice": {
         "headerTopic": "Sale Office Management",
@@ -358,7 +359,13 @@
         "noData": "No data found.",
         "saving": "Saving...",
         "createDepartment": "Create Department",
-        "editDepartment": "Edit Department"
+        "editDepartment": "Edit Department",
+        "saleOfficeCode": "Sale Office Code",
+        "saleOfficeCodePlaceholder": "e.g., BKK001",
+        "sitePath": "Site Path",
+        "sitePathPlaceholder": "e.g., https://silom.laundry.com",
+        "labSiteCode": "Lab Site Code",
+        "labSiteCodePlaceholder": "e.g., BKK001"
     },
     "permission": {
         "headerTopic": "Permission Management",

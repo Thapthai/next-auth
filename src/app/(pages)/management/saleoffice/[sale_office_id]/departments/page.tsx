@@ -27,7 +27,7 @@ export default function DepartmentBySaleOfficeId() {
     const [input, setInput] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
     const [loadingId, setLoadingId] = useState<number | null>(null);
-
+    const [loading, setLoading] = useState(true);
     const pathname = usePathname();
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
 
@@ -54,36 +54,32 @@ export default function DepartmentBySaleOfficeId() {
 
     useEffect(() => {
         if (!saleOfficeId) return;
+        setLoading(true);
         const fetchSaleOffice = async () => {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices/${saleOfficeId}`);
             const data = await res.json();
             setSaleOffice(data);
+            setLoading(false);
         };
         fetchSaleOffice();
     }, [saleOfficeId]);
 
     useEffect(() => {
         if (!saleOfficeId) return;
+        setLoading(true);
         const fetchDepartments = async () => {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/sale-offices?keyword=${keyword}&page=${page}&pageSize=${pageSize}&saleOfficeId=${saleOfficeId}`);
             const data = await res.json();
 
             setDepartments(data.items || data); // เผื่อกรณีคุณยังไม่ได้ส่ง total
             if (data.total) setTotal(data.total);
+            setLoading(false);
         };
         fetchDepartments();
     }, [saleOfficeId, keyword, page, pageSize]);
 
     const totalPages = Math.ceil(total / pageSize);
 
-    const handleGoToDepartmentDetail = (saleId: number, depId: number) => {
-        // หา department ที่ถูกเลือก
-        const selectedDept = departments.find(dept => dept.id === depId);
-        if (selectedDept) {
-            setSelectedDepartment(selectedDept);
-            setIsCreateFormVisible(false); // ปิดฟอร์มสร้าง
-        }
-    };
 
     const handleCreateButtonClick = () => {
         setIsCreateFormVisible(true);
@@ -114,7 +110,7 @@ export default function DepartmentBySaleOfficeId() {
                                     <IconArrowLeft /> {t('back')}
                                 </Button>
                             </Link>
-                            <h2 className="text-xl font-bold">{t('departmentIn')} {saleOffice?.site_office_name_th || `Sale Office ID: ${saleOfficeId}`}</h2>
+                            <h2 className="text-xl font-bold">{t('departmentIn')} {saleOffice?.name_th || `Sale Office ID: ${saleOfficeId}`}</h2>
                         </div>
 
                         <form
@@ -154,73 +150,90 @@ export default function DepartmentBySaleOfficeId() {
                                 <IconPlus className="w-4 h-4" />
                             </Button>
                         </form>
-
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead></TableHead>
-                                    <TableHead>#</TableHead>
-                                    <TableHead>{t('departmentCode')}</TableHead>
-                                    <TableHead>{t('nameThai')}</TableHead>
-                                    <TableHead>{t('nameEnglish')}</TableHead>
-                                    <TableHead>{t('description')}</TableHead>
-                                    <TableHead>{t('status')}</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {departments.length > 0 ? (
-                                    departments.map((dept, index) => (
-                                        <TableRow key={dept.id}>
-                                            <TableCell className="w-10">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <input
-                                                        type="radio"
-                                                        name="selectedDepartment"
-                                                        value={dept.id}
-                                                        checked={selectedDepartment?.id === dept.id}
-                                                        onChange={() => {
-                                                            setSelectedDepartment(dept);
-                                                            setIsCreateFormVisible(false);
-                                                        }}
-                                                        onClick={() => setIsCreateFormVisible(false)}
-                                                    />
-                                                    <span className="sr-only">{t('select')}</span>
-                                                </label>
-                                            </TableCell>
-                                            <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
-                                            <TableCell>{dept.department_code}</TableCell>
-                                            <TableCell>
-                                                <div className="max-w-40 truncate" title={dept.name_th}>
-                                                    {dept.name_th}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="max-w-40 truncate" title={dept.name_en}>
-                                                    {dept.name_en}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="max-w-40 truncate" title={dept.description}>
-                                                    {dept.description}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${dept.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                    }`}>
-                                                    {dept.status ? t('active') : t('inactive')}
-                                                </span>
+                        {loading ? (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="flex items-center gap-2">
+                                    <IconReload className="animate-spin w-5 h-5" />
+                                    <span>กำลังโหลดข้อมูล...</span>
+                                </div>
+                            </div>
+                        ) : departments.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead></TableHead>
+                                        <TableHead>#</TableHead>
+                                        <TableHead>{t('departmentCode')}</TableHead>
+                                        <TableHead>{t('nameThai')}</TableHead>
+                                        <TableHead>{t('nameEnglish')}</TableHead>
+                                        <TableHead>{t('description')}</TableHead>
+                                        <TableHead>{t('status')}</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {departments.length > 0 ? (
+                                        departments.map((dept, index) => (
+                                            <TableRow key={dept.id}>
+                                                <TableCell className="w-10">
+                                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="selectedDepartment"
+                                                            value={dept.id}
+                                                            checked={selectedDepartment?.id === dept.id}
+                                                            onChange={() => {
+                                                                setSelectedDepartment(dept);
+                                                                setIsCreateFormVisible(false);
+                                                            }}
+                                                            onClick={() => setIsCreateFormVisible(false)}
+                                                        />
+                                                        <span className="sr-only">{t('select')}</span>
+                                                    </label>
+                                                </TableCell>
+                                                <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
+                                                <TableCell>{dept.department_code}</TableCell>
+                                                <TableCell>
+                                                    <div className="max-w-40 truncate" title={dept.name_th}>
+                                                        {dept.name_th}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="max-w-40 truncate" title={dept.name_en}>
+                                                        {dept.name_en}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="max-w-40 truncate" title={dept.description}>
+                                                        {dept.description}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className={`px-2 py-1 rounded-full text-xs ${dept.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                        }`}>
+                                                        {dept.status ? t('active') : t('inactive')}
+                                                    </span>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="text-center py-4 text-gray-500">
+                                                {t('noData')}
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center py-4 text-gray-500">
-                                            {t('noData')}
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
+                                    )}
+                                </TableBody>
+                            </Table>
+
+
+                        ) : (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="text-center">
+                                    <p className="text-gray-500 text-lg">ไม่พบข้อมูล</p>
+                                    <p className="text-gray-400 text-sm mt-2">ลองค้นหาด้วยคำค้นอื่น หรือเพิ่มข้อมูลใหม่</p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Pagination */}
                         {total > pageSize && (

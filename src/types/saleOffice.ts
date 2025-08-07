@@ -1,7 +1,11 @@
 export type SaleOffice = {
     id: number;
-    site_code: string;
-    site_office_name_th: string;
-    site_office_name_en: string;
+    sale_office_code: string;
+    name_th: string;
+    name_en: string;
+    site_path: string;
+    lab_site_code: string;
     status: boolean;
+    create_at: Date;
+    update_at: Date;
 };

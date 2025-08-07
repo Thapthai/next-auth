@@ -21,9 +21,11 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
     const t = useTranslations('saleOffice');
 
     const [formData, setFormData] = useState({
-        site_code: '',
-        site_office_name_th: '',
-        site_office_name_en: '',
+        sale_office_code: '',
+        name_th: '',
+        name_en: '',
+        site_path: '',
+        lab_site_code: '',
         status: true
     });
     const [loading, setLoading] = useState(false);
@@ -61,9 +63,11 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
 
             // สร้างสำเร็จ
             setFormData({
-                site_code: '',
-                site_office_name_th: '',
-                site_office_name_en: '',
+                sale_office_code: '',
+                name_th: '',
+                name_en: '',
+                site_path: '',
+                lab_site_code: '',
                 status: true
             });
             onSuccess();
@@ -81,9 +85,11 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
     const handleClose = () => {
         if (!loading) {
             setFormData({
-                site_code: '',
-                site_office_name_th: '',
-                site_office_name_en: '',
+                sale_office_code: '',
+                name_th: '',
+                name_en: '',
+                site_path: '',
+                lab_site_code: '',
                 status: true
             });
             setError(null);
@@ -116,58 +122,102 @@ export default function CreateSaleOfficeForm({ isVisible, onClose, onSuccess, on
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    {/* sale_office_code */}
                     <div className="space-y-2">
-                        <Label htmlFor="site_code" className="text-sm text-gray-600">{t('siteCode')} *</Label>
+                        <Label htmlFor="sale_office_code" className="text-sm text-gray-600">{t('saleOfficeCode')} *</Label>
                         <Input
-                            id="site_code"
-                            name="site_code"
-                            value={formData.site_code}
+                            id="sale_office_code"
+                            name="sale_office_code"
+                            value={formData.sale_office_code}
                             onChange={handleInputChange}
-                            placeholder={t('siteCodePlaceholder')}
+                            placeholder={t('saleOfficeCodePlaceholder')}
                             required
                             disabled={loading}
+                            maxLength={50}
                             className="w-full border rounded px-2 py-1"
                         />
+                        <div className="text-xs text-gray-500">
+                            {formData.sale_office_code.length}/50 ตัวอักษร
+                        </div>
                     </div>
 
+                    {/* name_th */}
                     <div className="space-y-2">
-                        <Label htmlFor="site_office_name_th" className="text-sm text-gray-600">{t('nameThaiLabel')} *</Label>
+                        <Label htmlFor="name_th" className="text-sm text-gray-600">{t('nameThaiLabel')} *</Label>
                         <Input
-                            id="site_office_name_th"
-                            name="site_office_name_th"
-                            value={formData.site_office_name_th}
+                            id="name_th"
+                            name="name_th"
+                            value={formData.name_th}
                             onChange={handleInputChange}
                             placeholder={t('nameThaiPlaceholder')}
                             required
                             disabled={loading}
+                            maxLength={50}
                             className="w-full border rounded px-2 py-1"
                         />
+                        <div className="text-xs text-gray-500">
+                            {formData.name_th.length}/50 ตัวอักษร
+                        </div>
                     </div>
 
+                    {/* name_en */}
                     <div className="space-y-2">
-                        <Label htmlFor="site_office_name_en" className="text-sm text-gray-600">{t('nameEnglishLabel')} *</Label>
+                        <Label htmlFor="name_en" className="text-sm text-gray-600">{t('nameEnglishLabel')} *</Label>
                         <Input
-                            id="site_office_name_en"
-                            name="site_office_name_en"
-                            value={formData.site_office_name_en}
+                            id="name_en"
+                            name="name_en"
+                            value={formData.name_en}
                             onChange={handleInputChange}
                             placeholder={t('nameEnglishPlaceholder')}
                             required
                             disabled={loading}
+                            maxLength={50}
                             className="w-full border rounded px-2 py-1"
                         />
+                        <div className="text-xs text-gray-500">
+                            {formData.name_en.length}/50 ตัวอักษร
+                        </div>
                     </div>
 
-                    <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="address" className="text-sm text-gray-600">{t('status')}</Label>
-                        <Switch
-                            id="status"
-                            name="status"
-                            onCheckedChange={(checked) => setFormData({ ...formData, status: checked })}
+                    {/* site_path */}
+                    <div className="space-y-2">
+                        <Label htmlFor="site_path" className="text-sm text-gray-600">{t('sitePath')} *</Label>
+                        <Input
+                            id="site_path"
+                            name="site_path"
+                            value={formData.site_path}
+                            onChange={handleInputChange}
+                            placeholder={t('sitePathPlaceholder')}
+                            required
                             disabled={loading}
-                            checked={formData.status}
+                            maxLength={50}
+                            className="w-full border rounded px-2 py-1"
                         />
+                        <div className="text-xs text-gray-500">
+                            {formData.site_path.length}/50 ตัวอักษร
+                        </div>
                     </div>
+
+                    {/* lab_site_code */}
+                    <div className="space-y-2">
+                        <Label htmlFor="lab_site_code" className="text-sm text-gray-600">{t('labSiteCode')} *</Label>
+                        <Input
+                            id="lab_site_code"
+                            name="lab_site_code"
+                            value={formData.lab_site_code}
+                            onChange={handleInputChange}
+                            placeholder={t('labSiteCodePlaceholder')}
+                            required
+                            disabled={loading}
+                            maxLength={50}
+                            className="w-full border rounded px-2 py-1"
+                        />
+                        <div className="text-xs text-gray-500">
+                            {formData.lab_site_code.length}/50 ตัวอักษร
+                        </div>
+                    </div>
+
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t">

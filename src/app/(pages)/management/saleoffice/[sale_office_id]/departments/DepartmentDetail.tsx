@@ -24,6 +24,7 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
         status: true
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (department) {
@@ -32,7 +33,7 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                 name_th: department.name_th || "",
                 name_en: department.name_en || "",
                 description: department.description || "",
-                status: department.status || true
+                status: department.status ?? true
             });
         }
     }, [department]);
@@ -41,6 +42,8 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
         if (!department) return;
 
         setLoading(true);
+        setError(null);
+
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/${department.id}`, {
                 method: "PATCH",
@@ -48,12 +51,16 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                 body: JSON.stringify(form),
             });
 
-            if (!res.ok) throw new Error(t('saveError'));
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || t('saveError'));
+            }
 
-            alert(t('saveSuccess'));
             refresh();
+            onClose();
         } catch (err) {
-            alert(t('saveError'));
+            console.error('Update department error:', err);
+            setError(err instanceof Error ? err.message : t('saveError'));
         } finally {
             setLoading(false);
         }
@@ -81,7 +88,13 @@ export default function DepartmentDetailForm({ department, refresh, onClose }: P
                     <IconX className="w-4 h-4" />
                 </Button>
             </div>
-            
+
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    {error}
+                </div>
+            )}
+
             <div className="space-y-2">
                 <div>
                     <label className="text-sm text-gray-600">{t('departmentCode')}</label>
