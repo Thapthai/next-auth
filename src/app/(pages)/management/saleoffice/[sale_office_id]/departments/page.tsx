@@ -8,7 +8,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input"; // คุณต้องมี input จาก ui component
 import { SaleOffice } from "@/types/saleOffice";
-import { IconArrowLeft, IconCaretRightFilled, IconChevronLeft, IconChevronRight, IconPlus, IconReload, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconReload, IconChevronLeft, IconChevronRight, IconPlus, IconSearch } from "@tabler/icons-react";
 import { Department } from "@/types/department";
 import DepartmentDetailForm from "./DepartmentDetail";
 import { Loader2 } from "lucide-react";
@@ -31,13 +31,10 @@ export default function DepartmentBySaleOfficeId() {
     const pathname = usePathname();
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
 
-
-
     const t = useTranslations('SaleOfficeManage');
     const handleCreateSuccess = () => {
         setIsCreateFormVisible(false);
-
-        loadDepartments(); // รีเฟรชข้อมูล
+        setPage(1); // รีเซ็ตกลับไปหน้า 1 เพื่อเห็นรายการใหม่
     };
     // Reset loading state when pathname changes (navigation completes)
     useEffect(() => {
@@ -47,7 +44,8 @@ export default function DepartmentBySaleOfficeId() {
         }
     }, [pathname]);
 
-    const handleSearch = () => {
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
         setKeyword(input);
         setPage(1);
     };
@@ -64,39 +62,38 @@ export default function DepartmentBySaleOfficeId() {
         fetchSaleOffice();
     }, [saleOfficeId]);
 
-    useEffect(() => {
-        if (!saleOfficeId) return;
-        setLoading(true);
-        const fetchDepartments = async () => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/sale-offices?keyword=${keyword}&page=${page}&pageSize=${pageSize}&saleOfficeId=${saleOfficeId}`);
-            const data = await res.json();
-
-            setDepartments(data.items || data); // เผื่อกรณีคุณยังไม่ได้ส่ง total
-            if (data.total) setTotal(data.total);
-            setLoading(false);
-        };
-        fetchDepartments();
-    }, [saleOfficeId, keyword, page, pageSize]);
-
     const totalPages = Math.ceil(total / pageSize);
-
 
     const handleCreateButtonClick = () => {
         setIsCreateFormVisible(true);
         setSelectedDepartment(null); // ปิดฟอร์ม detail
     };
 
-    const loadDepartments = async () => {
+    const loadDepartments = async (searchKeyword = keyword, currentPage = page) => {
         if (!saleOfficeId) return;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/sale-offices?keyword=${keyword}&page=${page}&pageSize=${pageSize}&saleOfficeId=${saleOfficeId}`);
-        const data = await res.json();
-        setDepartments(data.items || data);
-        if (data.total) setTotal(data.total);
+        setLoading(true);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/sale-offices?keyword=${searchKeyword}&page=${currentPage}&pageSize=${pageSize}&saleOfficeId=${saleOfficeId}`);
+            const data = await res.json();
+            setDepartments(data.items || data);
+            if (data.total) setTotal(data.total);
+        } catch (error) {
+            console.error('Error loading departments:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         loadDepartments();
     }, [saleOfficeId, keyword, page, pageSize]);
+
+    const handleReset = () => {
+        setInput("");
+        setKeyword("");
+        setPage(1); // รีเซ็ตกลับไปหน้า 1
+    };
+
 
     return (
         <>
@@ -113,41 +110,26 @@ export default function DepartmentBySaleOfficeId() {
                             <h2 className="text-xl font-bold">{t('departmentIn')} {saleOffice?.name_th || `Sale Office ID: ${saleOfficeId}`}</h2>
                         </div>
 
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleSearch();
-                            }}
-                            className="flex items-center gap-2 mb-4"
-                        >
-                            <Input
-                                placeholder={t('search')}
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                            />
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                    setInput("");
-                                    setKeyword("");
-                                    setPage(1);
-                                }}
-                            >
-                                <IconReload />
-
-                            </Button>
-                            <Button type="submit">
+                        <form onSubmit={handleSearch} className="flex gap-2 mb-4">
+                            <div className="relative flex-1">
+                                <Input
+                                    placeholder={t('search')}
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    className="pr-8"
+                                />
+                                {input && (
+                                    <button
+                                        type="button"
+                                        onClick={handleReset}
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                                    >
+                                        <IconReload className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
+                            <Button type="submit" variant="outline">
                                 <IconSearch />
-                            </Button>
-                            <Button
-                                onClick={handleCreateButtonClick}
-                                variant="outline"
-                                size="icon"
-                                className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t("createNewDepartment")}
-                            >
-                                <IconPlus className="w-4 h-4" />
                             </Button>
                         </form>
                         {loading ? (
@@ -279,10 +261,20 @@ export default function DepartmentBySaleOfficeId() {
                             </div>
                         )}
 
+                        <Button
+                            onClick={handleCreateButtonClick}
+                            variant="outline"
+                            size="icon"
+                            className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                            title={t("createNewDepartment")}
+                        >
+                            <IconPlus className="w-4 h-4" />
+                        </Button>
+
                         {selectedDepartment && !isCreateFormVisible && (
                             <DepartmentDetailForm
                                 department={selectedDepartment}
-                                refresh={loadDepartments}
+                                refresh={() => loadDepartments(keyword, page)}
                                 onClose={() => setSelectedDepartment(null)}
                             />
                         )}

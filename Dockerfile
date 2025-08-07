@@ -8,6 +8,13 @@ WORKDIR /app
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 
+
+# Copy only package.json (เพราะไม่มี package-lock.json)
+COPY package.json ./
+
+# Use npm install instead of npm ci
+RUN npm install
+
 COPY package.json package-lock.json* ./
 # Install all dependencies (including devDependencies) for build
 RUN npm ci

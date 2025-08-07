@@ -32,15 +32,9 @@ export default function SaleOfficePage() {
     const [totalItems, setTotalItems] = useState(0);
     const [itemsPerPage] = useState(5);
 
-
-
-    // Load sale offices on component mount
-    useEffect(() => {
-        loadSaleOffices();
-    }, []);
-
     const loadSaleOffices = async (keyword = "", page = currentPage) => {
         setLoading(true);
+
         try {
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`;
             const res = await fetch(url);
@@ -58,9 +52,10 @@ export default function SaleOfficePage() {
         }
     };
 
+
     useEffect(() => {
-        loadSaleOffices();
-    }, [currentPage]);
+        loadSaleOffices(keyword, currentPage);
+    }, [currentPage, keyword]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -132,27 +127,25 @@ export default function SaleOfficePage() {
                         {error && <p className="text-red-500">{error}</p>}
 
                         <form onSubmit={handleSearch} className="flex gap-2 mb-4">
-                            <Input
-                                placeholder="ค้นหา site code หรือชื่อ"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                            />
-                            <Button type="button" variant="outline" onClick={handleReset}>
-                                <IconReload />
-                            </Button>
-                            <Button type="submit">
-                                <IconSearch />
-                                {t('search')}
-                            </Button>
-                            <Button
-                                onClick={handleCreateSaleOffice}
-                                variant="outline"
-                                size="icon"
-                                className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                                title={t("createNewOffice")}
-                            >
-                                <IconPlus className="w-4 h-4" />
-                            </Button>
+                            <div className="relative flex-1">
+                                <Input
+                                    placeholder="ค้นหา site code หรือชื่อ"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    className="pr-8"
+                                />
+                                {input && (
+                                    <button
+                                        type="button"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                                        onClick={handleReset}
+                                    >
+                                        <IconReload className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
+
+                            <Button type="submit" variant="outline"><IconSearch /></Button>
                         </form>
 
 
@@ -292,6 +285,15 @@ export default function SaleOfficePage() {
                                 </div>
                             </div>
                         )}
+                        <Button
+                            onClick={handleCreateSaleOffice}
+                            variant="outline"
+                            size="icon"
+                            className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                            title={t("createNewOffice")}
+                        >
+                            <IconPlus className="w-4 h-4" />
+                        </Button>
                         {selectedOffice && !isCreateFormVisible && (
                             <SaleOfficeDetail saleOffice={selectedOffice}
                                 refresh={() => loadSaleOffices(keyword, currentPage)}
