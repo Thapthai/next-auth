@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (clean install to avoid cache issues)
+RUN rm -rf node_modules package-lock.json
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -16,5 +17,5 @@ COPY . .
 # Expose port
 EXPOSE 3005
 
-# Start development server
-CMD ["npm", "run", "dev", "--", "-p", "3005"] 
+# Start development server without Turbopack for Docker stability
+CMD ["npx", "next", "dev", "-p", "3005"] 

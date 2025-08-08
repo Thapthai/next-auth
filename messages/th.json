@@ -917,12 +917,14 @@
     "StockLocations": {
         "title": "จัดการสถานที่เก็บสต็อก",
         "createButton": "สร้างสถานที่เก็บสต็อก",
-        "searchPlaceholder": "ค้นหาด้วยคำอธิบายหรือรหัสไซต์...",
+        "searchPlaceholder": "ค้นหาด้วยรหัสไซต์, แผนก, หรือสำนักงานขาย...",
         "search": "ค้นหา",
         "createNewStockLocation": "สร้างสถานที่เก็บสต็อกใหม่",
         "table": {
             "description": "คำอธิบาย",
-            "siteShortCode": "รหัสไซต์",
+            "siteShortCode": "รหัสสถานที่เก็บสต็อก",
+            "saleOffice": "สำนักงานขาย",
+            "department": "แผนก",
             "status": "สถานะ",
             "createdAt": "สร้างเมื่อ",
             "updatedAt": "อัปเดตเมื่อ"

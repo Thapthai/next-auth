@@ -30,7 +30,7 @@ export default function CreateStockLocationForm({
     const [form, setForm] = useState({
         sale_office_id: 0,
         department_id: 0,
-        site_short_code: 0  ,
+        site_short_code: '',
         description: '',
         status: true
     });
@@ -103,7 +103,7 @@ export default function CreateStockLocationForm({
             setForm({
                 sale_office_id: 0,
                 department_id: 0,
-                site_short_code: 0,
+                site_short_code: '',
                 description: '',
                 status: true
             });
@@ -123,7 +123,7 @@ export default function CreateStockLocationForm({
             setForm({
                 sale_office_id: 0,
                 department_id: 0,
-                site_short_code: 0,
+                site_short_code: '',
                 description: '',
                 status: true
             });
@@ -150,32 +150,31 @@ export default function CreateStockLocationForm({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="text-sm text-gray-600">{t('description')}</label>
-                    <Input
-                        value={form.description}
-                        onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        disabled={loading}
-                        placeholder={t('description')}
-                    />
-                </div>
 
-                <div>
+                <div className="space-y-2 md:col-span-2">
                     <label className="text-sm text-gray-600">{t('site_short_code')}</label>
                     <Input
                         value={form.site_short_code}
-                        onChange={(e) => setForm({ ...form, site_short_code: parseInt(e.target.value) || 0 })}
+                        onChange={(e) => setForm({ ...form, site_short_code: e.target.value })}
                         disabled={loading}
                         placeholder={t('site_short_code')}
+                        required
+                        maxLength={50}
                     />
+                    <div className="text-xs text-gray-500">
+                        {form.site_short_code.length}/50 ตัวอักษร
+                    </div>
                 </div>
 
-                <div>
+
+
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <Select
                         value={form.sale_office_id.toString()}
                         onValueChange={handleSaleOfficeChange}
                         disabled={loading}
+                        required
                     >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder={t('selectSaleOffice')} />
@@ -183,14 +182,14 @@ export default function CreateStockLocationForm({
                         <SelectContent className="w-full">
                             {saleOfficeData.map((office) => (
                                 <SelectItem key={office.id} value={office.id.toString()}>
-                                    {office.site_office_name_th} - {office.site_office_name_en}
+                                    {office.name_th} - {office.name_en}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
 
-                <div>
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('department')}</label>
                     <Select
                         value={form.department_id.toString()}
@@ -224,21 +223,21 @@ export default function CreateStockLocationForm({
                     </Select>
                 </div>
 
-                <div className="flex items-center justify-between md:col-span-2">
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">
-                            {t('status')}
-                        </span>
-                        <Switch
-                            checked={form.status}
-                            onCheckedChange={(checked) => setForm({ ...form, status: checked })}
-                            disabled={loading}
-                        />
-                        <span className="text-sm text-gray-600">
-                            {form.status ? t('active') : t('inactive')}
-                        </span>
+                <div className="space-y-2 md:col-span-2">
+                    <label className="text-sm text-gray-600">{t('description')}</label>
+                    <Input
+                        value={form.description}
+                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        disabled={loading}
+                        placeholder={t('description')}
+                        required
+                        maxLength={100}
+                    />
+                    <div className="text-xs text-gray-500">
+                        {form.description.length}/100 ตัวอักษร
                     </div>
                 </div>
+
             </div>
 
             <div className="mt-4 flex justify-end gap-2">

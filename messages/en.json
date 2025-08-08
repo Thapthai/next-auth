@@ -327,7 +327,9 @@
         "sitePathTooLong": "Site path must not exceed 50 characters",
         "labSiteCodeTooLong": "Lab site code must not exceed 50 characters",
         "departmentCodeExistsInSaleOffice": "Department code already exists in this sale office",
-        "createNewDepartment": "Create New Department"
+        "createNewDepartment": "Create New Department",
+        "saleOffice": "Sale Office",
+        "department": "Department"
     },
     "permission": {
         "headerTopic": "Permission Management",
@@ -896,7 +898,7 @@
     "StockLocations": {
         "title": "Stock Locations Management",
         "createButton": "Create Stock Location",
-        "searchPlaceholder": "Search by description or site code...",
+        "searchPlaceholder": "Search by site code, department, or sale office...",
         "search": "Search",
         "createNewStockLocation": "Create New Stock Location",
         "table": {

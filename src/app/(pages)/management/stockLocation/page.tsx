@@ -183,11 +183,10 @@ export default function StockLocationsPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>{t('table.description')}</TableHead>
                                         <TableHead>{t('table.siteShortCode')}</TableHead>
+                                        <TableHead>{t('table.saleOffice')}</TableHead>
+                                        <TableHead>{t('table.department')}</TableHead>
                                         <TableHead>{t('table.status')}</TableHead>
-                                        <TableHead>{t('table.createdAt')}</TableHead>
-                                        <TableHead>{t('table.updatedAt')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -209,9 +208,10 @@ export default function StockLocationsPage() {
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                             <TableCell className="font-medium">
-                                                {stockLocation.description}
+                                                {stockLocation.site_short_code}
                                             </TableCell>
-                                            <TableCell>{stockLocation.site_short_code}</TableCell>
+                                            <TableCell>{stockLocation.sale_office.name_th} - {stockLocation.sale_office.name_en}</TableCell>
+                                            <TableCell>{stockLocation.department.department_code} - {stockLocation.department.name_th}</TableCell>
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${stockLocation.status
                                                     ? 'bg-green-100 text-green-800'
@@ -220,12 +220,7 @@ export default function StockLocationsPage() {
                                                     {stockLocation.status ? t('active') : t('inactive')}
                                                 </span>
                                             </TableCell>
-                                            <TableCell>
-                                                {stockLocation.create_at ? new Date(stockLocation.create_at).toLocaleDateString('th-TH') : '-'}
-                                            </TableCell>
-                                            <TableCell>
-                                                {stockLocation.update_at ? new Date(stockLocation.update_at).toLocaleDateString('th-TH') : '-'}
-                                            </TableCell>
+
                                         </TableRow>
                                     ))}
                                 </TableBody>
