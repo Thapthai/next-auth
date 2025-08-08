@@ -69,6 +69,8 @@ export default function SaleOfficePage() {
         setKeyword("");
         setCurrentPage(1); // รีเซ็ตกลับไปหน้า 1
         loadSaleOffices("", 1); // ส่ง page = 1 โดยตรง
+        setSelectedOffice(null);
+        setIsCreateFormVisible(false);
     };
 
     const handleGoToDepartment = async (id: number) => {
@@ -271,7 +273,7 @@ export default function SaleOfficePage() {
                                         className="w-8 h-8 p-0"
                                     >
                                         <IconChevronLeftPipe className="w-4 h-4" />
-                                   
+
                                     </Button>
 
                                     {/* Previous page */}

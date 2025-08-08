@@ -29,61 +29,29 @@ export default function CreateStockLocationForm({
     const t = useTranslations('StockLocations');
     const [form, setForm] = useState({
         sale_office_id: 0,
-        department_id: 0,
         site_short_code: '',
         description: '',
         status: true
     });
     const [loading, setLoading] = useState(false);
-    const [filteredDepartments, setFilteredDepartments] = useState<any[]>([]);
-    const [loadingDepartments, setLoadingDepartments] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Fetch departments by sale office
-    const fetchDepartmentsBySaleOffice = async (saleOfficeId: number) => {
-        if (saleOfficeId === 0) {
-            setFilteredDepartments([]);
-            return;
-        }
 
-        setLoadingDepartments(true);
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/sale-offices?saleOfficeId=${saleOfficeId}`);
-            if (res.ok) {
-                const data = await res.json();
-                setFilteredDepartments(data.items || data || []);
-            } else {
-                setFilteredDepartments([]);
-            }
-        } catch (error) {
-            console.error('Error fetching departments:', error);
-            setFilteredDepartments([]);
-        } finally {
-            setLoadingDepartments(false);
-        }
-    };
 
     // Handle sale office change
     const handleSaleOfficeChange = (value: string) => {
         const saleOfficeId = parseInt(value) || 0;
         setForm({
             ...form,
-            sale_office_id: saleOfficeId,
-            department_id: 0 // Reset department when office changes
+            sale_office_id: saleOfficeId
         });
-        fetchDepartmentsBySaleOffice(saleOfficeId);
     };
 
-    // Initialize filtered departments on component mount
-    useEffect(() => {
-        if (form.sale_office_id > 0) {
-            fetchDepartmentsBySaleOffice(form.sale_office_id);
-        } else {
-            setFilteredDepartments([]);
-        }
-    }, []);
+
 
     const handleSubmit = async () => {
         setLoading(true);
+        setError(null);
         if (onStart) onStart();
 
         try {
@@ -96,22 +64,40 @@ export default function CreateStockLocationForm({
             });
 
             if (!res.ok) {
-                throw new Error('Failed to create stock location');
+                const errorData = await res.json();
+                let errorMessage = t('createError');
+
+                if (res.status === 409 || res.status === 400) {
+                    if (errorData.message && Array.isArray(errorData.message)) {
+                        const translatedMessages = errorData.message.map((msg: string) => {
+                            switch (msg) {
+                                case 'Site short code already exists in this sale office': return t('siteShortCodeExists');
+                                case 'Site short code must not exceed 50 characters': return t('siteShortCodeTooLong');
+                                case 'Description must not exceed 200 characters': return t('descriptionTooLong');
+                                default: return msg;
+                            }
+                        });
+                        errorMessage = translatedMessages.join(', ');
+                    } else {
+                        errorMessage = errorData.message || t('createError');
+                    }
+                }
+
+                throw new Error(errorMessage);
             }
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
             setForm({
                 sale_office_id: 0,
-                department_id: 0,
                 site_short_code: '',
                 description: '',
                 status: true
             });
-            setFilteredDepartments([]);
             onSuccess();
             onClose();
         } catch (err) {
             console.error('Create stock location error:', err);
+            setError(err instanceof Error ? err.message : t('createError'));
             if (onError) onError();
         } finally {
             setLoading(false);
@@ -122,12 +108,10 @@ export default function CreateStockLocationForm({
         if (!loading) {
             setForm({
                 sale_office_id: 0,
-                department_id: 0,
                 site_short_code: '',
                 description: '',
                 status: true
             });
-            setFilteredDepartments([]);
             onClose();
         }
     };
@@ -148,10 +132,14 @@ export default function CreateStockLocationForm({
                     <IconX className="w-4 h-4" />
                 </Button>
             </div>
-
+            {error && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm text-red-600">{error}</p>
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('site_short_code')}</label>
                     <Input
                         value={form.site_short_code}
@@ -182,46 +170,14 @@ export default function CreateStockLocationForm({
                         <SelectContent className="w-full">
                             {saleOfficeData.map((office) => (
                                 <SelectItem key={office.id} value={office.id.toString()}>
-                                    {office.name_th} - {office.name_en}
+                                    {office.sale_office_code} - {office.name_th} - {office.name_en}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-sm text-gray-600">{t('department')}</label>
-                    <Select
-                        value={form.department_id.toString()}
-                        onValueChange={(value) => setForm({ ...form, department_id: parseInt(value) || 0 })}
-                        disabled={loading || loadingDepartments || form.sale_office_id === 0}
-                    >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder={
-                                form.sale_office_id === 0
-                                    ? t('selectSaleOfficeFirst')
-                                    : loadingDepartments
-                                        ? t('loading')
-                                        : t('selectDepartment')
-                            } />
-                        </SelectTrigger>
-                        <SelectContent className="w-full">
-                            {filteredDepartments.length > 0 ? (
-                                filteredDepartments.map((dept) => (
-                                    <SelectItem key={dept.id} value={dept.id.toString()}>
-                                        {dept.department_code} - {dept.name_th}
-                                    </SelectItem>
-                                ))
-                            ) : (
-                                form.sale_office_id > 0 && !loadingDepartments && (
-                                    <SelectItem value="0" disabled>
-                                        {t('noDepartmentsFound')}
-                                    </SelectItem>
-                                )
-                            )}
-                        </SelectContent>
-                    </Select>
-                </div>
+
 
                 <div className="space-y-2 md:col-span-2">
                     <label className="text-sm text-gray-600">{t('description')}</label>
@@ -230,7 +186,6 @@ export default function CreateStockLocationForm({
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
                         disabled={loading}
                         placeholder={t('description')}
-                        required
                         maxLength={100}
                     />
                     <div className="text-xs text-gray-500">
@@ -239,6 +194,8 @@ export default function CreateStockLocationForm({
                 </div>
 
             </div>
+
+
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="outline" onClick={handleClose} disabled={loading}>

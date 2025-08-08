@@ -1,6 +1,5 @@
 export interface StockLocation {
     id: number;
-    department_id: number;
     sale_office_id: number;
     site_short_code: string;
     description: string | null;
@@ -8,19 +7,14 @@ export interface StockLocation {
     create_at: Date;
     update_at: Date;
 
-    department: {
-        department_code: string;
-        name_th: string;
-        name_en: string;
-    };
     sale_office: {
         name_th: string;
         name_en: string;
+        sale_office_code: string;
     };
 }
 
 export interface CreateStockLocationData {
-    department_id: number;
     sale_office_id: number;
     site_short_code: string;
     description?: string;
@@ -28,7 +22,6 @@ export interface CreateStockLocationData {
 }
 
 export interface UpdateStockLocationData {
-    department_id?: number;
     sale_office_id?: number;
     site_short_code?: string;
     description?: string | null;
