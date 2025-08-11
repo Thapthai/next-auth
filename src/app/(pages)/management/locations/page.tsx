@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
@@ -13,47 +12,45 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight, IconChevronLeftPipe, IconChevronRightPipe, IconCaretRightFilled } from "@tabler/icons-react";
-import { StockLocation } from "@/types/stockLocation";
+import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight, IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
+import { Location } from "@/types/location";
 import { Input } from "@/components/ui/input";
 import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import StockLocationDetail from "./StockLocationDetail";
-import CreateStockLocationForm from "./CreateStockLocationForm";
+import LocationDetail from "./LocationDetail";
+import CreateLocationForm from "./CreateLocationForm";
 
-export default function StockLocationsPage() {
-    const t = useTranslations("StockLocations");
-    const router = useRouter();
+export default function LocationsPage() {
+    const t = useTranslations("Locations");
 
-    const [stockLocations, setStockLocations] = useState<StockLocation[]>([]);
+    const [locations, setLocations] = useState<Location[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedStockLocation, setSelectedStockLocation] = useState<StockLocation | null>(null);
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
-    const [totalStockLocations, setTotalStockLocations] = useState(0);
+    const [totalLocations, setTotalLocations] = useState(0);
     const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
-    const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
+    const [stockLocationData, setStockLocationData] = useState<any[]>([]);
     const [loadingOptions, setLoadingOptions] = useState(false);
-    const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>('');
-    const [navigatingToId, setNavigatingToId] = useState<number | null>(null);
+    const [selectedStockLocationId, setSelectedStockLocationId] = useState<string>('');
 
-    const fetchStockLocations = async (keyword = "", page = currentPage, saleOfficeId = selectedSaleOfficeId) => {
+    const fetchLocations = async (keyword = "", page = currentPage, stockLocationId = selectedStockLocationId) => {
         setLoading(true);
         try {
-            let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`;
-            if (saleOfficeId) {
-                url += `&sale_office_id=${saleOfficeId}`;
+            let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/locations/pagination-with-search?page=${page}&pageSize=${itemsPerPage}&keyword=${keyword}`;
+            if (stockLocationId) {
+                url += `&stock_location_id=${stockLocationId}`;
             }
             const res = await fetch(url);
-            if (!res.ok) throw new Error("Failed to fetch stock locations");
+            if (!res.ok) throw new Error("Failed to fetch locations");
             const data = await res.json();
-            setStockLocations(data.data || []);
+            setLocations(data.data || []);
             setTotalPages(data.totalPages || 1);
-            setTotalStockLocations(data.total || 0);
+            setTotalLocations(data.total || 0);
         } catch (error) {
             setError(error instanceof Error ? error.message : "An error occurred");
         } finally {
@@ -64,11 +61,11 @@ export default function StockLocationsPage() {
     const fetchOptions = async () => {
         setLoadingOptions(true);
         try {
-            const saleOfficeRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`);
+            const stockLocationRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`);
 
-            if (saleOfficeRes.ok) {
-                const saleOfficeData = await saleOfficeRes.json();
-                setSaleOfficeData(saleOfficeData.data || []);
+            if (stockLocationRes.ok) {
+                const stockLocationData = await stockLocationRes.json();
+                setStockLocationData(stockLocationData.data || []);
             }
         } catch (error) {
             console.error("Failed to fetch options:", error);
@@ -77,27 +74,28 @@ export default function StockLocationsPage() {
         }
     };
 
+
     useEffect(() => {
         fetchOptions();
     }, []);
 
     useEffect(() => {
-        fetchStockLocations(keyword, currentPage, selectedSaleOfficeId);
-    }, [currentPage, keyword, selectedSaleOfficeId]);
+        fetchLocations(keyword, currentPage, selectedStockLocationId);
+    }, [currentPage, keyword, selectedStockLocationId]);
 
 
-    const handleCreateStockLocation = () => {
+    const handleCreateLocation = () => {
         setIsCreateFormVisible(true);
-        setSelectedStockLocation(null); // ปิดฟอร์ม detail
+        setSelectedLocation(null); // ปิดฟอร์ม detail
     };
 
     const handleReset = () => {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
-        setSelectedSaleOfficeId('');
-        fetchStockLocations('', 1, '');
-        setSelectedStockLocation(null);
+        setSelectedStockLocationId('');
+        fetchLocations('', 1, '');
+        setSelectedLocation(null);
         setIsCreateFormVisible(false);
     };
 
@@ -105,7 +103,7 @@ export default function StockLocationsPage() {
         e.preventDefault();
         setCurrentPage(1);
         setKeyword(input);
-        fetchStockLocations(input, 1, selectedSaleOfficeId);
+        fetchLocations(input, 1, selectedStockLocationId);
     };
 
     const handlePageChange = (page: number): void => {
@@ -138,24 +136,14 @@ export default function StockLocationsPage() {
     };
 
 
-    const handleStockLocationUpdated = () => {
-        setSelectedStockLocation(null);
-        fetchStockLocations(keyword, currentPage, selectedSaleOfficeId);
+    const handleLocationUpdated = () => {
+        setSelectedLocation(null);
+        fetchLocations(keyword, currentPage, selectedStockLocationId);
     };
 
-    const handleSaleOfficeChange = (value: string) => {
-        setSelectedSaleOfficeId(value);
+    const handleStockLocationChange = (value: string) => {
+        setSelectedStockLocationId(value);
         setCurrentPage(1);
-    };
-
-    const handleGoToLocation = async (id: number) => {
-        setNavigatingToId(id);
-        try {
-            router.push(`/management/stockLocation/${id}/location`);
-        } finally {
-            // Loading จะหยุดเมื่อ component unmount หรือ navigate เสร็จ
-            setTimeout(() => setNavigatingToId(null), 1000);
-        }
     };
 
 
@@ -170,19 +158,19 @@ export default function StockLocationsPage() {
                         {error && <p className="text-red-500">{error}</p>}
 
                         <div className="flex flex-col gap-2 md:flex-row">
+
                             <Select
-                                value={selectedSaleOfficeId}
-                                onValueChange={handleSaleOfficeChange}
+                                value={selectedStockLocationId}
+                                onValueChange={handleStockLocationChange}
                                 disabled={loadingOptions}
                             >
-                                <SelectTrigger className="w-full ">
-                                    <SelectValue placeholder={t('selectSaleOfficeFilter')} />
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder={t('selectStockLocationFilter')} />
                                 </SelectTrigger>
                                 <SelectContent>
-
-                                    {saleOfficeData.map((saleOffice) => (
-                                        <SelectItem key={saleOffice.id} value={saleOffice.id.toString()}>
-                                            {saleOffice.sale_office_code} - {saleOffice.name_th} - {saleOffice.name_en}
+                                    {stockLocationData.map((stockLocation) => (
+                                        <SelectItem key={stockLocation.id} value={stockLocation.id.toString()}>
+                                            {stockLocation.site_short_code} - {stockLocation.description || '-'} ({stockLocation.sale_office.sale_office_code})
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -220,31 +208,31 @@ export default function StockLocationsPage() {
                                     <span>กำลังโหลดข้อมูล...</span>
                                 </div>
                             </div>
-                        ) : stockLocations.length > 0 ? (
+                        ) : locations.length > 0 ? (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
                                         <TableHead>{t('table.siteShortCode')}</TableHead>
+                                        <TableHead>{t('table.stockLocation')}</TableHead>
                                         <TableHead>{t('table.saleOffice')}</TableHead>
                                         <TableHead>{t('table.description')}</TableHead>
                                         <TableHead>{t('table.status')}</TableHead>
-                                        <TableHead></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {stockLocations.map((stockLocation, index) => (
-                                        <TableRow key={stockLocation.id}>
+                                    {locations.map((location, index) => (
+                                        <TableRow key={location.id}>
                                             <TableCell className="w-10">
                                                 <label className="flex items-center space-x-2 cursor-pointer">
                                                     <input
                                                         type="radio"
-                                                        name="selectedStockLocation"
-                                                        value={stockLocation.id}
-                                                        checked={selectedStockLocation?.id === stockLocation.id}
+                                                        name="selectedLocation"
+                                                        value={location.id}
+                                                        checked={selectedLocation?.id === location.id}
                                                         onChange={() => {
-                                                            setSelectedStockLocation(stockLocation);
+                                                            setSelectedLocation(location);
                                                             setIsCreateFormVisible(false);
                                                         }}
                                                     />
@@ -252,32 +240,18 @@ export default function StockLocationsPage() {
                                             </TableCell>
                                             <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                             <TableCell className="font-medium">
-                                                {stockLocation.site_short_code}
+                                                {location.site_short_code}
                                             </TableCell>
-                                            <TableCell>{stockLocation.sale_office.sale_office_code} - {stockLocation.sale_office.name_th} - {stockLocation.sale_office.name_en}</TableCell>
-                                            <TableCell>{stockLocation.description || '-'}</TableCell>
+                                            <TableCell>{location.stock_location.site_short_code} - {location.stock_location.description || '-'}</TableCell>
+                                            <TableCell>{location.stock_location.sale_office.sale_office_code} - {location.stock_location.sale_office.name_th} - {location.stock_location.sale_office.name_en}</TableCell>
+                                            <TableCell>{location.description || '-'}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${stockLocation.status
+                                                <span className={`px-2 py-1 rounded-full text-xs ${location.status
                                                     ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {stockLocation.status ? t('active') : t('inactive')}
+                                                    {location.status ? t('active') : t('inactive')}
                                                 </span>
-                                            </TableCell>
-                                            <TableCell className="w-10">
-                                                <Button
-                                                    variant="ghost"
-                                                    onClick={() => handleGoToLocation(stockLocation.id)}
-                                                    className="transition-all duration-200 hover:bg-gray-100"
-                                                    disabled={navigatingToId === stockLocation.id}
-                                                    title={t('goToLocations')}
-                                                >
-                                                    {navigatingToId === stockLocation.id ? (
-                                                        <IconReload className="animate-spin w-4 h-4" />
-                                                    ) : (
-                                                        <IconCaretRightFilled />
-                                                    )}
-                                                </Button>
                                             </TableCell>
 
                                         </TableRow>
@@ -297,7 +271,7 @@ export default function StockLocationsPage() {
                         {!error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    {t('pagination.showing')} {(currentPage - 1) * itemsPerPage + 1} {t('pagination.to')} {Math.min(currentPage * itemsPerPage, totalStockLocations)} {t('pagination.of')} {totalStockLocations} {t('pagination.results')}
+                                    {t('pagination.showing')} {(currentPage - 1) * itemsPerPage + 1} {t('pagination.to')} {Math.min(currentPage * itemsPerPage, totalLocations)} {t('pagination.of')} {totalLocations} {t('pagination.results')}
                                 </div>
                                 <div className="flex items-center space-x-1">
                                     {/* First page */}
@@ -361,7 +335,7 @@ export default function StockLocationsPage() {
                         )}
                         <Button
                             type="button"
-                            onClick={handleCreateStockLocation}
+                            onClick={handleCreateLocation}
                             variant="outline"
                             size="icon"
                             className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
@@ -370,27 +344,27 @@ export default function StockLocationsPage() {
                             <IconPlus className="w-4 h-4" />
                         </Button>
 
-                        {selectedStockLocation && !isCreateFormVisible && (
-                            <StockLocationDetail
-                                stockLocation={selectedStockLocation}
+                        {selectedLocation && !isCreateFormVisible && (
+                            <LocationDetail
+                                location={selectedLocation}
                                 isVisible={true}
-                                saleOfficeData={saleOfficeData}
-                                onClose={() => setSelectedStockLocation(null)}
-                                onSuccess={handleStockLocationUpdated}
+                                stockLocationData={stockLocationData}
+                                onClose={() => setSelectedLocation(null)}
+                                onSuccess={handleLocationUpdated}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}
                             />
                         )}
 
-                        {isCreateFormVisible && !selectedStockLocation && (
-                            <CreateStockLocationForm
+                        {isCreateFormVisible && !selectedLocation && (
+                            <CreateLocationForm
                                 isVisible={true}
-                                saleOfficeData={saleOfficeData}
+                                stockLocationData={stockLocationData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
                                     setIsCreateFormVisible(false);
-                                    fetchStockLocations(keyword, currentPage, selectedSaleOfficeId);
+                                    fetchLocations(keyword, currentPage, selectedStockLocationId);
                                 }}
                                 onStart={() => setIsCreating(true)}
                                 onError={() => setIsCreating(false)}

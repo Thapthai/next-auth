@@ -242,6 +242,12 @@ export const data = {
           permission: [1, 2],
         },
         {
+          title: "locations",
+          url: "/management/locations",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
           title: "sapSale",
           url: "/management/sapSale",
           icon: IconDashboard,
@@ -289,7 +295,7 @@ export const data = {
           icon: IconDashboard,
           permission: [1, 2],
         },
-      
+
       ]
     },
     {
