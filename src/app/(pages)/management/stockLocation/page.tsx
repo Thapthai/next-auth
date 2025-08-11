@@ -169,7 +169,8 @@ export default function StockLocationsPage() {
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         {error && <p className="text-red-500">{error}</p>}
 
-                        <div className="flex flex-col gap-2 md:flex-row">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-sm text-gray-600">{t('filterBySaleOffice')}</label>
                             <Select
                                 value={selectedSaleOfficeId}
                                 onValueChange={handleSaleOfficeChange}

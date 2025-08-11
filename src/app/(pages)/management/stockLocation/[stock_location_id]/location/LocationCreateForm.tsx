@@ -152,17 +152,17 @@ export default function CreateLocationForm({
                             {form.site_short_code.length}/50 ตัวอักษร
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="space-y-2 md:col-span-2">
                         <label className="text-sm text-gray-600">{t('description')}</label>
                         <Input
                             value={form.description}
                             onChange={(e) => setForm({ ...form, description: e.target.value })}
                             disabled={loading}
                             placeholder={t('description')}
-                            maxLength={200}
+                            maxLength={100}
                         />
                         <div className="text-xs text-gray-500">
-                            {form.description.length}/200 ตัวอักษร
+                            {form.description.length}/100 ตัวอักษร
                         </div>
                     </div>
                 </div>

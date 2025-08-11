@@ -189,10 +189,10 @@ export default function LocationDetailForm({
                             onChange={(e) => setForm({ ...form, description: e.target.value })}
                             disabled={loading || deleteLoading}
                             placeholder={t('description')}
-                            maxLength={200}
+                            maxLength={100}
                         />
                         <div className="text-xs text-gray-500">
-                            {form.description.length}/200 ตัวอักษร
+                            {form.description.length}/100 ตัวอักษร
                         </div>
                     </div>
                     <div className="flex items-center gap-2">

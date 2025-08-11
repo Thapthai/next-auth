@@ -35,8 +35,11 @@ export default function LocationsPage() {
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [stockLocationData, setStockLocationData] = useState<any[]>([]);
+    const [saleOfficeData, setSaleOfficeData] = useState<any[]>([]);
     const [loadingOptions, setLoadingOptions] = useState(false);
+    const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>('');
     const [selectedStockLocationId, setSelectedStockLocationId] = useState<string>('');
+    const [filteredStockLocations, setFilteredStockLocations] = useState<any[]>([]);
 
     const fetchLocations = async (keyword = "", page = currentPage, stockLocationId = selectedStockLocationId) => {
         setLoading(true);
@@ -61,8 +64,15 @@ export default function LocationsPage() {
     const fetchOptions = async () => {
         setLoadingOptions(true);
         try {
-            const stockLocationRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`);
+            // Fetch sale offices
+            const saleOfficeRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`);
+            if (saleOfficeRes.ok) {
+                const saleOfficeData = await saleOfficeRes.json();
+                setSaleOfficeData(saleOfficeData.data || []);
+            }
 
+            // Fetch all stock locations
+            const stockLocationRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`);
             if (stockLocationRes.ok) {
                 const stockLocationData = await stockLocationRes.json();
                 setStockLocationData(stockLocationData.data || []);
@@ -83,6 +93,20 @@ export default function LocationsPage() {
         fetchLocations(keyword, currentPage, selectedStockLocationId);
     }, [currentPage, keyword, selectedStockLocationId]);
 
+    // Filter stock locations based on selected sale office
+    useEffect(() => {
+        if (selectedSaleOfficeId) {
+            const filtered = stockLocationData.filter(
+                stockLocation => stockLocation.sale_office_id === parseInt(selectedSaleOfficeId)
+            );
+            setFilteredStockLocations(filtered);
+        } else {
+            setFilteredStockLocations([]);
+        }
+        // Reset stock location selection when sale office changes
+        setSelectedStockLocationId('');
+    }, [selectedSaleOfficeId, stockLocationData]);
+
 
     const handleCreateLocation = () => {
         setIsCreateFormVisible(true);
@@ -93,6 +117,7 @@ export default function LocationsPage() {
         setInput('');
         setCurrentPage(1);
         setKeyword('');
+        setSelectedSaleOfficeId('');
         setSelectedStockLocationId('');
         fetchLocations('', 1, '');
         setSelectedLocation(null);
@@ -141,6 +166,11 @@ export default function LocationsPage() {
         fetchLocations(keyword, currentPage, selectedStockLocationId);
     };
 
+    const handleSaleOfficeChange = (value: string) => {
+        setSelectedSaleOfficeId(value);
+        setCurrentPage(1);
+    };
+
     const handleStockLocationChange = (value: string) => {
         setSelectedStockLocationId(value);
         setCurrentPage(1);
@@ -157,24 +187,57 @@ export default function LocationsPage() {
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         {error && <p className="text-red-500">{error}</p>}
 
-                        <div className="flex flex-col gap-2 md:flex-row">
+                        {/* Cascading Filters */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Sale Office Filter */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm text-gray-600">{t('filterBySaleOffice')}</label>
+                                <Select
+                                    value={selectedSaleOfficeId}
+                                    onValueChange={handleSaleOfficeChange}
+                                    disabled={loadingOptions}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder={t('selectSaleOfficeFilter')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {/* <SelectItem value="">{t('allSaleOffices')}</SelectItem> */}
+                                        {saleOfficeData.map((saleOffice) => (
+                                            <SelectItem key={saleOffice.id} value={saleOffice.id.toString()}>
+                                                {saleOffice.sale_office_code} - {saleOffice.name_th} - {saleOffice.name_en}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                            <Select
-                                value={selectedStockLocationId}
-                                onValueChange={handleStockLocationChange}
-                                disabled={loadingOptions}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={t('selectStockLocationFilter')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {stockLocationData.map((stockLocation) => (
-                                        <SelectItem key={stockLocation.id} value={stockLocation.id.toString()}>
-                                            {stockLocation.site_short_code} - {stockLocation.description || '-'} ({stockLocation.sale_office.sale_office_code})
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {/* Stock Location Filter */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm text-gray-600">{t('filterByStockLocation')}</label>
+                                <Select
+                                    value={selectedStockLocationId}
+                                    onValueChange={handleStockLocationChange}
+                                    disabled={loadingOptions || !selectedSaleOfficeId || filteredStockLocations.length === 0}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder={
+                                            !selectedSaleOfficeId
+                                                ? t('selectSaleOfficeFirst')
+                                                : filteredStockLocations.length === 0
+                                                    ? t('noStockLocationsFound')
+                                                    : t('selectStockLocationFilter')
+                                        } />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {/* <SelectItem value="">{t('allStockLocations')}</SelectItem> */}
+                                        {filteredStockLocations.map((stockLocation) => (
+                                            <SelectItem key={stockLocation.id} value={stockLocation.id.toString()}>
+                                                {stockLocation.site_short_code} - {stockLocation.description || '-'}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         <form onSubmit={handleSearch} className="flex gap-2 mb-4">
@@ -348,7 +411,7 @@ export default function LocationsPage() {
                             <LocationDetail
                                 location={selectedLocation}
                                 isVisible={true}
-                                stockLocationData={stockLocationData}
+                                stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
                                 onClose={() => setSelectedLocation(null)}
                                 onSuccess={handleLocationUpdated}
                                 onStart={() => setIsCreating(true)}
@@ -359,7 +422,7 @@ export default function LocationsPage() {
                         {isCreateFormVisible && !selectedLocation && (
                             <CreateLocationForm
                                 isVisible={true}
-                                stockLocationData={stockLocationData}
+                                stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);
