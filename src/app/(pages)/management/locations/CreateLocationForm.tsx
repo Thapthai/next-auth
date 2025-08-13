@@ -13,6 +13,8 @@ interface CreateLocationFormProps {
     isVisible: boolean;
     stockLocationData: any[];
     saleOfficeData: any[];
+    selectedSaleOfficeId_search: string;
+    selectedStockLocationId_search: string;
     onClose: () => void;
     onSuccess: () => void;
     onStart?: () => void;
@@ -23,6 +25,8 @@ export default function CreateLocationForm({
     isVisible,
     stockLocationData,
     saleOfficeData,
+    selectedSaleOfficeId_search,
+    selectedStockLocationId_search,
     onClose,
     onSuccess,
     onStart,
@@ -30,7 +34,7 @@ export default function CreateLocationForm({
 }: CreateLocationFormProps) {
     const t = useTranslations('Locations');
     const [form, setForm] = useState({
-        stock_location_id: 0,
+        stock_location_id: selectedStockLocationId_search,
         site_short_code: '',
         name_th: '',
         name_en: '',
@@ -46,7 +50,7 @@ export default function CreateLocationForm({
     const [saleOfficeKeyword, setSaleOfficeKeyword] = useState('');
     const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
     const [saleOfficeItemsPerPage] = useState(10);
-    const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>('');
+    const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>(selectedSaleOfficeId_search);
 
     // Stock Location states  
     const [filteredStockLocations, setFilteredStockLocations] = useState<any[]>([]);
@@ -70,7 +74,7 @@ export default function CreateLocationForm({
             setFilteredStockLocations([]);
         }
         // Reset stock location selection when sale office changes
-        setForm(prev => ({ ...prev, stock_location_id: 0 }));
+        setForm(prev => ({ ...prev, stock_location_id: selectedStockLocationId_search }));
     }, [selectedSaleOfficeId]);
 
     // Fetch sale office options with pagination and search
@@ -141,7 +145,7 @@ export default function CreateLocationForm({
         setSelectedSaleOfficeId(value);
         setForm(prev => ({
             ...prev,
-            stock_location_id: 0 // Reset stock location when sale office changes
+            stock_location_id: selectedStockLocationId_search // Reset stock location when sale office changes
         }));
     };
 
@@ -149,7 +153,7 @@ export default function CreateLocationForm({
         const stockLocationId = parseInt(value) || 0;
         setForm(prev => ({
             ...prev,
-            stock_location_id: stockLocationId
+            stock_location_id: stockLocationId.toString()
         }));
     };
 
@@ -208,7 +212,7 @@ export default function CreateLocationForm({
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
             setForm({
-                stock_location_id: 0,
+                stock_location_id: selectedStockLocationId_search,
                 site_short_code: '',
                 name_th: '',
                 name_en: '',
@@ -229,7 +233,7 @@ export default function CreateLocationForm({
     const handleClose = () => {
         if (!loading) {
             setForm({
-                stock_location_id: 0,
+                stock_location_id: selectedStockLocationId_search,
                 site_short_code: '',
                 name_th: '',
                 name_en: '',
@@ -299,7 +303,7 @@ export default function CreateLocationForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('stockLocation')}</label>
                     <PaginatedSelect
-                        value={form.stock_location_id > 0 ? form.stock_location_id.toString() : ''}
+                        value={form.stock_location_id}
                         placeholder={
                             !selectedSaleOfficeId
                                 ? t('selectSaleOfficeFirst')

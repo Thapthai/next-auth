@@ -510,6 +510,8 @@ export default function LocationsPage() {
                                 isVisible={true}
                                 stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
                                 saleOfficeData={saleOfficeData}
+                                selectedSaleOfficeId_search={selectedSaleOfficeId}
+                                selectedStockLocationId_search={selectedStockLocationId}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);

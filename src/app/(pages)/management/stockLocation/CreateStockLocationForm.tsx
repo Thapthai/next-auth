@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { PaginatedSelect } from "@/components/ui/paginated-select";
 
 interface CreateStockLocationFormProps {
+    selectedSaleOfficeId: string;
     isVisible: boolean;
     saleOfficeData: any[];
     onClose: () => void;
@@ -17,6 +18,7 @@ interface CreateStockLocationFormProps {
 }
 
 export default function CreateStockLocationForm({
+    selectedSaleOfficeId,
     isVisible,
     saleOfficeData,
     onClose,
@@ -42,7 +44,7 @@ export default function CreateStockLocationForm({
     const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
     const [saleOfficeItemsPerPage] = useState(10);
 
-
+    console.log("selectedSaleOfficeId", selectedSaleOfficeId);
 
     // Fetch sale office options with pagination and search
     const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
@@ -224,7 +226,7 @@ export default function CreateStockLocationForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
+                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : selectedSaleOfficeId}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}
