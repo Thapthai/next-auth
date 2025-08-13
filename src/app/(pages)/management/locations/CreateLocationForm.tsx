@@ -47,6 +47,7 @@ export default function CreateLocationForm({
     const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
     const [saleOfficeItemsPerPage] = useState(10);
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>(selectedSaleOfficeId_search);
+    const [saleOfficeOptions, setSaleOfficeOptions] = useState<any[]>([]);
 
     // Stock Location states  
     const [filteredStockLocations, setFilteredStockLocations] = useState<any[]>([]);
@@ -55,12 +56,11 @@ export default function CreateLocationForm({
     const [stockLocationKeyword, setStockLocationKeyword] = useState('');
     const [hasMoreStockLocations, setHasMoreStockLocations] = useState(true);
     const [stockLocationItemsPerPage] = useState(10);
-    const [stockLocationId, setStockLocationId] = useState<string>(selectedStockLocationId_search);
+
 
     useEffect(() => {
         if (isVisible) {
-            // Sale office data already available from props
-            setHasMoreSaleOffices(false); // Since we're using props, no more data to load
+            fetchSaleOffices(1, '', true);
         }
     }, [isVisible]);
 
@@ -76,12 +76,55 @@ export default function CreateLocationForm({
             setFilteredStockLocations([]);
         }
         // Reset stock location selection when sale office changes
-        setForm(prev => ({ ...prev, stock_location_id: selectedStockLocationId_search }));
+        setForm(prev => ({ ...prev, stock_location_id: '' }));
     }, [selectedSaleOfficeId]);
 
     // Fetch sale office options with pagination and search
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
+        setLoadingSaleOffice(true);
+        try {
+            const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
+            if (reset || page === 1) {
+                let nextOptions = Array.isArray(data?.data) ? data.data : [];
+                // Ensure current selectedSaleOfficeId appears in options
+                if (selectedSaleOfficeId) {
+                    const selectedIdNum = parseInt(selectedSaleOfficeId);
+                    if (selectedIdNum && !nextOptions.some((o: any) => o.id === selectedIdNum)) {
+                        const fromProp = (saleOfficeData || []).find((o: any) => o.id === selectedIdNum);
+                        if (fromProp) {
+                            nextOptions = [fromProp, ...nextOptions];
+                        } else {
+                            try {
+                                const selRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices/${selectedIdNum}`);
+                                if (selRes.ok) {
+                                    const selItem = await selRes.json();
+                                    if (selItem) nextOptions = [selItem, ...nextOptions];
+                                }
+                            } catch {}
+                        }
+                    }
+                }
+                setSaleOfficeOptions(nextOptions);
+            } else {
+                // Append new data and filter duplicates
+                const existingIds = new Set(saleOfficeOptions.map((item: any) => item.id));
+                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                setSaleOfficeOptions(prev => [...prev, ...newData]);
+            }
 
+            setHasMoreSaleOffices(page < (data.totalPages || 1));
+        } catch (error) {
+            console.error('Error fetching sale offices:', error);
+            if (reset || page === 1) {
+                setSaleOfficeOptions([]);
+            }
+        } finally {
+            setLoadingSaleOffice(false);
+        }
+    };
     const fetchStockLocations = async (page = 1, keyword = '', reset = false, saleOfficeId = selectedSaleOfficeId) => {
         setLoadingStockLocation(true);
         try {
@@ -93,7 +136,19 @@ export default function CreateLocationForm({
             const data = await response.json();
 
             if (reset || page === 1) {
-                setFilteredStockLocations(data.data || []);
+                let nextOptions = Array.isArray(data?.data) ? data.data : [];
+                // Ensure current selected stock_location_id appears in options
+                const selectedStockId = parseInt(String(form.stock_location_id)) || 0;
+                if (selectedStockId && !nextOptions.some((o: any) => o.id === selectedStockId)) {
+                    try {
+                        const selRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/${selectedStockId}`);
+                        if (selRes.ok) {
+                            const selItem = await selRes.json();
+                            if (selItem) nextOptions = [selItem, ...nextOptions];
+                        }
+                    } catch {}
+                }
+                setFilteredStockLocations(nextOptions || []);
             } else {
                 // Append new data and filter duplicates
                 const existingIds = new Set(filteredStockLocations.map((item: any) => item.id));
@@ -127,7 +182,10 @@ export default function CreateLocationForm({
     };
 
     const formatSaleOfficeOptions = () => {
-        return saleOfficeData.map((office: any) => ({
+
+        const dataToUse = saleOfficeOptions.length > 0 ? saleOfficeOptions : saleOfficeData;
+
+        return dataToUse.map((office: any) => ({
             id: office.id,
             value: office.id.toString(),
             label: `${office.sale_office_code} - ${office.name_th} - ${office.name_en}`
@@ -147,30 +205,40 @@ export default function CreateLocationForm({
         setSelectedSaleOfficeId(value);
         setForm(prev => ({
             ...prev,
-            stock_location_id: selectedStockLocationId_search // Reset stock location when sale office changes
+            stock_location_id: '' // Reset stock location when sale office changes
         }));
+
+        // If cleared, fetch all sale offices without filter
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+        }
     };
 
     const handleStockLocationChange = (value: string) => {
-        const stockLocationId = parseInt(value) || 0;
+        if (!value) {
+            setForm(prev => ({ ...prev, stock_location_id: '' }));
+            // refresh options for current sale office when cleared
+            if (selectedSaleOfficeId) fetchStockLocations(1, '', true, selectedSaleOfficeId);
+            return;
+        }
+        const stockLocationIdNum = parseInt(value) || 0;
         setForm(prev => ({
             ...prev,
-            stock_location_id: stockLocationId.toString()
+            stock_location_id: stockLocationIdNum.toString()
         }));
     };
 
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        // For now, we'll use the existing saleOfficeData
-        // In future, we might want to implement actual API search
+        fetchSaleOffices(1, keyword || '', true);
     };
 
     const handleLoadMoreSaleOffices = () => {
         if (hasMoreSaleOffices && !loadingSaleOffice) {
             const nextPage = saleOfficePage + 1;
             setSaleOfficePage(nextPage);
-
+            fetchSaleOffices(nextPage, saleOfficeKeyword, false);
         }
     };
 
@@ -186,7 +254,7 @@ export default function CreateLocationForm({
         }
     }, [selectedStockLocationId_search]);
 
-    console.log("selectedStockLocationId_search", stockLocationId);
+
 
     const handleSubmit = async () => {
         setLoading(true);

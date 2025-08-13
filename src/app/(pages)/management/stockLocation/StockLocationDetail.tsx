@@ -11,7 +11,7 @@ import { StockLocation } from "@/types/stockLocation";
 interface StockLocationDetailProps {
     stockLocation: StockLocation;
     isVisible: boolean;
-    saleOfficeData: any[];
+    // saleOfficeData: any[];
     onClose: () => void;
     onSuccess: () => void;
     onStart?: () => void;
@@ -21,7 +21,6 @@ interface StockLocationDetailProps {
 export default function StockLocationDetail({
     stockLocation,
     isVisible,
-    saleOfficeData,
     onClose,
     onSuccess,
     onStart,
@@ -58,13 +57,12 @@ export default function StockLocationDetail({
         }
     }, [stockLocation]);
 
-
     useEffect(() => {
         if (isVisible) {
             fetchSaleOffices(1, '', true);
         }
     }, [isVisible]);
-    
+
 
     // Fetch sale office options with pagination and search
     const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
@@ -75,11 +73,23 @@ export default function StockLocationDetail({
             const data = await response.json();
 
             if (reset || page === 1) {
-                setSaleOfficeOptions(data.data || []);
+                const incoming = Array.isArray(data?.data) ? data.data : [];
+                let nextOptions = incoming;
+                const selectedId = stockLocation?.sale_office_id;
+                if (selectedId && !nextOptions.some((o: any) => o.id === selectedId)) {
+                    const preselected = {
+                        id: selectedId,
+                        sale_office_code: stockLocation?.sale_office?.sale_office_code ?? '',
+                        name_th: stockLocation?.sale_office?.name_th ?? '',
+                        name_en: stockLocation?.sale_office?.name_en ?? ''
+                    };
+                    nextOptions = [preselected, ...nextOptions];
+                }
+                setSaleOfficeOptions(nextOptions);
             } else {
-                // Append new data and filter duplicates
+                const incoming = Array.isArray(data?.data) ? data.data : [];
                 const existingIds = new Set(saleOfficeOptions.map((item: any) => item.id));
-                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                const newData = incoming.filter((item: any) => !existingIds.has(item.id));
                 setSaleOfficeOptions(prev => [...prev, ...newData]);
             }
 
@@ -97,7 +107,7 @@ export default function StockLocationDetail({
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        fetchSaleOffices(1, keyword, true);
+        fetchSaleOffices(1, keyword || '', true);
     };
 
     const handleLoadMoreSaleOffices = () => {
@@ -109,10 +119,7 @@ export default function StockLocationDetail({
     };
 
     const formatSaleOfficeOptions = () => {
-        // ใช้ saleOfficeOptions หากมีข้อมูล ไม่งั้นใช้ saleOfficeData prop เก่า
-        const dataToUse = saleOfficeOptions.length > 0 ? saleOfficeOptions : saleOfficeData;
-
-        return dataToUse.map((office: any) => ({
+        return saleOfficeOptions.map((office: any) => ({
             id: office.id,
             value: office.id.toString(),
             label: `${office.sale_office_code} - ${office.name_th} - ${office.name_en}`
@@ -228,7 +235,7 @@ export default function StockLocationDetail({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id.toString()}
+                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}

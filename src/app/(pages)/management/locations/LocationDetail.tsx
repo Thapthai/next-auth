@@ -60,12 +60,13 @@ export default function LocationDetail({
     const [hasMoreStockLocations, setHasMoreStockLocations] = useState(true);
     const [stockLocationItemsPerPage] = useState(10);
 
+
     useEffect(() => {
         if (location) {
 
             setForm({
                 sale_office_id: location.stock_location.sale_office.id,
-                stock_location_id: location.stock_location_id || 0,
+                stock_location_id: location.stock_location_id,
                 site_short_code: location.site_short_code?.toString() || '',
                 name_th: location.name_th || '',
                 name_en: location.name_en || '',
@@ -111,6 +112,7 @@ export default function LocationDetail({
         } else {
             setStockLocationOptions([]);
         }
+        // Don't reset stock_location_id automatically - let user changes handle it
     }, [selectedSaleOfficeId]);
 
     // Fetch sale office options with pagination and search
@@ -145,7 +147,7 @@ export default function LocationDetail({
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        fetchSaleOffices(1, keyword, true);
+        fetchSaleOffices(1, keyword || '', true);
     };
 
     const handleLoadMoreSaleOffices = () => {
@@ -167,8 +169,6 @@ export default function LocationDetail({
         }));
     };
 
-
-
     const handleSaleOfficeChange = (value: string) => {
         const saleOfficeId = parseInt(value) || 0;
         setSelectedSaleOfficeId(value);
@@ -186,7 +186,6 @@ export default function LocationDetail({
     };
 
 
-
     // Fetch stock location options with pagination and search
     const fetchStockLocations = async (page = 1, keyword = '', reset = false, saleOfficeId = selectedSaleOfficeId) => {
         setLoadingStockLocations(true);
@@ -199,25 +198,26 @@ export default function LocationDetail({
             const data = await response.json();
 
             if (reset || page === 1) {
-                setStockLocationOptions(data.data || []);
-
-                // If we have a selected stock location ID, make sure it's in the options
-                if (form.stock_location_id > 0 && data.data) {
-                    const hasSelectedLocation = data.data.some((item: any) => item.id === form.stock_location_id);
-                    if (!hasSelectedLocation) {
-                        // Use stockLocationData prop as fallback first
-                        const selectedFromProp = stockLocationData.find(sl => sl.id === form.stock_location_id);
-                        if (selectedFromProp) {
-                            setStockLocationOptions(prev => [selectedFromProp, ...prev]);
+                let nextOptions = Array.isArray(data?.data) ? data.data : [];
+                // Ensure current selected stock_location_id appears in options
+                const selectedStockId = parseInt(String(form.stock_location_id)) || 0;
+                if (selectedStockId && !nextOptions.some((o: any) => o.id === selectedStockId)) {
+                    try {
+                        const selRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/${selectedStockId}`);
+                        if (selRes.ok) {
+                            const selItem = await selRes.json();
+                            if (selItem) nextOptions = [selItem, ...nextOptions];
                         }
-                    }
+                    } catch { }
                 }
+                setStockLocationOptions(nextOptions || []);
             } else {
                 // Append new data and filter duplicates
                 const existingIds = new Set(stockLocationOptions.map((item: any) => item.id));
                 const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
                 setStockLocationOptions(prev => [...prev, ...newData]);
             }
+
 
             setHasMoreStockLocations(page < (data.totalPages || 1));
         } catch (error) {
@@ -257,7 +257,17 @@ export default function LocationDetail({
 
     // Handle stock location change
     const handleStockLocationChange = (value: string) => {
-        const stockLocationId = parseInt(value) || 0;
+        if (!value || value === '') {
+            setForm({
+                ...form,
+                stock_location_id: 0,
+            });
+            if (selectedSaleOfficeId) {
+                fetchStockLocations(1, '', true, selectedSaleOfficeId);
+            }
+            return;
+        }
+        const stockLocationId = parseInt(value);
         setForm({
             ...form,
             stock_location_id: stockLocationId,
@@ -284,7 +294,6 @@ export default function LocationDetail({
                         name_th: form.name_th,
                         site_short_code: form.site_short_code,
                         status: form.status,
-
                     }
                 ),
             });
@@ -330,6 +339,7 @@ export default function LocationDetail({
     };
 
     if (!isVisible) return null;
+
 
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">

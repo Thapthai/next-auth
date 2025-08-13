@@ -46,15 +46,6 @@ export default function CreateStockLocationForm({
     const [saleOfficeItemsPerPage] = useState(10);
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>(selectedSaleOfficeId_search);
 
-
-    // useEffect(() => {
-    //     setSelectedSaleOfficeId(selectedSaleOfficeId_search);
-    // }, [selectedSaleOfficeId_search]);
-
-
-    // console.log("selectedSaleOfficeId", selectedSaleOfficeId);
-
-
     // Fetch sale office options with pagination and search
     const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
         setLoadingOptions(true);
@@ -86,8 +77,7 @@ export default function CreateStockLocationForm({
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        setSelectedSaleOfficeId(keyword);
-        fetchSaleOffices(1, keyword, true);
+        fetchSaleOffices(1, keyword || '', true);
     };
 
     const handleLoadMoreSaleOffices = () => {
@@ -99,7 +89,7 @@ export default function CreateStockLocationForm({
     };
 
     const formatSaleOfficeOptions = () => {
-        // ใช้ saleOfficeOptions หากมีข้อมูล ไม่งั้นใช้ saleOfficeData prop เก่า
+
         const dataToUse = saleOfficeOptions.length > 0 ? saleOfficeOptions : saleOfficeData;
 
         return dataToUse.map((office: any) => ({
@@ -125,11 +115,6 @@ export default function CreateStockLocationForm({
         }
     };
 
-    useEffect(() => {
-        if (isVisible) {
-            fetchSaleOffices(1, '', true,);
-        }
-    }, [isVisible]);
 
     // Sync selectedSaleOfficeId and form when prop selectedSaleOfficeId_search changes
     useEffect(() => {
@@ -148,8 +133,6 @@ export default function CreateStockLocationForm({
         setLoading(true);
         setError(null);
         if (onStart) onStart();
-
-        console.log("form", form);
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`, {
@@ -279,7 +262,7 @@ export default function CreateStockLocationForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id.toString()}
+                        value={selectedSaleOfficeId}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}

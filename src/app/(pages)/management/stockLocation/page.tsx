@@ -89,7 +89,7 @@ export default function StockLocationsPage() {
             console.error('Error fetching sale offices:', error);
             if (reset || page === 1) {
                 setSaleOfficeData([]);
-            } setSelectedSaleOfficeId
+            }
         } finally {
             setLoadingOptions(false);
         }
@@ -200,9 +200,10 @@ export default function StockLocationsPage() {
             router.push(`/management/stockLocation/${id}/location`);
         } finally {
             // Loading จะหยุดเมื่อ component unmount หรือ navigate เสร็จ
-            setTimeout(() => setNavigatingToId(null), 1000);
+            setTimeout(() => setNavigatingToId(null), 10);
         }
     };
+
 
     return (
         <div>
@@ -419,7 +420,6 @@ export default function StockLocationsPage() {
                             <StockLocationDetail
                                 stockLocation={selectedStockLocation}
                                 isVisible={true}
-                                saleOfficeData={saleOfficeData}
                                 onClose={() => setSelectedStockLocation(null)}
                                 onSuccess={handleStockLocationUpdated}
                                 onStart={() => setIsCreating(true)}
