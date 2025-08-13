@@ -177,6 +177,12 @@ export default function LocationDetail({
             sale_office_id: saleOfficeId,
             stock_location_id: 0 // Reset stock location when sale office changes
         });
+
+        // If cleared, fetch all sale offices and clear stock locations
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+            setStockLocationOptions([]);
+        }
     };
 
 

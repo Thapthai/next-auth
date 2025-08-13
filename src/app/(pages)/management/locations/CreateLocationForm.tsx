@@ -5,13 +5,10 @@ import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { PaginatedSelect } from "@/components/ui/paginated-select";
 
 interface CreateLocationFormProps {
     isVisible: boolean;
-    stockLocationData: any[];
     saleOfficeData: any[];
     selectedSaleOfficeId_search: string;
     selectedStockLocationId_search: string;
@@ -23,7 +20,6 @@ interface CreateLocationFormProps {
 
 export default function CreateLocationForm({
     isVisible,
-    stockLocationData,
     saleOfficeData,
     selectedSaleOfficeId_search,
     selectedStockLocationId_search,
@@ -59,6 +55,7 @@ export default function CreateLocationForm({
     const [stockLocationKeyword, setStockLocationKeyword] = useState('');
     const [hasMoreStockLocations, setHasMoreStockLocations] = useState(true);
     const [stockLocationItemsPerPage] = useState(10);
+    const [stockLocationId, setStockLocationId] = useState<string>(selectedStockLocationId_search);
 
     useEffect(() => {
         if (isVisible) {
@@ -66,6 +63,11 @@ export default function CreateLocationForm({
             setHasMoreSaleOffices(false); // Since we're using props, no more data to load
         }
     }, [isVisible]);
+
+    // Sync selected sale office when prop changes
+    useEffect(() => {
+        setSelectedSaleOfficeId(selectedSaleOfficeId_search || '');
+    }, [selectedSaleOfficeId_search]);
 
     useEffect(() => {
         if (selectedSaleOfficeId) {
@@ -168,10 +170,23 @@ export default function CreateLocationForm({
         if (hasMoreSaleOffices && !loadingSaleOffice) {
             const nextPage = saleOfficePage + 1;
             setSaleOfficePage(nextPage);
-            // For now, using existing saleOfficeData
-            // In future, we might want to implement actual pagination
+
         }
     };
+
+
+    // Set initial stock_location_id from selectedStockLocationId_search เพื่อกันการเปลี่ยน stock location ที่ไม่ต้องการ
+    useEffect(() => {
+        if (selectedStockLocationId_search && selectedStockLocationId_search !== '0') {
+            const stockLocationId = parseInt(selectedStockLocationId_search) || 0;
+            setForm(prev => ({
+                ...prev,
+                stock_location_id: stockLocationId.toString()
+            }));
+        }
+    }, [selectedStockLocationId_search]);
+
+    console.log("selectedStockLocationId_search", stockLocationId);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -299,6 +314,8 @@ export default function CreateLocationForm({
                 {/* Sale Office Filter */}
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('filterBySaleOffice')}</label>
+
+                    {/* ใช้เพื่อค้นหา Stock Location ไม่ได้นำไปส่ง form เพื่อกันการเปลี่ยน sale office ที่ไม่ต้องการ */}
                     <PaginatedSelect
                         value={selectedSaleOfficeId}
                         placeholder={t('selectSaleOfficeFilter')}

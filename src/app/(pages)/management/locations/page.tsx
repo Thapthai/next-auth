@@ -187,11 +187,21 @@ export default function LocationsPage() {
     const handleSaleOfficeChange = (value: string) => {
         setSelectedSaleOfficeId(value);
         setCurrentPage(1);
+
+        // If cleared, fetch all sale offices without filter
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+        }
     };
 
     const handleStockLocationChange = (value: string) => {
         setSelectedStockLocationId(value);
         setCurrentPage(1);
+
+        // If cleared, fetch all stock locations without filter
+        if (!value || value === '') {
+            fetchStockLocations(1, '', true, selectedSaleOfficeId);
+        }
     };
 
     const handleSaleOfficeSearch = (keyword: string) => {
@@ -234,7 +244,7 @@ export default function LocationsPage() {
         return filteredStockLocations.map((stockLocation: any) => ({
             id: stockLocation.id,
             value: stockLocation.id.toString(),
-            label: `${stockLocation.site_short_code} - ${stockLocation.description || '-'}`
+            label: `${stockLocation.site_short_code} - ${stockLocation.name_th} - ${stockLocation.name_en}`
         }));
     };
 
@@ -508,7 +518,6 @@ export default function LocationsPage() {
                         {isCreateFormVisible && !selectedLocation && (
                             <CreateLocationForm
                                 isVisible={true}
-                                stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
                                 saleOfficeData={saleOfficeData}
                                 selectedSaleOfficeId_search={selectedSaleOfficeId}
                                 selectedStockLocationId_search={selectedStockLocationId}

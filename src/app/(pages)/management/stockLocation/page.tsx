@@ -89,7 +89,7 @@ export default function StockLocationsPage() {
             console.error('Error fetching sale offices:', error);
             if (reset || page === 1) {
                 setSaleOfficeData([]);
-            }
+            } setSelectedSaleOfficeId
         } finally {
             setLoadingOptions(false);
         }
@@ -181,11 +181,17 @@ export default function StockLocationsPage() {
     const handleStockLocationUpdated = () => {
         setSelectedStockLocation(null);
         fetchStockLocations(keyword, currentPage, selectedSaleOfficeId);
+
     };
 
     const handleSaleOfficeChange = (value: string) => {
         setSelectedSaleOfficeId(value);
         setCurrentPage(1);
+
+        // If cleared, fetch all sale offices without filter
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+        }
     };
 
     const handleGoToLocation = async (id: number) => {
@@ -197,7 +203,6 @@ export default function StockLocationsPage() {
             setTimeout(() => setNavigatingToId(null), 1000);
         }
     };
-
 
     return (
         <div>

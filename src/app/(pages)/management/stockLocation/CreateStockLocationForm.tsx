@@ -35,6 +35,7 @@ export default function CreateStockLocationForm({
         description: '',
         status: true
     });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [saleOfficeOptions, setSaleOfficeOptions] = useState<any[]>([]);
@@ -46,9 +47,16 @@ export default function CreateStockLocationForm({
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>(selectedSaleOfficeId_search);
 
 
+    // useEffect(() => {
+    //     setSelectedSaleOfficeId(selectedSaleOfficeId_search);
+    // }, [selectedSaleOfficeId_search]);
+
+
+    // console.log("selectedSaleOfficeId", selectedSaleOfficeId);
+
 
     // Fetch sale office options with pagination and search
-    const fetchSaleOffices = async (page = 1, keyword = '', reset = false, selectedSaleOfficeId = '') => {
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
         setLoadingOptions(true);
         try {
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`;
@@ -78,14 +86,15 @@ export default function CreateStockLocationForm({
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        fetchSaleOffices(1, keyword, true, selectedSaleOfficeId);
+        setSelectedSaleOfficeId(keyword);
+        fetchSaleOffices(1, keyword, true);
     };
 
     const handleLoadMoreSaleOffices = () => {
         if (hasMoreSaleOffices && !loadingOptions) {
             const nextPage = saleOfficePage + 1;
             setSaleOfficePage(nextPage);
-            fetchSaleOffices(nextPage, saleOfficeKeyword, false, selectedSaleOfficeId);
+            fetchSaleOffices(nextPage, saleOfficeKeyword, false);
         }
     };
 
@@ -104,28 +113,36 @@ export default function CreateStockLocationForm({
     const handleSaleOfficeChange = (value: string) => {
         const saleOfficeId = parseInt(value) || 0;
         setSelectedSaleOfficeId(value);
+
         setForm({
             ...form,
             sale_office_id: saleOfficeId
         });
+
+        // If cleared, fetch all sale offices without filter
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+        }
     };
 
     useEffect(() => {
         if (isVisible) {
-            fetchSaleOffices(1, '', true, selectedSaleOfficeId);
+            fetchSaleOffices(1, '', true,);
         }
     }, [isVisible]);
 
-    // Set initial sale_office_id from selectedSaleOfficeId_search
+    // Sync selectedSaleOfficeId and form when prop selectedSaleOfficeId_search changes
     useEffect(() => {
-        if (selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0') {
-            const saleOfficeId = parseInt(selectedSaleOfficeId_search) || 0;
-            setForm(prev => ({
-                ...prev,
-                sale_office_id: saleOfficeId
-            }));
-        }
+        const nextId = selectedSaleOfficeId_search || '';
+        setSelectedSaleOfficeId(nextId);
+
+        const parsedId = parseInt(nextId) || 0;
+        setForm(prev => ({
+            ...prev,
+            sale_office_id: parsedId,
+        }));
     }, [selectedSaleOfficeId_search]);
+
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -181,8 +198,8 @@ export default function CreateStockLocationForm({
             }
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
-            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0' 
-                ? parseInt(selectedSaleOfficeId_search) || 0 
+            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0'
+                ? parseInt(selectedSaleOfficeId_search) || 0
                 : 0;
             setForm({
                 sale_office_id: initialSaleOfficeId,
@@ -205,8 +222,8 @@ export default function CreateStockLocationForm({
 
     const handleClose = () => {
         if (!loading) {
-            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0' 
-                ? parseInt(selectedSaleOfficeId_search) || 0 
+            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0'
+                ? parseInt(selectedSaleOfficeId_search) || 0
                 : 0;
             setForm({
                 sale_office_id: initialSaleOfficeId,
@@ -219,6 +236,7 @@ export default function CreateStockLocationForm({
             onClose();
         }
     };
+
 
     if (!isVisible) return null;
 
@@ -261,7 +279,7 @@ export default function CreateStockLocationForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
+                        value={form.sale_office_id.toString()}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}
@@ -271,7 +289,6 @@ export default function CreateStockLocationForm({
                         onSearch={handleSaleOfficeSearch}
                         onLoadMore={handleLoadMoreSaleOffices}
                         className="w-full"
-
                     />
                 </div>
 

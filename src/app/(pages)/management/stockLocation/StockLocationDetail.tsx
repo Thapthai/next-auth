@@ -58,11 +58,13 @@ export default function StockLocationDetail({
         }
     }, [stockLocation]);
 
+
     useEffect(() => {
         if (isVisible) {
             fetchSaleOffices(1, '', true);
         }
     }, [isVisible]);
+    
 
     // Fetch sale office options with pagination and search
     const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
@@ -124,9 +126,12 @@ export default function StockLocationDetail({
             ...form,
             sale_office_id: saleOfficeId,
         });
+
+        // If cleared, fetch all sale offices without filter
+        if (!value || value === '') {
+            fetchSaleOffices(1, '', true);
+        }
     };
-
-
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -223,7 +228,7 @@ export default function StockLocationDetail({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
+                        value={form.sale_office_id.toString()}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}
