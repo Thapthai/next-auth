@@ -944,7 +944,9 @@
         "selectSaleOfficeFirst": "Please select sale office first",
         "noDepartmentsFound": "No departments found",
         "goToLocations": "Go to Locations",
-        "backToStockLocations": "Back"
+        "backToStockLocations": "Back",
+        "nameTh": "Name (Thai)",
+        "nameEn": "Name (English)"
     },
     "Locations": {
         "title": "Locations Management",
@@ -954,6 +956,8 @@
         "createNewLocation": "Create New Location",
         "editLocation": "Edit Location",
         "site_short_code": "Site Short Code",
+        "name_th": "Name (Thai)",
+        "name_en": "Name (English)",
         "description": "Description",
         "stockLocation": "Stock Location",
         "selectStockLocation": "Select Stock Location",
@@ -981,6 +985,8 @@
         "table": {
             "description": "Description",
             "siteShortCode": "Site Code",
+            "nameTh": "Name (Thai)",
+            "nameEn": "Name (English)",
             "stockLocation": "Stock Location",
             "saleOffice": "Sale Office",
             "status": "Status",
@@ -999,7 +1005,10 @@
         "delete": "Delete",
         "deleting": "Deleting...",
         "deleteError": "Error deleting location",
-        "backToStockLocations": "Back"
+        "backToStockLocations": "Back",
+        "nameTh": "Name (Thai)",
+        "nameEn": "Name (English)",
+        "selectSaleOffice": "Select Sale Office"
     },
     "SaleOfficeGroupTypes": {
         "title": "Sale Office Group Types Management",

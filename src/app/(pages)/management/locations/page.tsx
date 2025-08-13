@@ -15,7 +15,7 @@ import {
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight, IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
 import { Location } from "@/types/location";
 import { Input } from "@/components/ui/input";
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PaginatedSelect } from "@/components/ui/paginated-select";
 import LocationDetail from "./LocationDetail";
 import CreateLocationForm from "./CreateLocationForm";
 
@@ -31,7 +31,7 @@ export default function LocationsPage() {
     const [keyword, setKeyword] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [totalLocations, setTotalLocations] = useState(0);
-    const [itemsPerPage] = useState(5); // แสดง 5 รายการต่อหน้า
+    const [itemsPerPage] = useState(5); // กลับไปใช้ 5 รายการต่อหน้า
     const [input, setInput] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [stockLocationData, setStockLocationData] = useState<any[]>([]);
@@ -40,6 +40,15 @@ export default function LocationsPage() {
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>('');
     const [selectedStockLocationId, setSelectedStockLocationId] = useState<string>('');
     const [filteredStockLocations, setFilteredStockLocations] = useState<any[]>([]);
+    const [saleOfficePage, setSaleOfficePage] = useState(1);
+    const [saleOfficeKeyword, setSaleOfficeKeyword] = useState('');
+    const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
+    const [saleOfficeItemsPerPage] = useState(10);
+    const [stockLocationPage, setStockLocationPage] = useState(1);
+    const [stockLocationKeyword, setStockLocationKeyword] = useState('');
+    const [hasMoreStockLocations, setHasMoreStockLocations] = useState(true);
+    const [stockLocationItemsPerPage] = useState(10);
+    const [loadingStockLocationOptions, setLoadingStockLocationOptions] = useState(false);
 
     const fetchLocations = async (keyword = "", page = currentPage, stockLocationId = selectedStockLocationId) => {
         setLoading(true);
@@ -61,51 +70,86 @@ export default function LocationsPage() {
         }
     };
 
-    const fetchOptions = async () => {
+    // Fetch sale office options with pagination and search
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
         setLoadingOptions(true);
         try {
-            // Fetch sale offices
-            const saleOfficeRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`);
-            if (saleOfficeRes.ok) {
-                const saleOfficeData = await saleOfficeRes.json();
-                setSaleOfficeData(saleOfficeData.data || []);
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`
+            );
+            const data = await response.json();
+
+            if (reset || page === 1) {
+                setSaleOfficeData(data.data || []);
+            } else {
+                // Append new data and filter duplicates
+                const existingIds = new Set(saleOfficeData.map((item: any) => item.id));
+                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                setSaleOfficeData(prev => [...prev, ...newData]);
             }
 
-            // Fetch all stock locations
-            const stockLocationRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`);
-            if (stockLocationRes.ok) {
-                const stockLocationData = await stockLocationRes.json();
-                setStockLocationData(stockLocationData.data || []);
-            }
+            setHasMoreSaleOffices(page < (data.totalPages || 1));
         } catch (error) {
-            console.error("Failed to fetch options:", error);
+            console.error('Error fetching sale offices:', error);
+            if (reset || page === 1) {
+                setSaleOfficeData([]);
+            }
         } finally {
             setLoadingOptions(false);
         }
     };
 
+    // Fetch stock location options with pagination and search
+    const fetchStockLocations = async (page = 1, keyword = '', reset = false, saleOfficeId = selectedSaleOfficeId) => {
+        setLoadingStockLocationOptions(true);
+        try {
+            let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations/pagination-with-search?page=${page}&pageSize=${stockLocationItemsPerPage}&keyword=${keyword}`;
+            if (saleOfficeId) {
+                url += `&sale_office_id=${saleOfficeId}`;
+            }
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (reset || page === 1) {
+                setStockLocationData(data.data || []);
+                setFilteredStockLocations(data.data || []);
+            } else {
+                // Append new data and filter duplicates
+                const existingIds = new Set(stockLocationData.map((item: any) => item.id));
+                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                setStockLocationData(prev => [...prev, ...newData]);
+                setFilteredStockLocations(prev => [...prev, ...newData]);
+            }
+
+            setHasMoreStockLocations(page < (data.totalPages || 1));
+        } catch (error) {
+            console.error('Error fetching stock locations:', error);
+            if (reset || page === 1) {
+                setStockLocationData([]);
+                setFilteredStockLocations([]);
+            }
+        } finally {
+            setLoadingStockLocationOptions(false);
+        }
+    };
 
     useEffect(() => {
-        fetchOptions();
+        fetchSaleOffices(1, '', true);
     }, []);
+
+    useEffect(() => {
+        if (selectedSaleOfficeId) {
+            fetchStockLocations(1, '', true, selectedSaleOfficeId);
+        } else {
+            setStockLocationData([]);
+            setFilteredStockLocations([]);
+        }
+        setSelectedStockLocationId('');
+    }, [selectedSaleOfficeId]);
 
     useEffect(() => {
         fetchLocations(keyword, currentPage, selectedStockLocationId);
     }, [currentPage, keyword, selectedStockLocationId]);
-
-    // Filter stock locations based on selected sale office
-    useEffect(() => {
-        if (selectedSaleOfficeId) {
-            const filtered = stockLocationData.filter(
-                stockLocation => stockLocation.sale_office_id === parseInt(selectedSaleOfficeId)
-            );
-            setFilteredStockLocations(filtered);
-        } else {
-            setFilteredStockLocations([]);
-        }
-        // Reset stock location selection when sale office changes
-        setSelectedStockLocationId('');
-    }, [selectedSaleOfficeId, stockLocationData]);
 
 
     const handleCreateLocation = () => {
@@ -119,6 +163,10 @@ export default function LocationsPage() {
         setKeyword('');
         setSelectedSaleOfficeId('');
         setSelectedStockLocationId('');
+        setSaleOfficeKeyword('');
+        setSaleOfficePage(1);
+        setStockLocationKeyword('');
+        setStockLocationPage(1);
         fetchLocations('', 1, '');
         setSelectedLocation(null);
         setIsCreateFormVisible(false);
@@ -129,6 +177,65 @@ export default function LocationsPage() {
         setCurrentPage(1);
         setKeyword(input);
         fetchLocations(input, 1, selectedStockLocationId);
+    };
+
+    const handleLocationUpdated = () => {
+        setSelectedLocation(null);
+        fetchLocations(keyword, currentPage, selectedStockLocationId);
+    };
+
+    const handleSaleOfficeChange = (value: string) => {
+        setSelectedSaleOfficeId(value);
+        setCurrentPage(1);
+    };
+
+    const handleStockLocationChange = (value: string) => {
+        setSelectedStockLocationId(value);
+        setCurrentPage(1);
+    };
+
+    const handleSaleOfficeSearch = (keyword: string) => {
+        setSaleOfficeKeyword(keyword);
+        setSaleOfficePage(1);
+        fetchSaleOffices(1, keyword, true);
+    };
+
+    const handleLoadMoreSaleOffices = () => {
+        if (hasMoreSaleOffices && !loadingOptions) {
+            const nextPage = saleOfficePage + 1;
+            setSaleOfficePage(nextPage);
+            fetchSaleOffices(nextPage, saleOfficeKeyword);
+        }
+    };
+
+    const formatSaleOfficeOptions = () => {
+        return saleOfficeData.map((office: any) => ({
+            id: office.id,
+            value: office.id.toString(),
+            label: `${office.sale_office_code} - ${office.name_th} - ${office.name_en}`
+        }));
+    };
+
+    const handleStockLocationSearch = (keyword: string) => {
+        setStockLocationKeyword(keyword);
+        setStockLocationPage(1);
+        fetchStockLocations(1, keyword, true, selectedSaleOfficeId);
+    };
+
+    const handleLoadMoreStockLocations = () => {
+        if (hasMoreStockLocations && !loadingStockLocationOptions) {
+            const nextPage = stockLocationPage + 1;
+            setStockLocationPage(nextPage);
+            fetchStockLocations(nextPage, stockLocationKeyword, false, selectedSaleOfficeId);
+        }
+    };
+
+    const formatStockLocationOptions = () => {
+        return filteredStockLocations.map((stockLocation: any) => ({
+            id: stockLocation.id,
+            value: stockLocation.id.toString(),
+            label: `${stockLocation.site_short_code} - ${stockLocation.description || '-'}`
+        }));
     };
 
     const handlePageChange = (page: number): void => {
@@ -161,22 +268,6 @@ export default function LocationsPage() {
     };
 
 
-    const handleLocationUpdated = () => {
-        setSelectedLocation(null);
-        fetchLocations(keyword, currentPage, selectedStockLocationId);
-    };
-
-    const handleSaleOfficeChange = (value: string) => {
-        setSelectedSaleOfficeId(value);
-        setCurrentPage(1);
-    };
-
-    const handleStockLocationChange = (value: string) => {
-        setSelectedStockLocationId(value);
-        setCurrentPage(1);
-    };
-
-
     return (
         <div>
 
@@ -187,56 +278,46 @@ export default function LocationsPage() {
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                         {error && <p className="text-red-500">{error}</p>}
 
-                        {/* Cascading Filters */}
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Sale Office Filter */}
+
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm text-gray-600">{t('filterBySaleOffice')}</label>
-                                <Select
+                                <PaginatedSelect
                                     value={selectedSaleOfficeId}
-                                    onValueChange={handleSaleOfficeChange}
+                                    placeholder={t('selectSaleOfficeFilter')}
                                     disabled={loadingOptions}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder={t('selectSaleOfficeFilter')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {/* <SelectItem value="">{t('allSaleOffices')}</SelectItem> */}
-                                        {saleOfficeData.map((saleOffice) => (
-                                            <SelectItem key={saleOffice.id} value={saleOffice.id.toString()}>
-                                                {saleOffice.sale_office_code} - {saleOffice.name_th} - {saleOffice.name_en}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    options={formatSaleOfficeOptions()}
+                                    loading={loadingOptions}
+                                    hasMore={hasMoreSaleOffices}
+                                    onValueChange={handleSaleOfficeChange}
+                                    onSearch={handleSaleOfficeSearch}
+                                    onLoadMore={handleLoadMoreSaleOffices}
+                                    className="w-full"
+                                />
                             </div>
 
                             {/* Stock Location Filter */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm text-gray-600">{t('filterByStockLocation')}</label>
-                                <Select
+                                <PaginatedSelect
                                     value={selectedStockLocationId}
+                                    placeholder={
+                                        !selectedSaleOfficeId
+                                            ? t('selectSaleOfficeFirst')
+                                            : filteredStockLocations.length === 0
+                                                ? t('noStockLocationsFound')
+                                                : t('selectStockLocationFilter')
+                                    }
+                                    disabled={loadingStockLocationOptions || !selectedSaleOfficeId}
+                                    options={formatStockLocationOptions()}
+                                    loading={loadingStockLocationOptions}
+                                    hasMore={hasMoreStockLocations}
                                     onValueChange={handleStockLocationChange}
-                                    disabled={loadingOptions || !selectedSaleOfficeId || filteredStockLocations.length === 0}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder={
-                                            !selectedSaleOfficeId
-                                                ? t('selectSaleOfficeFirst')
-                                                : filteredStockLocations.length === 0
-                                                    ? t('noStockLocationsFound')
-                                                    : t('selectStockLocationFilter')
-                                        } />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {/* <SelectItem value="">{t('allStockLocations')}</SelectItem> */}
-                                        {filteredStockLocations.map((stockLocation) => (
-                                            <SelectItem key={stockLocation.id} value={stockLocation.id.toString()}>
-                                                {stockLocation.site_short_code} - {stockLocation.description || '-'}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    onSearch={handleStockLocationSearch}
+                                    onLoadMore={handleLoadMoreStockLocations}
+                                    className="w-full"
+                                />
                             </div>
                         </div>
 
@@ -278,6 +359,8 @@ export default function LocationsPage() {
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
                                         <TableHead>{t('table.siteShortCode')}</TableHead>
+                                        <TableHead>{t('table.nameTh')}</TableHead>
+                                        <TableHead>{t('table.nameEn')}</TableHead>
                                         <TableHead>{t('table.stockLocation')}</TableHead>
                                         <TableHead>{t('table.saleOffice')}</TableHead>
                                         <TableHead>{t('table.description')}</TableHead>
@@ -305,6 +388,8 @@ export default function LocationsPage() {
                                             <TableCell className="font-medium">
                                                 {location.site_short_code}
                                             </TableCell>
+                                            <TableCell>{location.name_th}</TableCell>
+                                            <TableCell>{location.name_en}</TableCell>
                                             <TableCell>{location.stock_location.site_short_code} - {location.stock_location.description || '-'}</TableCell>
                                             <TableCell>{location.stock_location.sale_office.sale_office_code} - {location.stock_location.sale_office.name_th} - {location.stock_location.sale_office.name_en}</TableCell>
                                             <TableCell>{location.description || '-'}</TableCell>
@@ -412,6 +497,7 @@ export default function LocationsPage() {
                                 location={selectedLocation}
                                 isVisible={true}
                                 stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
+                                saleOfficeData={saleOfficeData}
                                 onClose={() => setSelectedLocation(null)}
                                 onSuccess={handleLocationUpdated}
                                 onStart={() => setIsCreating(true)}
@@ -423,6 +509,7 @@ export default function LocationsPage() {
                             <CreateLocationForm
                                 isVisible={true}
                                 stockLocationData={selectedSaleOfficeId ? filteredStockLocations : stockLocationData}
+                                saleOfficeData={saleOfficeData}
                                 onClose={() => setIsCreateFormVisible(false)}
                                 onSuccess={() => {
                                     setIsCreating(false);

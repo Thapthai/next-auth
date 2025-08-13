@@ -16,9 +16,10 @@ import {
 import { IconPlus, IconReload, IconSearch, IconChevronLeft, IconChevronRight, IconChevronLeftPipe, IconChevronRightPipe, IconCaretRightFilled } from "@tabler/icons-react";
 import { StockLocation } from "@/types/stockLocation";
 import { Input } from "@/components/ui/input";
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import StockLocationDetail from "./StockLocationDetail";
 import CreateStockLocationForm from "./CreateStockLocationForm";
+import { PaginatedSelect } from "@/components/ui/paginated-select";
 
 export default function StockLocationsPage() {
     const t = useTranslations("StockLocations");
@@ -40,6 +41,10 @@ export default function StockLocationsPage() {
     const [loadingOptions, setLoadingOptions] = useState(false);
     const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>('');
     const [navigatingToId, setNavigatingToId] = useState<number | null>(null);
+    const [saleOfficePage, setSaleOfficePage] = useState(1);
+    const [saleOfficeKeyword, setSaleOfficeKeyword] = useState('');
+    const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
+    const [saleOfficeItemsPerPage] = useState(10);
 
     const fetchStockLocations = async (keyword = "", page = currentPage, saleOfficeId = selectedSaleOfficeId) => {
         setLoading(true);
@@ -61,24 +66,59 @@ export default function StockLocationsPage() {
         }
     };
 
-    const fetchOptions = async () => {
+    // Fetch sale office options with pagination and search
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
         setLoadingOptions(true);
         try {
-            const saleOfficeRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices`);
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`
+            );
+            const data = await response.json();
 
-            if (saleOfficeRes.ok) {
-                const saleOfficeData = await saleOfficeRes.json();
-                setSaleOfficeData(saleOfficeData.data || []);
+            if (reset || page === 1) {
+                setSaleOfficeData(data.data || []);
+            } else {
+                // Append new data and filter duplicates
+                const existingIds = new Set(saleOfficeData.map((item: any) => item.id));
+                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                setSaleOfficeData(prev => [...prev, ...newData]);
             }
+
+            setHasMoreSaleOffices(page < (data.totalPages || 1));
         } catch (error) {
-            console.error("Failed to fetch options:", error);
+            console.error('Error fetching sale offices:', error);
+            if (reset || page === 1) {
+                setSaleOfficeData([]);
+            }
         } finally {
             setLoadingOptions(false);
         }
     };
 
+    const handleSaleOfficeSearch = (keyword: string) => {
+        setSaleOfficeKeyword(keyword);
+        setSaleOfficePage(1);
+        fetchSaleOffices(1, keyword, true);
+    };
+
+    const handleLoadMoreSaleOffices = () => {
+        if (hasMoreSaleOffices && !loadingOptions) {
+            const nextPage = saleOfficePage + 1;
+            setSaleOfficePage(nextPage);
+            fetchSaleOffices(nextPage, saleOfficeKeyword);
+        }
+    };
+
+    const formatSaleOfficeOptions = () => {
+        return saleOfficeData.map((office: any) => ({
+            id: office.id,
+            value: office.id.toString(),
+            label: `${office.sale_office_code} - ${office.name_th} - ${office.name_en}`
+        }));
+    };
+
     useEffect(() => {
-        fetchOptions();
+        fetchSaleOffices(1, '', true);
     }, []);
 
     useEffect(() => {
@@ -99,17 +139,6 @@ export default function StockLocationsPage() {
         fetchStockLocations('', 1, '');
         setSelectedStockLocation(null);
         setIsCreateFormVisible(false);
-    };
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        setCurrentPage(1);
-        setKeyword(input);
-        fetchStockLocations(input, 1, selectedSaleOfficeId);
-    };
-
-    const handlePageChange = (page: number): void => {
-        setCurrentPage(page);
     };
 
     // Function to get visible page numbers (current page and neighbors)
@@ -135,6 +164,17 @@ export default function StockLocationsPage() {
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setCurrentPage(1);
+        setKeyword(input);
+        fetchStockLocations(input, 1, selectedSaleOfficeId);
+    };
+
+    const handlePageChange = (page: number): void => {
+        setCurrentPage(page);
     };
 
 
@@ -171,23 +211,18 @@ export default function StockLocationsPage() {
 
                         <div className="flex flex-col gap-2">
                             <label className="text-sm text-gray-600">{t('filterBySaleOffice')}</label>
-                            <Select
+                            <PaginatedSelect
                                 value={selectedSaleOfficeId}
-                                onValueChange={handleSaleOfficeChange}
+                                placeholder={t('selectSaleOfficeFilter')}
                                 disabled={loadingOptions}
-                            >
-                                <SelectTrigger className="w-full ">
-                                    <SelectValue placeholder={t('selectSaleOfficeFilter')} />
-                                </SelectTrigger>
-                                <SelectContent>
-
-                                    {saleOfficeData.map((saleOffice) => (
-                                        <SelectItem key={saleOffice.id} value={saleOffice.id.toString()}>
-                                            {saleOffice.sale_office_code} - {saleOffice.name_th} - {saleOffice.name_en}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                options={formatSaleOfficeOptions()}
+                                loading={loadingOptions}
+                                hasMore={hasMoreSaleOffices}
+                                onValueChange={handleSaleOfficeChange}
+                                onSearch={handleSaleOfficeSearch}
+                                onLoadMore={handleLoadMoreSaleOffices}
+                                className="w-full"
+                            />
                         </div>
 
                         <form onSubmit={handleSearch} className="flex gap-2 mb-4">
@@ -229,6 +264,8 @@ export default function StockLocationsPage() {
                                         <TableHead>#</TableHead>
                                         <TableHead>{t('table.siteShortCode')}</TableHead>
                                         <TableHead>{t('table.saleOffice')}</TableHead>
+                                        <TableHead>{t('table.nameTh')}</TableHead>
+                                        <TableHead>{t('table.nameEn')}</TableHead>
                                         <TableHead>{t('table.description')}</TableHead>
                                         <TableHead>{t('table.status')}</TableHead>
                                         <TableHead></TableHead>
@@ -256,6 +293,8 @@ export default function StockLocationsPage() {
                                                 {stockLocation.site_short_code}
                                             </TableCell>
                                             <TableCell>{stockLocation.sale_office.sale_office_code} - {stockLocation.sale_office.name_th} - {stockLocation.sale_office.name_en}</TableCell>
+                                            <TableCell>{stockLocation.name_th}</TableCell>
+                                            <TableCell>{stockLocation.name_en}</TableCell>
                                             <TableCell>{stockLocation.description || '-'}</TableCell>
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${stockLocation.status

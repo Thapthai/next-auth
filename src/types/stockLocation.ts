@@ -2,6 +2,8 @@ export interface StockLocation {
     id: number;
     sale_office_id: number;
     site_short_code: string;
+    name_th: string;
+    name_en: string;
     description: string | null;
     status: boolean;
     create_at: Date;
@@ -17,6 +19,8 @@ export interface StockLocation {
 export interface CreateStockLocationData {
     sale_office_id: number;
     site_short_code: string;
+    name_th: string;
+    name_en: string;
     description?: string;
     status: boolean;
 }
@@ -24,6 +28,8 @@ export interface CreateStockLocationData {
 export interface UpdateStockLocationData {
     sale_office_id?: number;
     site_short_code?: string;
+    name_th?: string;
+    name_en?: string;
     description?: string | null;
     status?: boolean;
 }

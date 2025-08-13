@@ -932,7 +932,9 @@
             "saleOffice": "สำนักงานขาย",
             "status": "สถานะ",
             "createdAt": "สร้างเมื่อ",
-            "updatedAt": "อัปเดตเมื่อ"
+            "updatedAt": "อัปเดตเมื่อ",
+            "nameTh": "ชื่อ (ไทย)",
+            "nameEn": "ชื่อ (อังกฤษ)"
         },
         "pagination": {
             "showing": "แสดง",
@@ -962,7 +964,9 @@
         "saving": "กำลังบันทึก...",
         "save": "บันทึก",
         "site_short_code": "รหัสไซต์",
-        "editStockLocation": "แก้ไขสถานที่เก็บสต็อก"
+        "editStockLocation": "แก้ไขสถานที่เก็บสต็อก",
+        "nameTh": "ชื่อ (ไทย)",
+        "nameEn": "ชื่อ (อังกฤษ)"
     },
     "Locations": {
         "title": "คลังย่อย พื้นที่จัดเก็บ",
@@ -972,6 +976,8 @@
         "createNewLocation": "สร้างสถานที่ใหม่",
         "editLocation": "แก้ไขสถานที่",
         "site_short_code": "รหัสไซต์",
+        "name_th": "ชื่อ (ไทย)",
+        "name_en": "ชื่อ (อังกฤษ)",
         "description": "คำอธิบาย",
         "stockLocation": "สถานที่เก็บสต็อก",
         "selectStockLocation": "เลือกสถานที่เก็บสต็อก",
@@ -999,6 +1005,8 @@
         "table": {
             "description": "คำอธิบาย",
             "siteShortCode": "รหัสไซต์",
+            "nameTh": "ชื่อ (ไทย)",
+            "nameEn": "ชื่อ (อังกฤษ)",
             "stockLocation": "สถานที่เก็บสต็อก",
             "saleOffice": "สำนักงานขาย",
             "status": "สถานะ",
@@ -1017,7 +1025,10 @@
         "confirmDelete": "คุณแน่ใจหรือไม่ที่จะลบสถานที่นี้?",
         "delete": "ลบ",
         "deleting": "กำลังลบ...",
-        "deleteError": "เกิดข้อผิดพลาดในการลบสถานที่"
+        "deleteError": "เกิดข้อผิดพลาดในการลบสถานที่",
+        "nameTh": "ชื่อ (ไทย)",
+        "nameEn": "ชื่อ (อังกฤษ)",
+        "selectSaleOffice": "เลือกสำนักงานขาย"
     },
     "SaleOfficeGroupTypes": {
         "title": "จัดการประเภทกลุ่มสำนักงานขาย",

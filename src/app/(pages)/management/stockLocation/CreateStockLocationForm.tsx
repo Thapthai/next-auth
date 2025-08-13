@@ -4,10 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import { Material } from "@/types/material";
 import { Input } from "@/components/ui/input";
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { PaginatedSelect } from "@/components/ui/paginated-select";
 
 interface CreateStockLocationFormProps {
     isVisible: boolean;
@@ -30,13 +28,74 @@ export default function CreateStockLocationForm({
     const [form, setForm] = useState({
         sale_office_id: 0,
         site_short_code: '',
+        name_th: '',
+        name_en: '',
         description: '',
         status: true
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [saleOfficeOptions, setSaleOfficeOptions] = useState<any[]>([]);
+    const [loadingOptions, setLoadingOptions] = useState(false);
+    const [saleOfficePage, setSaleOfficePage] = useState(1);
+    const [saleOfficeKeyword, setSaleOfficeKeyword] = useState('');
+    const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
+    const [saleOfficeItemsPerPage] = useState(10);
 
 
+
+    // Fetch sale office options with pagination and search
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
+        setLoadingOptions(true);
+        try {
+            const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (reset || page === 1) {
+                setSaleOfficeOptions(data.data || []);
+            } else {
+                // Append new data and filter duplicates
+                const existingIds = new Set(saleOfficeOptions.map((item: any) => item.id));
+                const newData = (data.data || []).filter((item: any) => !existingIds.has(item.id));
+                setSaleOfficeOptions(prev => [...prev, ...newData]);
+            }
+
+            setHasMoreSaleOffices(page < (data.totalPages || 1));
+        } catch (error) {
+            console.error('Error fetching sale offices:', error);
+            if (reset || page === 1) {
+                setSaleOfficeOptions([]);
+            }
+        } finally {
+            setLoadingOptions(false);
+        }
+    };
+
+    const handleSaleOfficeSearch = (keyword: string) => {
+        setSaleOfficeKeyword(keyword);
+        setSaleOfficePage(1);
+        fetchSaleOffices(1, keyword, true);
+    };
+
+    const handleLoadMoreSaleOffices = () => {
+        if (hasMoreSaleOffices && !loadingOptions) {
+            const nextPage = saleOfficePage + 1;
+            setSaleOfficePage(nextPage);
+            fetchSaleOffices(nextPage, saleOfficeKeyword);
+        }
+    };
+
+    const formatSaleOfficeOptions = () => {
+        // ใช้ saleOfficeOptions หากมีข้อมูล ไม่งั้นใช้ saleOfficeData prop เก่า
+        const dataToUse = saleOfficeOptions.length > 0 ? saleOfficeOptions : saleOfficeData;
+
+        return dataToUse.map((office: any) => ({
+            id: office.id,
+            value: office.id.toString(),
+            label: `${office.sale_office_code} - ${office.name_th} - ${office.name_en}`
+        }));
+    };
 
     // Handle sale office change
     const handleSaleOfficeChange = (value: string) => {
@@ -47,7 +106,11 @@ export default function CreateStockLocationForm({
         });
     };
 
-
+    useEffect(() => {
+        if (isVisible) {
+            fetchSaleOffices(1, '', true);
+        }
+    }, [isVisible]);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -90,6 +153,8 @@ export default function CreateStockLocationForm({
             setForm({
                 sale_office_id: 0,
                 site_short_code: '',
+                name_th: '',
+                name_en: '',
                 description: '',
                 status: true
             });
@@ -109,6 +174,8 @@ export default function CreateStockLocationForm({
             setForm({
                 sale_office_id: 0,
                 site_short_code: '',
+                name_th: '',
+                name_en: '',
                 description: '',
                 status: true
             });
@@ -154,30 +221,52 @@ export default function CreateStockLocationForm({
                     </div>
                 </div>
 
-
-
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
-                    <Select
-                        value={form.sale_office_id.toString()}
+                    <PaginatedSelect
+                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
+                        placeholder={t('selectSaleOffice')}
+                        disabled={loading || loadingOptions}
+                        options={formatSaleOfficeOptions()}
+                        loading={loadingOptions}
+                        hasMore={hasMoreSaleOffices}
                         onValueChange={handleSaleOfficeChange}
-                        disabled={loading}
-                        required
-                    >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder={t('selectSaleOffice')} />
-                        </SelectTrigger>
-                        <SelectContent className="w-full">
-                            {saleOfficeData.map((office) => (
-                                <SelectItem key={office.id} value={office.id.toString()}>
-                                    {office.sale_office_code} - {office.name_th} - {office.name_en}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        onSearch={handleSaleOfficeSearch}
+                        onLoadMore={handleLoadMoreSaleOffices}
+                        className="w-full"
+                    />
                 </div>
 
 
+                <div className="space-y-2">
+                    <label className="text-sm text-gray-600">{t('nameTh')}</label>
+                    <Input
+                        value={form.name_th}
+                        onChange={(e) => setForm({ ...form, name_th: e.target.value })}
+                        disabled={loading}
+                        placeholder={t('nameTh')}
+                        maxLength={50}
+                        required
+                    />
+                    <div className="text-xs text-gray-500">
+                        {form.name_th.length}/50 ตัวอักษร
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm text-gray-600">{t('nameEn')}</label>
+                    <Input
+                        value={form.name_en}
+                        onChange={(e) => setForm({ ...form, name_en: e.target.value })}
+                        disabled={loading}
+                        placeholder={t('nameEn')}
+                        maxLength={50}
+                        required
+                    />
+                    <div className="text-xs text-gray-500">
+                        {form.name_en.length}/50 ตัวอักษร
+                    </div>
+                </div>
 
                 <div className="space-y-2 md:col-span-2">
                     <label className="text-sm text-gray-600">{t('description')}</label>
