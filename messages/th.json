@@ -926,6 +926,11 @@
         "siteShortCodeExists": "รหัสสถานที่เก็บสต็อกนี้มีอยู่แล้วในสำนักงานขายนี้",
         "siteShortCodeTooLong": "รหัสสถานที่เก็บสต็อกต้องไม่เกิน 50 ตัวอักษร",
         "descriptionTooLong": "คำอธิบายต้องไม่เกิน 200 ตัวอักษร",
+        "saleOfficeIdInvalid": "รหัสสำนักงานขายต้องเป็นตัวเลขจำนวนเต็ม",
+        "saleOfficeIdRequired": "จำเป็นต้องเลือกสำนักงานขาย",
+        "siteShortCodeRequired": "จำเป็นต้องระบุรหัสสถานที่เก็บสต็อก",
+        "nameThRequired": "จำเป็นต้องระบุชื่อ (ไทย)",
+        "nameEnRequired": "จำเป็นต้องระบุชื่อ (อังกฤษ)",
         "table": {
             "description": "คำอธิบาย",
             "siteShortCode": "รหัสสถานที่เก็บสต็อก",
@@ -1002,6 +1007,11 @@
         "siteShortCodeExists": "รหัสไซต์นี้มีอยู่แล้วในสถานที่เก็บสต็อกนี้",
         "siteShortCodeTooLong": "รหัสไซต์ต้องไม่เกิน 50 ตัวอักษร",
         "descriptionTooLong": "คำอธิบายต้องไม่เกิน 200 ตัวอักษร",
+        "stockLocationIdInvalid": "รหัสสถานที่เก็บสต็อกต้องเป็นตัวเลขจำนวนเต็ม",
+        "stockLocationIdRequired": "จำเป็นต้องเลือกสถานที่เก็บสต็อก",
+        "siteShortCodeRequired": "จำเป็นต้องระบุรหัสไซต์",
+        "nameThRequired": "จำเป็นต้องระบุชื่อ (ไทย)",
+        "nameEnRequired": "จำเป็นต้องระบุชื่อ (อังกฤษ)",
         "table": {
             "description": "คำอธิบาย",
             "siteShortCode": "รหัสไซต์",

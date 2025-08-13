@@ -184,7 +184,16 @@ export default function CreateLocationForm({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(
+                    {
+                        stock_location_id: parseInt(form.stock_location_id),
+                        description: form.description,
+                        name_en: form.name_en,
+                        name_th: form.name_th,
+                        site_short_code: form.site_short_code,
+                        status: form.status,
+                    }
+                ),
             });
 
             if (!res.ok) {
@@ -198,6 +207,11 @@ export default function CreateLocationForm({
                                 case 'Site short code already exists in this stock location': return t('siteShortCodeExists');
                                 case 'Site short code must not exceed 50 characters': return t('siteShortCodeTooLong');
                                 case 'Description must not exceed 200 characters': return t('descriptionTooLong');
+                                case 'stock_location_id must be an integer number': return t('stockLocationIdInvalid');
+                                case 'stock_location_id should not be empty': return t('stockLocationIdRequired');
+                                case 'site_short_code should not be empty': return t('siteShortCodeRequired');
+                                case 'name_th should not be empty': return t('nameThRequired');
+                                case 'name_en should not be empty': return t('nameEnRequired');
                                 default: return msg;
                             }
                         });
@@ -353,15 +367,13 @@ export default function CreateLocationForm({
                         disabled={loading}
                         placeholder={t('description')}
                         maxLength={100}
+                        required
                     />
                     <div className="text-xs text-gray-500">
                         {form.description.length}/100 ตัวอักษร
                     </div>
                 </div>
-
             </div>
-
-
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="outline" onClick={handleClose} disabled={loading}>

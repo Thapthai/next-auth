@@ -424,7 +424,7 @@ export default function StockLocationsPage() {
 
                         {isCreateFormVisible && !selectedStockLocation && (
                             <CreateStockLocationForm
-                                selectedSaleOfficeId={selectedSaleOfficeId}
+                                selectedSaleOfficeId_search={selectedSaleOfficeId}
                                 isVisible={true}
                                 saleOfficeData={saleOfficeData}
                                 onClose={() => setIsCreateFormVisible(false)}

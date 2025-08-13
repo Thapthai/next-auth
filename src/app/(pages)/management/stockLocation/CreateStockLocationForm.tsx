@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { PaginatedSelect } from "@/components/ui/paginated-select";
 
 interface CreateStockLocationFormProps {
-    selectedSaleOfficeId: string;
+    selectedSaleOfficeId_search: string;
     isVisible: boolean;
     saleOfficeData: any[];
     onClose: () => void;
@@ -18,7 +18,7 @@ interface CreateStockLocationFormProps {
 }
 
 export default function CreateStockLocationForm({
-    selectedSaleOfficeId,
+    selectedSaleOfficeId_search,
     isVisible,
     saleOfficeData,
     onClose,
@@ -43,11 +43,12 @@ export default function CreateStockLocationForm({
     const [saleOfficeKeyword, setSaleOfficeKeyword] = useState('');
     const [hasMoreSaleOffices, setHasMoreSaleOffices] = useState(true);
     const [saleOfficeItemsPerPage] = useState(10);
+    const [selectedSaleOfficeId, setSelectedSaleOfficeId] = useState<string>(selectedSaleOfficeId_search);
 
-    console.log("selectedSaleOfficeId", selectedSaleOfficeId);
+
 
     // Fetch sale office options with pagination and search
-    const fetchSaleOffices = async (page = 1, keyword = '', reset = false) => {
+    const fetchSaleOffices = async (page = 1, keyword = '', reset = false, selectedSaleOfficeId = '') => {
         setLoadingOptions(true);
         try {
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/sale-offices?page=${page}&pageSize=${saleOfficeItemsPerPage}&keyword=${keyword}`;
@@ -77,14 +78,14 @@ export default function CreateStockLocationForm({
     const handleSaleOfficeSearch = (keyword: string) => {
         setSaleOfficeKeyword(keyword);
         setSaleOfficePage(1);
-        fetchSaleOffices(1, keyword, true);
+        fetchSaleOffices(1, keyword, true, selectedSaleOfficeId);
     };
 
     const handleLoadMoreSaleOffices = () => {
         if (hasMoreSaleOffices && !loadingOptions) {
             const nextPage = saleOfficePage + 1;
             setSaleOfficePage(nextPage);
-            fetchSaleOffices(nextPage, saleOfficeKeyword);
+            fetchSaleOffices(nextPage, saleOfficeKeyword, false, selectedSaleOfficeId);
         }
     };
 
@@ -102,6 +103,7 @@ export default function CreateStockLocationForm({
     // Handle sale office change
     const handleSaleOfficeChange = (value: string) => {
         const saleOfficeId = parseInt(value) || 0;
+        setSelectedSaleOfficeId(value);
         setForm({
             ...form,
             sale_office_id: saleOfficeId
@@ -110,14 +112,27 @@ export default function CreateStockLocationForm({
 
     useEffect(() => {
         if (isVisible) {
-            fetchSaleOffices(1, '', true);
+            fetchSaleOffices(1, '', true, selectedSaleOfficeId);
         }
     }, [isVisible]);
+
+    // Set initial sale_office_id from selectedSaleOfficeId_search
+    useEffect(() => {
+        if (selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0') {
+            const saleOfficeId = parseInt(selectedSaleOfficeId_search) || 0;
+            setForm(prev => ({
+                ...prev,
+                sale_office_id: saleOfficeId
+            }));
+        }
+    }, [selectedSaleOfficeId_search]);
 
     const handleSubmit = async () => {
         setLoading(true);
         setError(null);
         if (onStart) onStart();
+
+        console.log("form", form);
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stock-locations`, {
@@ -125,7 +140,16 @@ export default function CreateStockLocationForm({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(
+                    {
+                        sale_office_id: parseInt(form.sale_office_id.toString()),
+                        site_short_code: form.site_short_code,
+                        name_th: form.name_th,
+                        name_en: form.name_en,
+                        description: form.description,
+                        status: form.status,
+                    }
+                ),
             });
 
             if (!res.ok) {
@@ -139,6 +163,11 @@ export default function CreateStockLocationForm({
                                 case 'Site short code already exists in this sale office': return t('siteShortCodeExists');
                                 case 'Site short code must not exceed 50 characters': return t('siteShortCodeTooLong');
                                 case 'Description must not exceed 200 characters': return t('descriptionTooLong');
+                                case 'sale_office_id must be an integer number': return t('saleOfficeIdInvalid');
+                                case 'sale_office_id should not be empty': return t('saleOfficeIdRequired');
+                                case 'site_short_code should not be empty': return t('siteShortCodeRequired');
+                                case 'name_th should not be empty': return t('nameThRequired');
+                                case 'name_en should not be empty': return t('nameEnRequired');
                                 default: return msg;
                             }
                         });
@@ -152,8 +181,11 @@ export default function CreateStockLocationForm({
             }
 
             // สร้างสำเร็จ - รีเซ็ตฟอร์ม
+            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0' 
+                ? parseInt(selectedSaleOfficeId_search) || 0 
+                : 0;
             setForm({
-                sale_office_id: 0,
+                sale_office_id: initialSaleOfficeId,
                 site_short_code: '',
                 name_th: '',
                 name_en: '',
@@ -173,8 +205,11 @@ export default function CreateStockLocationForm({
 
     const handleClose = () => {
         if (!loading) {
+            const initialSaleOfficeId = selectedSaleOfficeId_search && selectedSaleOfficeId_search !== '0' 
+                ? parseInt(selectedSaleOfficeId_search) || 0 
+                : 0;
             setForm({
-                sale_office_id: 0,
+                sale_office_id: initialSaleOfficeId,
                 site_short_code: '',
                 name_th: '',
                 name_en: '',
@@ -226,7 +261,7 @@ export default function CreateStockLocationForm({
                 <div className="space-y-2">
                     <label className="text-sm text-gray-600">{t('saleOffice')}</label>
                     <PaginatedSelect
-                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : selectedSaleOfficeId}
+                        value={form.sale_office_id > 0 ? form.sale_office_id.toString() : ''}
                         placeholder={t('selectSaleOffice')}
                         disabled={loading || loadingOptions}
                         options={formatSaleOfficeOptions()}
@@ -236,6 +271,7 @@ export default function CreateStockLocationForm({
                         onSearch={handleSaleOfficeSearch}
                         onLoadMore={handleLoadMoreSaleOffices}
                         className="w-full"
+
                     />
                 </div>
 
@@ -283,10 +319,7 @@ export default function CreateStockLocationForm({
                         {form.description.length}/100 ตัวอักษร
                     </div>
                 </div>
-
             </div>
-
-
 
             <div className="mt-4 flex justify-end gap-2">
                 <Button variant="outline" onClick={handleClose} disabled={loading}>
