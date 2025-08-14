@@ -84,7 +84,10 @@
         "locations": "คลังย่อยพื้นที่จัดเก็บ",
         "saleOfficeGroupTypes": "ชนิดกลุ่มสาขา",
         "saleOfficeGroups": "กลุ่มสาขา",
-        "factorySaleOffice": "การตั้งค่าโรงซัก ของโรงพยาบาล"
+        "factorySaleOffice": "การตั้งค่าโรงซัก ของโรงพยาบาล",
+        "customerGroups": "กลุ่มลูกค้า",
+        "customers": "ลูกค้า",
+        "paymentTypes": "ประเภทการชำระเงิน"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",

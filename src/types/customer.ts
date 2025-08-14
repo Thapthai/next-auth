@@ -1,0 +1,22 @@
+export type Customer = {
+    id: number;
+    customer_group_id?: number;
+    site_short_code: string;
+    name_th: string;
+    name_en: string;
+    sale_office_id?: number;
+    department_id?: number;
+    payment_type_id?: number;
+    address: string;
+    tel: string;
+    tax_no: string;
+    tax_id: string;
+    tax_id_type: string;
+    remark?: string;
+    email: string;
+    enable_date?: Date;
+    disable_date?: Date;
+    status: boolean;
+    create_at: Date;
+    update_at: Date;
+};

@@ -84,7 +84,10 @@
         "locations": "Location",
         "saleOfficeGroupTypes": "Sale Office Group Types",
         "saleOfficeGroups": "Sale Office Groups",
-        "factorySaleOffice": "Factory Sale Office"
+        "factorySaleOffice": "Factory Sale Office",
+        "customerGroups": "Customer Groups",
+        "customers": "Customers",
+        "paymentTypes": "Payment Types"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
