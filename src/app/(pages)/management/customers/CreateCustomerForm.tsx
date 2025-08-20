@@ -8,6 +8,7 @@ import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { PaginatedSelect } from "@/components/ui/paginated-select";
+import { useTranslations } from "next-intl";
 
 
 interface CreateCustomerFormProps {
@@ -19,6 +20,8 @@ interface CreateCustomerFormProps {
 }
 
 export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onStart, onError }: CreateCustomerFormProps) {
+    const t = useTranslations("Customers.CreateCustomerForm");
+
     const [formData, setFormData] = useState({
         customer_group_id: '',
         site_short_code: '',
@@ -304,12 +307,45 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
         }));
     };
 
+    // Format tax number to 0-0000-00000-00-0 pattern
+    const formatTaxNumber = (value: string) => {
+        // Remove all non-digit characters
+        const digits = value.replace(/\D/g, '');
+
+        // Limit to 13 digits
+        const limitedDigits = digits.slice(0, 13);
+
+        // Apply formatting based on length
+        if (limitedDigits.length === 0) return '';
+        if (limitedDigits.length <= 1) return limitedDigits;
+        if (limitedDigits.length <= 5) return `${limitedDigits[0]}-${limitedDigits.slice(1)}`;
+        if (limitedDigits.length <= 10) return `${limitedDigits[0]}-${limitedDigits.slice(1, 5)}-${limitedDigits.slice(5)}`;
+        if (limitedDigits.length <= 12) return `${limitedDigits[0]}-${limitedDigits.slice(1, 5)}-${limitedDigits.slice(5, 10)}-${limitedDigits.slice(10)}`;
+        return `${limitedDigits[0]}-${limitedDigits.slice(1, 5)}-${limitedDigits.slice(5, 10)}-${limitedDigits.slice(10, 12)}-${limitedDigits.slice(12)}`;
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+
+        // Special handling for tax_no field
+        if (name === 'tax_no') {
+            const formattedValue = formatTaxNumber(value);
+            setFormData(prev => ({
+                ...prev,
+                [name]: formattedValue
+            }));
+        } else if (name === 'tax_id') {
+            const formattedValue = formatTaxNumber(value);
+            setFormData(prev => ({
+                ...prev,
+                [name]: formattedValue
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -319,6 +355,22 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
 
         if (onStart) onStart();
 
+        // Validate tax numbers have exactly 13 digits
+        const taxNoDigits = formData.tax_no.replace(/\D/g, '');
+        const taxIdDigits = formData.tax_id.replace(/\D/g, '');
+
+        if (taxNoDigits.length !== 13) {
+            setError(t('validation.taxNoRequired'));
+            setLoading(false);
+            return;
+        }
+
+        if (taxIdDigits.length !== 13) {
+            setError(t('validation.taxIdRequired'));
+            setLoading(false);
+            return;
+        }
+
         try {
             // Convert empty strings to undefined for optional fields
             const submitData = {
@@ -327,6 +379,8 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                 sale_office_id: formData.sale_office_id ? Number(formData.sale_office_id) : undefined,
                 department_id: formData.department_id ? Number(formData.department_id) : undefined,
                 payment_type_id: formData.payment_type_id ? Number(formData.payment_type_id) : undefined,
+                tax_no: formData.tax_no.replace(/\D/g, ''), // Remove dashes for API
+                tax_id: formData.tax_id.replace(/\D/g, ''), // Remove dashes for API
                 remark: formData.remark || undefined,
             };
 
@@ -341,7 +395,7 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
             if (!res.ok) {
                 const errorData = await res.json();
 
-                let errorMessage = 'เกิดข้อผิดพลาดในการสร้างลูกค้า';
+                let errorMessage = t('errors.createFailed');
 
                 if (res.status === 409 || res.status === 400) {
                     if (errorData.message && Array.isArray(errorData.message)) {
@@ -357,10 +411,10 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                         });
                         errorMessage = translatedMessages.join(', ');
                     } else {
-                        errorMessage = errorData.message || 'เกิดข้อผิดพลาดในการสร้างลูกค้า';
+                        errorMessage = errorData.message || t('errors.createFailed');
                     }
                 } else {
-                    errorMessage = errorData.message || 'เกิดข้อผิดพลาดในการสร้างลูกค้า';
+                    errorMessage = errorData.message || t('errors.createFailed');
                 }
 
                 throw new Error(errorMessage);
@@ -387,7 +441,7 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
             onSuccess();
             onClose();
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการสร้างลูกค้า');
+            setError(err instanceof Error ? err.message : t('errors.createFailed'));
             if (onError) onError();
         } finally {
             setLoading(false);
@@ -423,7 +477,7 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
     return (
         <div className="mt-6 p-4 border rounded shadow bg-white space-y-3">
             <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-800">เพิ่มลูกค้าใหม่</h2>
+                <h2 className="text-lg font-bold text-gray-800">{t('title')}</h2>
                 <Button
                     variant="ghost"
                     size="sm"
@@ -446,71 +500,71 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
 
                     {/* site_short_code */}
                     <div className="space-y-2">
-                        <Label htmlFor="site_short_code" className="text-sm text-gray-600">รหัสไซต์ *</Label>
+                        <Label htmlFor="site_short_code" className="text-sm text-gray-600">{t("labels.siteCode")}</Label>
                         <Input
                             id="site_short_code"
                             name="site_short_code"
                             value={formData.site_short_code}
                             onChange={handleInputChange}
-                            placeholder="ระบุรหัสไซต์"
+                            placeholder={t("placeholders.siteCode")}
                             required
                             disabled={loading}
                             maxLength={50}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.site_short_code.length}/50 ตัวอักษร
+                            {formData.site_short_code.length}/50 {t("validation.maxLength")}
                         </div>
                     </div>
 
                     {/* name_th */}
                     <div className="space-y-2">
-                        <Label htmlFor="name_th" className="text-sm text-gray-600">ชื่อไทย *</Label>
+                        <Label htmlFor="name_th" className="text-sm text-gray-600">{t("labels.nameTh")}</Label>
                         <Input
                             id="name_th"
                             name="name_th"
                             value={formData.name_th}
                             onChange={handleInputChange}
-                            placeholder="ระบุชื่อลูกค้าภาษาไทย"
+                            placeholder={t("placeholders.nameTh")}
                             required
                             disabled={loading}
                             maxLength={100}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.name_th.length}/100 ตัวอักษร
+                            {formData.name_th.length}/100 {t("validation.maxLength")}
                         </div>
                     </div>
 
                     {/* name_en */}
                     <div className="space-y-2">
-                        <Label htmlFor="name_en" className="text-sm text-gray-600">ชื่ออังกฤษ *</Label>
+                        <Label htmlFor="name_en" className="text-sm text-gray-600">{t("labels.nameEn")}</Label>
                         <Input
                             id="name_en"
                             name="name_en"
                             value={formData.name_en}
                             onChange={handleInputChange}
-                            placeholder="ระบุชื่อลูกค้าภาษาอังกฤษ"
+                            placeholder={t("placeholders.nameEn")}
                             required
                             disabled={loading}
                             maxLength={100}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.name_en.length}/100 ตัวอักษร
+                            {formData.name_en.length}/100 {t("validation.maxLength")}
                         </div>
                     </div>
 
                     {/* email */}
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm text-gray-600">อีเมล *</Label>
+                        <Label htmlFor="email" className="text-sm text-gray-600">{t("labels.email")}</Label>
                         <Input
                             id="email"
                             name="email"
                             type="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            placeholder="ระบุอีเมล"
+                            placeholder={t("placeholders.email")}
                             required
                             disabled={loading}
                             className="w-full border rounded px-2 py-1"
@@ -519,86 +573,137 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
 
                     {/* tel */}
                     <div className="space-y-2">
-                        <Label htmlFor="tel" className="text-sm text-gray-600">เบอร์โทร *</Label>
+                        <Label htmlFor="tel" className="text-sm text-gray-600">{t("labels.phone")}</Label>
                         <Input
                             id="tel"
                             name="tel"
                             value={formData.tel}
                             onChange={handleInputChange}
-                            placeholder="ระบุเบอร์โทรศัพท์"
+                            placeholder={t("placeholders.phone")}
                             required
                             disabled={loading}
                             maxLength={20}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.tel.length}/20 ตัวอักษร
+                            {formData.tel.length}/20 {t("validation.maxLength")}
                         </div>
                     </div>
 
                     {/* tax_no */}
                     <div className="space-y-2">
-                        <Label htmlFor="tax_no" className="text-sm text-gray-600">เลขประจำตัวผู้เสียภาษี *</Label>
+                        <Label htmlFor="tax_no" className="text-sm text-gray-600">{t("labels.taxNo")}</Label>
                         <Input
                             id="tax_no"
                             name="tax_no"
                             value={formData.tax_no}
                             onChange={handleInputChange}
-                            placeholder="ระบุเลขประจำตัวผู้เสียภาษี"
+                            placeholder={t("placeholders.taxNo")}
                             required
                             disabled={loading}
-                            maxLength={50}
+                            maxLength={17}
+                            minLength={17}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.tax_no.length}/50 ตัวอักษร
+                            13 {t("validation.digits")} ({t("validation.format")})
+                            {formData.tax_no.replace(/\D/g, '').length < 13 && formData.tax_no.length > 0 && (
+                                <span className="text-red-500 block">{t('validation.required13Digits')}</span>
+                            )}
                         </div>
                     </div>
 
                     {/* tax_id */}
                     <div className="space-y-2">
-                        <Label htmlFor="tax_id" className="text-sm text-gray-600">เลขประจำตัว *</Label>
+                        <Label htmlFor="tax_id" className="text-sm text-gray-600">
+                            {formData.tax_id_type === "individual" ? t("labels.national_id") : t("labels.tax_id")}
+                        </Label>
                         <Input
                             id="tax_id"
                             name="tax_id"
                             value={formData.tax_id}
                             onChange={handleInputChange}
-                            placeholder="ระบุเลขประจำตัว"
+                            placeholder={
+                                formData.tax_id_type === "individual"
+                                    ? t("placeholders.national_id")
+                                    : formData.tax_id_type === "juristic_person"
+                                        ? t("placeholders.tax_id_juristic")
+                                        : formData.tax_id_type === "foreign_individual"
+                                            ? t("placeholders.tax_id_foreign")
+                                            : formData.tax_id_type === "branch_office"
+                                                ? t("placeholders.tax_id_branch")
+                                                : t("placeholders.tax_id_default")
+                            }
                             required
                             disabled={loading}
-                            maxLength={50}
+                            maxLength={17}
+                            minLength={17}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.tax_id.length}/50 ตัวอักษร
+                            13 {t("validation.digits")} ({t("validation.format")})
+                            {formData.tax_id.replace(/\D/g, '').length < 13 && formData.tax_id.length > 0 && (
+                                <span className="text-red-500 block">
+                                    {formData.tax_id_type === "individual"
+                                        ? t("validation.national_id_required")
+                                        : t("validation.tax_id_required")
+                                    }
+                                </span>
+                            )}
                         </div>
                     </div>
 
                     {/* tax_id_type */}
                     <div className="space-y-2">
-                        <Label htmlFor="tax_id_type" className="text-sm text-gray-600">ประเภทเลขประจำตัว *</Label>
-                        <Input
-                            id="tax_id_type"
-                            name="tax_id_type"
+                        <Label htmlFor="tax_id_type" className="text-sm text-gray-600">{t("labels.taxIdType")}</Label>
+                        <PaginatedSelect
                             value={formData.tax_id_type}
-                            onChange={handleInputChange}
-                            placeholder="ระบุประเภทเลขประจำตัว"
-                            required
+                            placeholder={t("tax_id_type.select")}
                             disabled={loading}
-                            maxLength={20}
-                            className="w-full border rounded px-2 py-1"
+                            options={[
+                                {
+                                    id: 1,
+                                    value: "individual",
+                                    label: t("tax_id_type.individual")
+                                },
+                                {
+                                    id: 2,
+                                    value: "juristic_person",
+                                    label: t("tax_id_type.juristic_person")
+                                },
+                                {
+                                    id: 3,
+                                    value: "foreign_individual",
+                                    label: t("tax_id_type.foreign_individual")
+                                },
+                                {
+                                    id: 4,
+                                    value: "branch_office",
+                                    label: t("tax_id_type.branch_office")
+                                }
+                            ]}
+                            loading={false}
+                            hasMore={false}
+                            onValueChange={(value) => setFormData({ ...formData, tax_id_type: value })}
+                            onSearch={() => { }} // No search needed for static options
+                            onLoadMore={() => { }} // No load more needed for static options
+                            className="w-full"
+                            showClearButton={false}
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.tax_id_type.length}/20 ตัวอักษร
+                            {formData.tax_id_type === "individual" && t("tax_id_type.individual_description")}
+                            {formData.tax_id_type === "juristic_person" && t("tax_id_type.juristic_person_description")}
+                            {formData.tax_id_type === "foreign_individual" && t("tax_id_type.foreign_individual_description")}
+                            {formData.tax_id_type === "branch_office" && t("tax_id_type.branch_office_description")}
                         </div>
                     </div>
 
                     {/* customer_group_id */}
                     <div className="space-y-2">
-                        <Label htmlFor="customer_group_id" className="text-sm text-gray-600">กลุ่มลูกค้า</Label>
+                        <Label htmlFor="customer_group_id" className="text-sm text-gray-600">{t("labels.customerGroup")}</Label>
                         <PaginatedSelect
                             value={formData.customer_group_id}
-                            placeholder="เลือกกลุ่มลูกค้า (ถ้ามี)"
+                            placeholder={t("placeholders.customerGroup")}
                             disabled={loading || loadingCustomerGroups}
                             options={formatCustomerGroupOptions()}
                             loading={loadingCustomerGroups}
@@ -608,16 +713,16 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                             onLoadMore={handleLoadMoreCustomerGroups}
                             className="w-full"
                             showClearButton={true}
-                            clearButtonText="ไม่เลือก"
+                            clearButtonText={t("buttons.clear")}
                         />
                     </div>
 
                     {/* sale_office_id */}
                     <div className="space-y-2">
-                        <Label htmlFor="sale_office_id" className="text-sm text-gray-600">สำนักงานขาย</Label>
+                        <Label htmlFor="sale_office_id" className="text-sm text-gray-600">{t("labels.saleOffice")}</Label>
                         <PaginatedSelect
                             value={formData.sale_office_id}
-                            placeholder="เลือกสำนักงานขาย (ถ้ามี)"
+                            placeholder={t("placeholders.saleOffice")}
                             disabled={loading || loadingSaleOffices}
                             options={formatSaleOfficeOptions()}
                             loading={loadingSaleOffices}
@@ -627,21 +732,21 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                             onLoadMore={handleLoadMoreSaleOffices}
                             className="w-full"
                             showClearButton={true}
-                            clearButtonText="ไม่เลือก"
+                            clearButtonText={t("buttons.clear")}
                         />
                     </div>
 
                     {/* department_id */}
                     <div className="space-y-2">
-                        <Label htmlFor="department_id" className="text-sm text-gray-600">แผนก</Label>
+                        <Label htmlFor="department_id" className="text-sm text-gray-600">{t("labels.department")}</Label>
                         <PaginatedSelect
                             value={formData.department_id}
                             placeholder={
                                 !formData.sale_office_id
-                                    ? "เลือกสำนักงานขายก่อน"
+                                    ? t("placeholders.selectSaleOfficeFirst")
                                     : departmentOptions.length === 0 && !loadingDepartments
-                                        ? "ไม่พบแผนกในสำนักงานขายนี้"
-                                        : "เลือกแผนก (ถ้ามี)"
+                                        ? t("placeholders.noDepartments")
+                                        : t("placeholders.department")
                             }
                             disabled={loading || loadingDepartments || !formData.sale_office_id}
                             options={formatDepartmentOptions()}
@@ -652,16 +757,16 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                             onLoadMore={handleLoadMoreDepartments}
                             className="w-full"
                             showClearButton={true}
-                            clearButtonText="ไม่เลือก"
+                            clearButtonText={t("buttons.clear")}
                         />
                     </div>
 
                     {/* payment_type_id */}
                     <div className="space-y-2">
-                        <Label htmlFor="payment_type_id" className="text-sm text-gray-600">ประเภทการชำระเงิน</Label>
+                        <Label htmlFor="payment_type_id" className="text-sm text-gray-600">{t("labels.paymentType")}</Label>
                         <PaginatedSelect
                             value={formData.payment_type_id}
-                            placeholder="เลือกประเภทการชำระเงิน (ถ้ามี)"
+                            placeholder={t("placeholders.paymentType")}
                             disabled={loading || loadingPaymentTypes}
                             options={formatPaymentTypeOptions()}
                             loading={loadingPaymentTypes}
@@ -671,46 +776,46 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                             onLoadMore={handleLoadMorePaymentTypes}
                             className="w-full"
                             showClearButton={true}
-                            clearButtonText="ไม่เลือก"
+                            clearButtonText={t("buttons.clear")}
                         />
                     </div>
 
                     {/* address */}
                     <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="address" className="text-sm text-gray-600">ที่อยู่ *</Label>
+                        <Label htmlFor="address" className="text-sm text-gray-600">{t("labels.address")}</Label>
                         <textarea
                             id="address"
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
-                            placeholder="ระบุที่อยู่"
+                            placeholder={t("placeholders.address")}
                             required
                             disabled={loading}
-                            maxLength={300}
+                            maxLength={100}
                             rows={3}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.address.length}/300 ตัวอักษร
+                            {formData.address.length}/100 {t("validation.maxLength")}
                         </div>
                     </div>
 
                     {/* remark */}
                     <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="remark" className="text-sm text-gray-600">หมายเหตุ</Label>
+                        <Label htmlFor="remark" className="text-sm text-gray-600">{t("labels.remark")}</Label>
                         <textarea
                             id="remark"
                             name="remark"
                             value={formData.remark}
                             onChange={handleInputChange}
-                            placeholder="ระบุหมายเหตุ (ถ้ามี)"
+                            placeholder={t("placeholders.remark")}
                             disabled={loading}
-                            maxLength={200}
+                            maxLength={100}
                             rows={2}
                             className="w-full border rounded px-2 py-1"
                         />
                         <div className="text-xs text-gray-500">
-                            {formData.remark.length}/200 ตัวอักษร
+                            {formData.remark.length}/100 {t("validation.maxLength")}
                         </div>
                     </div>
 
@@ -726,7 +831,7 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                                 checked={formData.status}
                             />
                             <span className="text-sm text-gray-600">
-                                {formData.status ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                                {formData.status ? t('status.active') : t('status.inactive')}
                             </span>
                         </div>
                     </div>
@@ -739,7 +844,7 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                         onClick={handleClose}
                         disabled={loading}
                     >
-                        ยกเลิก
+                        {t('buttons.cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -749,12 +854,12 @@ export default function CreateCustomerForm({ isVisible, onClose, onSuccess, onSt
                         {loading ? (
                             <div className="flex items-center gap-2">
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                กำลังสร้าง...
+                                {t('buttons.creating')}
                             </div>
                         ) : (
                             <div className="flex items-center gap-2">
                                 <IconDeviceFloppy className="w-4 h-4" />
-                                สร้าง
+                                {t('buttons.create')}
                             </div>
                         )}
                     </Button>

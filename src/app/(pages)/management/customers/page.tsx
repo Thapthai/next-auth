@@ -23,7 +23,7 @@ export default function CustomersPage() {
     const [input, setInput] = useState("");
     const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const t = useTranslations('customer');
+    const t = useTranslations('Customers.CustomersPage');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
@@ -43,7 +43,7 @@ export default function CustomersPage() {
             setTotalPages(Math.ceil((data.total || 0) / itemsPerPage));
         } catch (err) {
             console.error('Fetch error:', err);
-            setError("ไม่สามารถโหลดข้อมูลได้");
+            setError(t("errors.loadFailed"));
         } finally {
             setLoading(false);
         }
@@ -119,7 +119,7 @@ export default function CustomersPage() {
 
     return (
         <>
-            <SiteHeader headerTopic="จัดการลูกค้า" />
+            <SiteHeader headerTopic={t("title")} />
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
@@ -129,7 +129,7 @@ export default function CustomersPage() {
                         <form onSubmit={handleSearch} className="flex gap-2 mb-4">
                             <div className="relative flex-1">
                                 <Input
-                                    placeholder="ค้นหาชื่อ, อีเมล, เบอร์โทร, หรือรหัสลูกค้า"
+                                    placeholder={t("search.placeholder")}
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     className="pr-8"
@@ -152,7 +152,7 @@ export default function CustomersPage() {
                             <div className="flex justify-center items-center h-64">
                                 <div className="flex items-center gap-2">
                                     <IconReload className="animate-spin w-5 h-5" />
-                                    <span>กำลังโหลดข้อมูล...</span>
+                                    <span>{t("loading")}</span>
                                 </div>
                             </div>
                         ) : customers.length > 0 ? (
@@ -161,13 +161,13 @@ export default function CustomersPage() {
                                     <TableRow>
                                         <TableHead></TableHead>
                                         <TableHead>#</TableHead>
-                                        <TableHead>รหัสไซต์</TableHead>
-                                        <TableHead>ชื่อไทย</TableHead>
-                                        <TableHead>ชื่ออังกฤษ</TableHead>
-                                        <TableHead>อีเมล</TableHead>
-                                        <TableHead>เบอร์โทร</TableHead>
-                                        <TableHead>ที่อยู่</TableHead>
-                                        <TableHead>สถานะ</TableHead>
+                                        <TableHead>{t("table.siteCode")}</TableHead>
+                                        <TableHead>{t("table.nameTh")}</TableHead>
+                                        <TableHead>{t("table.nameEn")}</TableHead>
+                                        <TableHead>{t("table.email")}</TableHead>
+                                        <TableHead>{t("table.phone")}</TableHead>
+                                        <TableHead>{t("table.address")}</TableHead>
+                                        <TableHead>{t("table.status")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -217,7 +217,7 @@ export default function CustomersPage() {
                                             <TableCell>
                                                 <span className={`px-2 py-1 rounded-full text-xs ${customer.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {customer.status ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                                                    {customer.status ? t("status.active") : t("status.inactive")}
                                                 </span>
                                             </TableCell>
                                         </TableRow>
@@ -227,8 +227,8 @@ export default function CustomersPage() {
                         ) : (
                             <div className="flex justify-center items-center h-64">
                                 <div className="text-center">
-                                    <p className="text-gray-500 text-lg">ไม่พบข้อมูล</p>
-                                    <p className="text-gray-400 text-sm mt-2">ลองค้นหาด้วยคำค้นอื่น หรือเพิ่มข้อมูลใหม่</p>
+                                    <p className="text-gray-500 text-lg">{t("noData.title")}</p>
+                                    <p className="text-gray-400 text-sm mt-2">{t("noData.description")}</p>
                                 </div>
                             </div>
                         )}
@@ -237,7 +237,11 @@ export default function CustomersPage() {
                         {!error && totalPages > 1 && (
                             <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-gray-500">
-                                    แสดง {(currentPage - 1) * itemsPerPage + 1} ถึง {Math.min(currentPage * itemsPerPage, totalItems)} จาก {totalItems} รายการ
+                                    {t("pagination.showing", {
+                                        start: (currentPage - 1) * itemsPerPage + 1,
+                                        end: Math.min(currentPage * itemsPerPage, totalItems),
+                                        total: totalItems
+                                    })}
                                 </div>
                                 <div className="flex items-center space-x-1">
                                     {/* First page */}
@@ -305,7 +309,7 @@ export default function CustomersPage() {
                             variant="outline"
                             size="icon"
                             className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                            title="เพิ่มลูกค้าใหม่"
+                            title={t("buttons.addNew")}
                         >
                             <IconPlus className="w-4 h-4" />
                         </Button>

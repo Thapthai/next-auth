@@ -1147,5 +1147,193 @@
             "saving": "Saving...",
             "save": "Save"
         }
+    },
+    "Customers": {
+        "CustomersPage": {
+            "title": "Customer Management",
+            "search": {
+                "placeholder": "Search by name, email, phone, or customer code"
+            },
+            "table": {
+                "siteCode": "Site Code",
+                "nameTh": "Thai Name",
+                "nameEn": "English Name",
+                "email": "Email",
+                "phone": "Phone",
+                "address": "Address",
+                "status": "Status"
+            },
+            "buttons": {
+                "addNew": "Add New Customer"
+            },
+            "loading": "Loading data...",
+            "noData": {
+                "title": "No data found",
+                "description": "Try searching with different keywords or add new data"
+            },
+            "pagination": {
+                "showing": "Showing {start} to {end} of {total} entries"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "errors": {
+                "loadFailed": "Failed to load data"
+            }
+        },
+        "CreateCustomerForm": {
+            "title": "Add New Customer",
+            "labels": {
+                "siteCode": "Site Code *",
+                "nameTh": "Thai Name *",
+                "nameEn": "English Name *",
+                "email": "Email *",
+                "phone": "Phone *",
+                "taxNo": "Tax Number *",
+                "national_id": "National ID *",
+                "tax_id": "Tax ID *",
+                "taxIdType": "Tax ID Type *",
+                "customerGroup": "Customer Group",
+                "saleOffice": "Sale Office",
+                "department": "Department",
+                "paymentType": "Payment Type",
+                "address": "Address *",
+                "remark": "Remark",
+                "status": "Status"
+            },
+            "placeholders": {
+                "siteCode": "Enter site code",
+                "nameTh": "Enter Thai name",
+                "nameEn": "Enter English name",
+                "email": "Enter email",
+                "phone": "Enter phone number",
+                "national_id": "Enter National ID (0-0000-00000-00-0)",
+                "tax_id_juristic": "Enter Tax ID (0-0000-00000-00-0)",
+                "tax_id_foreign": "Enter Tax ID Special (0-0000-00000-00-0)",
+                "tax_id_branch": "Enter Tax ID Branch (0-0000-00000-00-0)",
+                "tax_id_default": "Enter Tax ID (0-0000-00000-00-0)",
+                "customerGroup": "Select customer group (optional)",
+                "saleOffice": "Select sale office (optional)",
+                "selectSaleOfficeFirst": "Select sale office first",
+                "noDepartments": "No departments found in this sale office",
+                "department": "Select department (optional)",
+                "paymentType": "Select payment type (optional)",
+                "address": "Enter address",
+                "remark": "Enter remark (optional)",
+                "taxNo": "Enter Tax Number (0-0000-00000-00-0)",
+                "maxLength": " characters"
+            },
+            "tax_id_type": {
+                "select": "Select Tax ID Type",
+                "individual": "Individual",
+                "juristic_person": "Juristic Person",
+                "foreign_individual": "Foreign Individual/Non-ID Person",
+                "branch_office": "Branch Office",
+                "individual_description": "National ID 13 digits",
+                "juristic_person_description": "Tax ID (13 digits)",
+                "foreign_individual_description": "Tax ID (13 special digits)",
+                "branch_office_description": "Tax ID (13 digits with branch)"
+            },
+            "buttons": {
+                "clear": "Clear",
+                "cancel": "Cancel",
+                "create": "Create",
+                "creating": "Creating..."
+            },
+            "validation": {
+                "taxNoRequired": "Tax number must be exactly 13 digits",
+                "taxIdRequired": "Tax ID must be exactly 13 digits",
+                "national_id_required": "National ID must be exactly 13 digits",
+                "tax_id_required": "Must enter exactly 13 digits",
+                "required13Digits": "Must enter exactly 13 digits",
+                "digits": "digits",
+                "format": "format: 0-0000-00000-00-0",
+                "maxLength": " characters"
+            },
+            "errors": {
+                "createFailed": "Failed to create customer"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        },
+        "CustomerDetail": {
+            "title": "Edit Customer Information",
+            "labels": {
+                "siteCode": "Site Code *",
+                "nameTh": "Thai Name *",
+                "nameEn": "English Name *",
+                "email": "Email *",
+                "phone": "Phone *",
+                "taxNo": "Tax Number *",
+                "national_id": "National ID *",
+                "tax_id": "Tax ID *",
+                "taxIdType": "Tax ID Type *",
+                "customerGroup": "Customer Group",
+                "saleOffice": "Sale Office",
+                "department": "Department",
+                "paymentType": "Payment Type",
+                "address": "Address *",
+                "remark": "Remark",
+                "status": "Status"
+            },
+            "placeholders": {
+                "siteCode": "Enter site code",
+                "nameTh": "Enter Thai name",
+                "nameEn": "Enter English name",
+                "email": "Enter email",
+                "phone": "Enter phone number",
+                "national_id": "Enter National ID (0-0000-00000-00-0)",
+                "tax_id_juristic": "Enter Tax ID (0-0000-00000-00-0)",
+                "tax_id_foreign": "Enter Tax ID Special (0-0000-00000-00-0)",
+                "tax_id_branch": "Enter Tax ID Branch (0-0000-00000-00-0)",
+                "tax_id_default": "Enter Tax ID (0-0000-00000-00-0)",
+                "customerGroup": "Select customer group (optional)",
+                "saleOffice": "Select sale office (optional)",
+                "selectSaleOfficeFirst": "Select sale office first",
+                "noDepartments": "No departments found in this sale office",
+                "department": "Select department (optional)",
+                "paymentType": "Select payment type (optional)",
+                "address": "Enter address",
+                "remark": "Enter remark (optional)",
+                "taxNo": "Enter Tax Number (0-0000-00000-00-0)",
+                "maxLength": " characters"
+            },
+            "tax_id_type": {
+                "select": "Select Tax ID Type",
+                "individual": "Individual",
+                "juristic_person": "Juristic Person",
+                "foreign_individual": "Foreign Individual/Non-ID Person",
+                "branch_office": "Branch Office",
+                "individual_description": "National ID 13 digits",
+                "juristic_person_description": "Tax ID (13 digits)",
+                "foreign_individual_description": "Tax ID (13 special digits)",
+                "branch_office_description": "Tax ID (13 digits with branch)"
+            },
+            "buttons": {
+                "clear": "Clear",
+                "cancel": "Cancel",
+                "save": "Save",
+                "saving": "Saving..."
+            },
+            "validation": {
+                "taxNoRequired": "Tax number must be exactly 13 digits",
+                "required13Digits": "Must enter exactly 13 digits",
+                "national_id_required": "National ID must be exactly 13 digits",
+                "tax_id_required": "Must enter exactly 13 digits",
+                "maxLength": " characters",
+                "format": "format: 0-0000-00000-00-0",
+                "digits": "digits"
+            },
+            "errors": {
+                "updateFailed": "Failed to update customer information"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        }
     }
 }
