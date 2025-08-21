@@ -260,6 +260,18 @@ export const data = {
           icon: IconDashboard,
           permission: [1, 2],
         },
+        {
+          title: "saleOfficeCustomers",
+          url: "/management/sale-office-customers",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
+        {
+          title: "shipTos",
+          url: "/management/ship-tos",
+          icon: IconDashboard,
+          permission: [1, 2],
+        },
         // {
         //   title: "sapSale",
         //   url: "/management/sapSale",

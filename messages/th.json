@@ -87,7 +87,9 @@
         "factorySaleOffice": "การตั้งค่าโรงซัก ของโรงพยาบาล",
         "customerGroups": "กลุ่มลูกค้า",
         "customers": "ลูกค้า",
-        "paymentTypes": "ประเภทการชำระเงิน"
+        "paymentTypes": "ประเภทการชำระเงิน",
+        "saleOfficeCustomers": "สาขาลูกค้า",
+        "shipTos": "การขนส่งสาขาลูกค้า"
     },
     "SiteHeader": {
         "myProfile": "โปรไฟล์",
@@ -1342,6 +1344,178 @@
                 "digits": "หลัก",
                 "format": "รูปแบบ: 0-0000-00000-00-0",
                 "maxLength": "ตัวอักษร"
+            },
+            "errors": {
+                "updateFailed": "เกิดข้อผิดพลาดในการบันทึกข้อมูล"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            }
+        }
+    },
+    "ShipTos": {
+        "ShipTosPage": {
+            "title": "จัดการ Ship To",
+            "search": {
+                "placeholder": "ค้นหารหัส Ship To, ลูกค้า, หรือสำนักงานขาย"
+            },
+            "table": {
+                "shipToCode": "รหัส Ship To",
+                "customer": "ลูกค้า",
+                "saleOffice": "สำนักงานขาย",
+                "description": "คำอธิบาย",
+                "status": "สถานะ"
+            },
+            "buttons": {
+                "addNew": "เพิ่ม Ship To ใหม่"
+            },
+            "loading": "กำลังโหลดข้อมูล...",
+            "noData": {
+                "title": "ไม่พบข้อมูล",
+                "description": "ลองค้นหาด้วยคำค้นอื่น หรือเพิ่มข้อมูลใหม่"
+            },
+            "pagination": {
+                "showing": "แสดง {start} ถึง {end} จาก {total} รายการ"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            },
+            "errors": {
+                "loadFailed": "ไม่สามารถโหลดข้อมูลได้"
+            }
+        },
+        "CreateShipToForm": {
+            "title": "เพิ่ม Ship To ใหม่",
+            "labels": {
+                "shipToCode": "รหัส Ship To *",
+                "saleOfficeCustomer": "ลูกค้า-สำนักงานขาย *",
+                "description": "คำอธิบาย",
+                "status": "สถานะ"
+            },
+            "placeholders": {
+                "shipToCode": "ระบุรหัส Ship To",
+                "saleOfficeCustomer": "เลือกลูกค้าและสำนักงานขาย",
+                "description": "ระบุคำอธิบาย (ถ้ามี)"
+            },
+            "buttons": {
+                "cancel": "ยกเลิก",
+                "create": "สร้าง",
+                "creating": "กำลังสร้าง..."
+            },
+            "validation": {
+                "maxLength": "ตัวอักษร"
+            },
+            "errors": {
+                "createFailed": "เกิดข้อผิดพลาดในการสร้าง Ship To"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            }
+        },
+        "ShipToDetail": {
+            "title": "แก้ไขข้อมูล Ship To",
+            "labels": {
+                "shipToCode": "รหัส Ship To *",
+                "saleOfficeCustomer": "ลูกค้า-สำนักงานขาย *",
+                "description": "คำอธิบาย",
+                "status": "สถานะ"
+            },
+            "placeholders": {
+                "shipToCode": "ระบุรหัส Ship To",
+                "saleOfficeCustomer": "เลือกลูกค้าและสำนักงานขาย",
+                "description": "ระบุคำอธิบาย (ถ้ามี)"
+            },
+            "buttons": {
+                "cancel": "ยกเลิก",
+                "save": "บันทึก",
+                "saving": "กำลังบันทึก..."
+            },
+            "validation": {
+                "maxLength": "ตัวอักษร"
+            },
+            "errors": {
+                "updateFailed": "เกิดข้อผิดพลาดในการบันทึกข้อมูล"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            }
+        }
+    },
+    "SaleOfficeCustomers": {
+        "SaleOfficeCustomersPage": {
+            "title": "จัดการลูกค้า-สำนักงานขาย",
+            "search": {
+                "placeholder": "ค้นหาลูกค้า, สำนักงานขาย, อีเมล, หรือเบอร์โทร"
+            },
+            "table": {
+                "customer": "ลูกค้า",
+                "saleOffice": "สำนักงานขาย",
+                "email": "อีเมล",
+                "phone": "เบอร์โทร",
+                "status": "สถานะ"
+            },
+            "buttons": {
+                "addNew": "เพิ่มความสัมพันธ์ใหม่"
+            },
+            "loading": "กำลังโหลดข้อมูล...",
+            "noData": {
+                "title": "ไม่พบข้อมูล",
+                "description": "ลองค้นหาด้วยคำค้นอื่น หรือเพิ่มข้อมูลใหม่"
+            },
+            "pagination": {
+                "showing": "แสดง {start} ถึง {end} จาก {total} รายการ"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            },
+            "errors": {
+                "loadFailed": "ไม่สามารถโหลดข้อมูลได้"
+            }
+        },
+        "CreateSaleOfficeCustomerForm": {
+            "title": "เพิ่มความสัมพันธ์ลูกค้า-สำนักงานขายใหม่",
+            "labels": {
+                "saleOffice": "สำนักงานขาย *",
+                "customer": "ลูกค้า *",
+                "status": "สถานะ"
+            },
+            "placeholders": {
+                "saleOffice": "เลือกสำนักงานขาย",
+                "customer": "เลือกลูกค้า"
+            },
+            "buttons": {
+                "cancel": "ยกเลิก",
+                "create": "สร้าง",
+                "creating": "กำลังสร้าง..."
+            },
+            "errors": {
+                "createFailed": "เกิดข้อผิดพลาดในการสร้างความสัมพันธ์"
+            },
+            "status": {
+                "active": "ใช้งาน",
+                "inactive": "ไม่ใช้งาน"
+            }
+        },
+        "SaleOfficeCustomerDetail": {
+            "title": "แก้ไขความสัมพันธ์ลูกค้า-สำนักงานขาย",
+            "labels": {
+                "saleOffice": "สำนักงานขาย *",
+                "customer": "ลูกค้า *",
+                "status": "สถานะ"
+            },
+            "placeholders": {
+                "saleOffice": "เลือกสำนักงานขาย",
+                "customer": "เลือกลูกค้า"
+            },
+            "buttons": {
+                "cancel": "ยกเลิก",
+                "save": "บันทึก",
+                "saving": "กำลังบันทึก..."
             },
             "errors": {
                 "updateFailed": "เกิดข้อผิดพลาดในการบันทึกข้อมูล"

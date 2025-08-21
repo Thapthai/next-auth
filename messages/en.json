@@ -87,7 +87,9 @@
         "factorySaleOffice": "Factory Sale Office",
         "customerGroups": "Customer Groups",
         "customers": "Customers",
-        "paymentTypes": "Payment Types"
+        "paymentTypes": "Payment Types",
+        "saleOfficeCustomers": "Sale Office Customers",
+        "shipTos": "Ship To"
     },
     "SiteHeader": {
         "myProfile": "My Profile",
@@ -1329,6 +1331,178 @@
             },
             "errors": {
                 "updateFailed": "Failed to update customer information"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        }
+    },
+    "ShipTos": {
+        "ShipTosPage": {
+            "title": "Ship To Management",
+            "search": {
+                "placeholder": "Search by Ship To code, customer, or sale office"
+            },
+            "table": {
+                "shipToCode": "Ship To Code",
+                "customer": "Customer",
+                "saleOffice": "Sale Office",
+                "description": "Description",
+                "status": "Status"
+            },
+            "buttons": {
+                "addNew": "Add New Ship To"
+            },
+            "loading": "Loading data...",
+            "noData": {
+                "title": "No data found",
+                "description": "Try searching with different keywords or add new data"
+            },
+            "pagination": {
+                "showing": "Showing {start} to {end} of {total} entries"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "errors": {
+                "loadFailed": "Failed to load data"
+            }
+        },
+        "CreateShipToForm": {
+            "title": "Add New Ship To",
+            "labels": {
+                "shipToCode": "Ship To Code *",
+                "saleOfficeCustomer": "Customer-Sale Office *",
+                "description": "Description",
+                "status": "Status"
+            },
+            "placeholders": {
+                "shipToCode": "Enter Ship To code",
+                "saleOfficeCustomer": "Select customer and sale office",
+                "description": "Enter description (optional)"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "create": "Create",
+                "creating": "Creating..."
+            },
+            "validation": {
+                "maxLength": " characters"
+            },
+            "errors": {
+                "createFailed": "Failed to create Ship To"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        },
+        "ShipToDetail": {
+            "title": "Edit Ship To Information",
+            "labels": {
+                "shipToCode": "Ship To Code *",
+                "saleOfficeCustomer": "Customer-Sale Office *",
+                "description": "Description",
+                "status": "Status"
+            },
+            "placeholders": {
+                "shipToCode": "Enter Ship To code",
+                "saleOfficeCustomer": "Select customer and sale office",
+                "description": "Enter description (optional)"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "save": "Save",
+                "saving": "Saving..."
+            },
+            "validation": {
+                "maxLength": " characters"
+            },
+            "errors": {
+                "updateFailed": "Failed to update Ship To information"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        }
+    },
+    "SaleOfficeCustomers": {
+        "SaleOfficeCustomersPage": {
+            "title": "Customer-Sale Office Management",
+            "search": {
+                "placeholder": "Search by customer, sale office, email, or phone"
+            },
+            "table": {
+                "customer": "Customer",
+                "saleOffice": "Sale Office",
+                "email": "Email",
+                "phone": "Phone",
+                "status": "Status"
+            },
+            "buttons": {
+                "addNew": "Add New Relationship"
+            },
+            "loading": "Loading data...",
+            "noData": {
+                "title": "No data found",
+                "description": "Try searching with different keywords or add new data"
+            },
+            "pagination": {
+                "showing": "Showing {start} to {end} of {total} entries"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "errors": {
+                "loadFailed": "Failed to load data"
+            }
+        },
+        "CreateSaleOfficeCustomerForm": {
+            "title": "Add New Customer-Sale Office Relationship",
+            "labels": {
+                "saleOffice": "Sale Office *",
+                "customer": "Customer *",
+                "status": "Status"
+            },
+            "placeholders": {
+                "saleOffice": "Select sale office",
+                "customer": "Select customer"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "create": "Create",
+                "creating": "Creating..."
+            },
+            "errors": {
+                "createFailed": "Failed to create relationship"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            }
+        },
+        "SaleOfficeCustomerDetail": {
+            "title": "Edit Customer-Sale Office Relationship",
+            "labels": {
+                "saleOffice": "Sale Office *",
+                "customer": "Customer *",
+                "status": "Status"
+            },
+            "placeholders": {
+                "saleOffice": "Select sale office",
+                "customer": "Select customer"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "save": "Save",
+                "saving": "Saving..."
+            },
+            "errors": {
+                "updateFailed": "Failed to update relationship information"
             },
             "status": {
                 "active": "Active",
